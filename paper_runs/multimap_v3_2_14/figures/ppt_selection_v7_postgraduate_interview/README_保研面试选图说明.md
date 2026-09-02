@@ -13,7 +13,24 @@
 
 如果汇报时间不足，只展示前三张。V02 使用英文版，因为当前 v7 中文版色条标题存在方框乱码；这不是数据问题，英文版内容与数据均正常。S06和M06保存在 `alternatives/`，只在老师追问七模型训练差异或固定外部验证时调用。
 
+## 绘图软件与工具一览
+
+以下说明的是本素材包所选最终图片的实际生成工具，而不只是历史版本的计划后端。Python 是编程语言，Matplotlib 是实际绘图库；pandas、NumPy 和 SciPy 分别承担数据读取、数值处理和相关统计计算，不应混称为绘图软件。
+
+| 图件 | 最终图片使用的软件／库 | 具体绘制工具 | 可核验源文件（本目录内） |
+|---|---|---|---|
+| V02 | MATLAB R2020a | `surf` 地形表面、`contour3` 等高线、`scatter3` 巡检点、`plot3` 路线 | `editable/render_V02_v7.m` |
+| M01 | Python + Matplotlib；SciPy 辅助计算密度 | `scipy.stats.gaussian_kde` 计算核密度；Matplotlib 的 `fill_between`、`scatter`、`plot` 绘制分布、散点和中位数 | `editable/v3_2_14_drones_style_v7.py` → `plot_m01` |
+| S09 | Python + Matplotlib | `plot` 绘制种子轨迹与中位数，`fill_between` 绘制四分位距阴影 | 同上 → `plot_s09` / `plot_learning` |
+| M10 | 最终 v7 图片：Python + Matplotlib；另保留 OriginPro 2021 工程 | `scatter` 绘制效应点，`hlines` 绘制区间；Origin OPJU 用于保留可编辑工程，不是所选最终 PNG 的直接导出来源 | 同上 → `plot_m10`；另有 `editable/M10.opju` |
+| S06（备选） | Python + Matplotlib | `plot` 绘制七模型中位数曲线，`fill_between` 绘制四分位距阴影 | 同上 → `plot_s06` / `plot_learning` |
+| M06（备选） | Python + Matplotlib | `plot` 绘制独立种子与中位数曲线，`fill_between` 绘制四分位距阴影 | 同上 → `plot_learning` |
+
+包内主图清单记录的 Python 绘图环境为 Python 3.9.25 / Matplotlib 3.7.2。答辩时可直接回答“使用 Python 的 Matplotlib 库绘制”或“使用 MATLAB 绘制”，随后再解释数据来源；软件名称本身不是真实性证明，真实性仍需通过 Source Data、绘图源文件和冻结结果对应关系核验。
+
 ## 01 V02：真实DSM三维路线
+
+**绘图软件／工具：MATLAB R2020a，使用内置三维绘图函数 `surf`、`contour3`、`scatter3` 和 `plot3`，由 `.m` 脚本生成。**
 
 **如何绘制**
 
@@ -33,6 +50,8 @@
 
 ## 02 M01：地图级覆盖率分布
 
+**绘图软件／工具：Python 的 Matplotlib 库；SciPy 的 `gaussian_kde` 计算核密度，pandas 和 NumPy 辅助读取、整理与计算数据。不是用 Origin 绘制。**
+
 **如何绘制**
 
 - `source_data/M01_source_data.csv` 共 192 行：24 张未见合成地图和 8 张真实DSM地图，分别统计 6 种方法。
@@ -51,6 +70,8 @@
 - PPO+Pointer并非所有原始覆盖场景中的绝对冠军，不得表述为“在所有条件下最优”。
 
 ## 03 S09：训练回报动态
+
+**绘图软件／工具：Python 的 Matplotlib 库，使用 `plot` 绘制曲线、`fill_between` 绘制阴影；pandas 和 NumPy 辅助处理 Source Data。不是用 Origin 绘制。**
 
 **为什么调整为主图**
 
@@ -77,6 +98,8 @@
 
 ## 04 M10：配对消融效应
 
+**绘图软件／工具：所选最终 v7 图片使用 Python 的 Matplotlib 库绘制（`scatter` 画点、`hlines` 画区间）；另保留 OriginPro 2021 的 `.opju` 可编辑工程。不能将这张最终 PNG 说成由 Origin 直接导出。**
+
 **如何绘制**
 
 - `source_data/M10_source_data.csv` 共 8 行：2 个域乘以 4 个消融模型。
@@ -97,6 +120,8 @@
 
 ## 备选 S06：七模型训练批次覆盖率
 
+**绘图软件／工具：Python 的 Matplotlib 库，使用 `plot` 和 `fill_between` 绘制曲线及四分位距阴影；与 S09 共用 `plot_learning` 绘图函数。不是用 Origin 绘制。**
+
 **如何绘制**
 
 - `source_data/S06_source_data.csv` 保留七个学习模型、五个种子的训练批次覆盖率记录和汇总。
@@ -113,6 +138,8 @@
 - 七条曲线信息密度很高，因此仅作为老师追问消融训练动态时的备选图。
 
 ## 备选 M06：固定外部验证学习曲线
+
+**绘图软件／工具：Python 的 Matplotlib 库，由 `plot_learning` 中的 `plot` 和 `fill_between` 绘制种子线、中位数线与四分位距阴影。不是用 Origin 绘制。**
 
 - `alternatives/M06_fixed_validation_learning_curve_zh.png` 是3个核心模型在固定108任务外部验证上的曲线。
 - 淡线为5个独立训练种子，粗线与阴影为中位数和四分位距；没有平滑、插值或补点。
