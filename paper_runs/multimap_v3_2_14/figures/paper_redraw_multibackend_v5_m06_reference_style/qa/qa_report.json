@@ -1,0 +1,222 @@
+{
+  "passed": true,
+  "input_audit": {
+    "source_sha256": "cd49ded69b51611913f515242c50499b3f0a1c59d91ef98bf87efcc10bd6d59d",
+    "rows": 468,
+    "missing_columns": [],
+    "seed_rows": 390,
+    "summary_rows": 78,
+    "per_model": {
+      "full": {
+        "seed_count": 5,
+        "seed_rows": 130,
+        "summary_rows": 26,
+        "checkpoint_count": 26,
+        "per_seed_counts": {
+          "42.0": 26,
+          "43.0": 26,
+          "44.0": 26,
+          "45.0": 26,
+          "46.0": 26
+        }
+      },
+      "a2c_pointer": {
+        "seed_count": 5,
+        "seed_rows": 130,
+        "summary_rows": 26,
+        "checkpoint_count": 26,
+        "per_seed_counts": {
+          "42.0": 26,
+          "43.0": 26,
+          "44.0": 26,
+          "45.0": 26,
+          "46.0": 26
+        }
+      },
+      "traditional_ppo": {
+        "seed_count": 5,
+        "seed_rows": 130,
+        "summary_rows": 26,
+        "checkpoint_count": 26,
+        "per_seed_counts": {
+          "42.0": 26,
+          "43.0": 26,
+          "44.0": 26,
+          "45.0": 26,
+          "46.0": 26
+        }
+      }
+    },
+    "value_min": 0.0426646352985638,
+    "value_max": 0.5062688964474676,
+    "all_values_within_axis": true,
+    "checkpoint_episodes": [
+      16.0,
+      160.0,
+      250.0,
+      314.0,
+      474.0,
+      500.0,
+      628.0,
+      788.0,
+      948.0,
+      1000.0,
+      1096.0,
+      1256.0,
+      1416.0,
+      1500.0,
+      1564.0,
+      1724.0,
+      1884.0,
+      2000.0,
+      2032.0,
+      2192.0,
+      2352.0,
+      2500.0,
+      2660.0,
+      2820.0,
+      2980.0,
+      3000.0
+    ],
+    "smoothing": "none",
+    "interpolation": "none; adjacent checkpoints are connected by straight line segments"
+  },
+  "old_v4_immutability": {
+    "files_before": 66,
+    "files_after": 66,
+    "digest_before": "43d81aa3a83809e763cbc2a0011783dd5379676293cd2e44350958a645355ddc",
+    "digest_after": "43d81aa3a83809e763cbc2a0011783dd5379676293cd2e44350958a645355ddc",
+    "unchanged": true
+  },
+  "rendering": {
+    "width_mm": 90.0,
+    "height_mm": 68.0,
+    "x_limits": [
+      0.0,
+      3000.0
+    ],
+    "y_limits": [
+      0.0,
+      0.55
+    ],
+    "line_width_pt": 1.35,
+    "iqr_alpha": 0.17,
+    "seed_lines_drawn": false,
+    "median_lines": 3,
+    "iqr_bands": 3,
+    "smoothing": false,
+    "interpolation": false,
+    "all_four_spines": true,
+    "grid_axes": [
+      "x",
+      "y"
+    ]
+  },
+  "visual_checks": {
+    "content_bbox_px": [
+      35,
+      32,
+      1951,
+      1480
+    ],
+    "grayscale_preview": "qa/M06_grayscale_preview.png",
+    "grayscale_distinction_basis": "distinct solid, dashed, and dash-dot line styles",
+    "legend_location": "lower right, inside empty data region",
+    "manual_review_required": false,
+    "manual_review_completed": true,
+    "manual_review_findings": [
+      "Chinese and English labels are fully visible at the exported page size",
+      "legend does not overlap any median line or IQR band",
+      "PPO and A2C remain distinguishable by solid and dashed lines in grayscale",
+      "all four spines, both-axis grid, and compact margins match the frozen reference grammar"
+    ]
+  },
+  "outputs": {
+    "cn": [
+      {
+        "path": "main/M06_validation_learning_curve_v5.pdf",
+        "bytes": 42155,
+        "sha256": "6ca6d43734383f35ddaedd12e75dab3d883329255ddc88aedf5711aef87788bb",
+        "valid": true,
+        "pdf_header": "%PDF-"
+      },
+      {
+        "path": "main/M06_validation_learning_curve_v5.svg",
+        "bytes": 20565,
+        "sha256": "b29349e24d7843133bf3b066c5fe2124ddee03c956f28fb4e022605164d16dac",
+        "valid": true,
+        "svg_root": "{http://www.w3.org/2000/svg}svg",
+        "text_nodes": 18
+      },
+      {
+        "path": "main/M06_validation_learning_curve_v5.png",
+        "bytes": 157218,
+        "sha256": "eb6d2ad9aece370e2b574e9d1708449260665e56a07ea7ea258ca77998b8014d",
+        "valid": true,
+        "width_px": 1988,
+        "height_px": 1515,
+        "dpi": [
+          599.9988,
+          599.9988
+        ],
+        "mode": "RGBA"
+      },
+      {
+        "path": "main/M06_validation_learning_curve_v5.tiff",
+        "bytes": 304160,
+        "sha256": "23e829322326f7d4875207795bd0e48c5e49f4e4043b051e9e3f0b654b512139",
+        "valid": true,
+        "width_px": 1988,
+        "height_px": 1515,
+        "dpi": [
+          600.0,
+          600.0
+        ],
+        "mode": "RGBA"
+      }
+    ],
+    "en": [
+      {
+        "path": "main_EN/M06_validation_learning_curve_v5_english.pdf",
+        "bytes": 34425,
+        "sha256": "73f99f238a96002b1c8b6de2bc013986665600a091e7d81e67a75d70368a8dc0",
+        "valid": true,
+        "pdf_header": "%PDF-"
+      },
+      {
+        "path": "main_EN/M06_validation_learning_curve_v5_english.svg",
+        "bytes": 20544,
+        "sha256": "c5b994cdf3a014875342ff40f3f86d3f5c82ec518c56239591423a14449966b5",
+        "valid": true,
+        "svg_root": "{http://www.w3.org/2000/svg}svg",
+        "text_nodes": 18
+      },
+      {
+        "path": "main_EN/M06_validation_learning_curve_v5_english.png",
+        "bytes": 164365,
+        "sha256": "eced4d538a27b965a2deee83c2597c8ccc7337d25b9760ad809943b7eba93774",
+        "valid": true,
+        "width_px": 1940,
+        "height_px": 1505,
+        "dpi": [
+          599.9988,
+          599.9988
+        ],
+        "mode": "RGBA"
+      },
+      {
+        "path": "main_EN/M06_validation_learning_curve_v5_english.tiff",
+        "bytes": 300192,
+        "sha256": "1b6d8051d8d4f1ccd4f669236a261a75516775cea7abf04a98caf7d8c9e961e8",
+        "valid": true,
+        "width_px": 1940,
+        "height_px": 1505,
+        "dpi": [
+          600.0,
+          600.0
+        ],
+        "mode": "RGBA"
+      }
+    ]
+  }
+}

@@ -1,0 +1,20 @@
+# Claim Map v2
+
+| ID | Section | Permitted claim | Support | Maximum strength | Forbidden inference |
+|---|---|---|---|---|---|
+| K01 | Methods | The task selects a sequence of fixed, priority-labelled mountain-road inspection points under safe-return, energy, distance, time, terrain, wind and dynamics constraints. | F02; protocol objective and task generation | definition | continuous road-coverage claim |
+| K02 | Methods | The principal model combines PPO with a Pointer policy and a return-aware multi-resource feasibility mask. | protocol claim_boundaries; implementation | implemented method | independent contribution of each mask component |
+| K03 | Methods | Flat-MLP PPO removes Pointer, attention and node encoding while sharing the remaining frozen training and constraint protocol. | HANDOFF 3.2; implementation class FlatMLPActorCritic | controlled architecture comparison | use of excluded ppo_mlp |
+| K04 | Results | PPO-Pointer and A2C-Pointer achieved nearly identical final safe weighted coverage on unseen synthetic maps and DSM simulations. | F05; F06; F11; F12; F17; F19 | no detected difference | equivalence or PPO coverage superiority |
+| K05 | Results | Both Pointer-based learners substantially exceeded Flat-MLP PPO in final safe weighted coverage. | F07; F13; F16; F18 | paired significant difference for full vs Flat-MLP | attribution solely to Pointer without broader architecture caveat |
+| K06 | Results | ACO, SA and MILP attained higher safe weighted coverage than PPO-Pointer on the synthetic test; ACO and MILP also did so on DSM maps. | F08-F10; F14-F15; confirmatory_pairwise.csv | paired observed advantage | concealment of traditional-planner coverage advantage |
+| K07 | Results | The higher-coverage traditional planners incurred longer protocol-specific online planning times than PPO-Pointer. | F30-F33 | descriptive engineering trade-off | hardware-independent real-time guarantee |
+| K08 | Results | The frozen post-hoc training dimensions favour PPO-Pointer over A2C-Pointer in stability and sample efficiency. | F23-F26 | post-hoc score comparison | causal proof of PPO clipping |
+| K09 | Results | The return-reserve ablation produced the clearest and statistically supported deterioration across synthetic, DSM and hidden-mismatch families. | F20-F22 | composite mechanism contribution | independent claims for energy/distance/time/dynamics submasks |
+| K10 | Results | Removing priority bias, domain randomisation or resource shaping yielded small and non-significant overall differences in the principal map-level comparisons. | confirmatory_pairwise.csv synthetic_ablations and real_ablations | limited aggregate evidence | equivalence or universal irrelevance |
+| K11 | Results | Under hidden model/perception mismatch, PPO-Pointer was directionally above A2C-Pointer, but the paired difference was not significant. | F27-F29; hidden pairwise row | directional observation | robustness superiority |
+| K12 | Discussion | PPO-Pointer offers an engineering balance rather than a universal single-metric optimum. | K04-K11; figures M01-M10 | evidence-bounded interpretation | best overall algorithm without explicit criterion |
+| K13 | Discussion | DSM experiments represent zero-shot geographic simulation transfer across eight independent maps. | protocol claim_boundaries; F11-F15 | simulation transfer | real flight, deployment or safety certification |
+| K14 | Discussion | Performance at 16, 20 and 24 nodes is within the trained size range. | protocol node_counts; HANDOFF 4.1 | within-range multi-scale performance | out-of-range scale generalisation |
+| K15 | Discussion | The map is the statistical unit; routes, tasks and seeds are nested observations. | analysis protocol; F16-F22 locators | statistical design | inflated task-level n |
+| K16 | Supplement | The 100-point multiobjective score is a post-hoc sensitivity summary, not the confirmatory endpoint. | F02; manuscript_preplot_closure_v5 | diagnostic summary | abstract champion conclusion |

@@ -1,0 +1,159 @@
+{
+  "aggregation_order": "repeat mean within task-condition, fixed-condition mean within task, task mean within map",
+  "algorithm_scores_used_for_design": false,
+  "alpha": 0.05,
+  "analysis_protocol_hash": "0b3cdcce77429875978c68fd9500c43de5de123d5fb7691847d4a6a1e6d93d22",
+  "auxiliary_metrics_role": "descriptive_only",
+  "bootstrap": {
+    "confidence_level": 0.95,
+    "fixed_robustness_conditions_resampled": false,
+    "inner_unit": "training or planning repeats resampled independently within algorithm and task-condition cell",
+    "middle_unit": "task nested within map",
+    "outer_unit": "map",
+    "samples": 10000,
+    "seed": 20260731
+  },
+  "confirmatory_metric": "safe_weighted_coverage",
+  "dangerous_proposal_rule": "derive from observation-plan constraint_violation_count; do not infer from executed truth route",
+  "effect_sizes": "rank-biserial correlation and Hodges-Lehmann paired shift",
+  "final_audit_existing_at_freeze": false,
+  "final_results_existing_at_freeze": false,
+  "frozen_before_final_results_complete": true,
+  "generator_sha256": "1694bf147adfd50f6433804a71b026689fa8b04553b94b38354441f2dfa32c7d",
+  "implementation_path": "<WORKSPACE_ROOT>\\v3_2_14_statistics.py",
+  "implementation_sha256": "63af78be432bf2e16ea9f802772075d428d7e22cce68bafce1f054d4e9ed36f1",
+  "interaction_role": "exploratory_only",
+  "iqm_role": "exploratory_only",
+  "matrix_row_count": 21648,
+  "matrix_sha256": "48a31ee9b58d41a617fff61acb6eba6a2d9a930767d7af15856f70a964686224",
+  "multiple_testing": "Holm correction separately within each of six families",
+  "omnibus_test": "Friedman on paired map-level aggregates",
+  "pairwise_test": "two-sided paired Wilcoxon signed-rank on map-level aggregates",
+  "parent_protocol_hash": "2cff0a336a2f3aef49c5ca686bbdca168dd25937ad1918e7ed9e82b23f1f0647",
+  "plotting_forbidden": true,
+  "priority_coverage_rule": "derive low/medium/high visited fractions from frozen route visit order and frozen task priorities",
+  "reference_algorithm": "full",
+  "resource_utilization_rule": "summarize only safe routes",
+  "robustness_drop_rule": "same model, task, and repeat seed: nominal safe weighted coverage minus perturbed safe weighted coverage",
+  "schema_version": 1,
+  "source_of_rules": "v3.2 preregistered plan supplied before formal evaluation",
+  "statistical_families": {
+    "hidden_model_perception_mismatch": {
+      "algorithms": [
+        "full",
+        "traditional_ppo",
+        "a2c_pointer",
+        "no_domain_randomization",
+        "no_return_reserve",
+        "priority_resource_greedy"
+      ],
+      "conditions": [
+        "dem_error",
+        "localization",
+        "power_model",
+        "wind"
+      ],
+      "independent_maps": 8,
+      "role": "confirmatory",
+      "sources": [
+        "hidden_model_perception_mismatch"
+      ]
+    },
+    "known_domain_shift": {
+      "algorithms": [
+        "full",
+        "traditional_ppo",
+        "a2c_pointer",
+        "no_domain_randomization",
+        "priority_resource_greedy"
+      ],
+      "conditions": [
+        "power_model",
+        "wind"
+      ],
+      "independent_maps": 8,
+      "role": "confirmatory",
+      "sources": [
+        "known_domain_shift"
+      ]
+    },
+    "real_ablations": {
+      "algorithms": [
+        "full",
+        "no_priority_bias",
+        "no_domain_randomization",
+        "no_resource_shaping",
+        "no_return_reserve"
+      ],
+      "conditions": [
+        "nominal"
+      ],
+      "independent_maps": 8,
+      "role": "confirmatory",
+      "sources": [
+        "real_learning"
+      ]
+    },
+    "real_main_algorithms": {
+      "algorithms": [
+        "full",
+        "traditional_ppo",
+        "a2c_pointer",
+        "nearest_feasible",
+        "priority_resource_greedy",
+        "aco",
+        "milp"
+      ],
+      "conditions": [
+        "nominal"
+      ],
+      "independent_maps": 8,
+      "role": "confirmatory",
+      "sources": [
+        "real_learning",
+        "real_baselines"
+      ]
+    },
+    "synthetic_ablations": {
+      "algorithms": [
+        "full",
+        "no_priority_bias",
+        "no_domain_randomization",
+        "no_resource_shaping",
+        "no_return_reserve"
+      ],
+      "conditions": [
+        "nominal"
+      ],
+      "independent_maps": 24,
+      "role": "confirmatory",
+      "sources": [
+        "synthetic_learning"
+      ]
+    },
+    "synthetic_main_algorithms": {
+      "algorithms": [
+        "full",
+        "traditional_ppo",
+        "a2c_pointer",
+        "nearest_feasible",
+        "priority_resource_greedy",
+        "aco",
+        "ga",
+        "sa",
+        "milp"
+      ],
+      "conditions": [
+        "nominal"
+      ],
+      "independent_maps": 24,
+      "role": "confirmatory",
+      "sources": [
+        "synthetic_learning",
+        "synthetic_main_baselines"
+      ]
+    }
+  },
+  "stop_state": "ready_for_plotting",
+  "zero_method": "wilcox"
+}

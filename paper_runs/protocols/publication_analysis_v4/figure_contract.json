@@ -1,0 +1,210 @@
+{
+  "schema_version": 2,
+  "contract_name": "publication_analysis_v4_figures",
+  "backend": "python_matplotlib",
+  "language": "zh-CN_with_necessary_English",
+  "target_style": [
+    "Nature",
+    "Nature Machine Intelligence",
+    "Nature Communications"
+  ],
+  "final_width_mm": 183,
+  "max_height_mm": 170,
+  "font_pt": {
+    "body_min": 5,
+    "body_max": 7,
+    "panel_label": 8
+  },
+  "algorithm_order": [
+    "full",
+    "ppo_mlp",
+    "a2c_pointer",
+    "nearest_feasible",
+    "priority_resource_greedy",
+    "aco",
+    "ga",
+    "sa",
+    "milp_orienteering"
+  ],
+  "algorithm_colors": {
+    "full": "#0072B2",
+    "ppo_mlp": "#E69F00",
+    "a2c_pointer": "#009E73",
+    "nearest_feasible": "#8A8A8A",
+    "priority_resource_greedy": "#6F6F6F",
+    "aco": "#CC79A7",
+    "ga": "#56B4E9",
+    "sa": "#D55E00",
+    "milp_orienteering": "#7B61A8"
+  },
+  "figures": {
+    "figure_1": {
+      "figure_role": "confirmatory",
+      "eligible_for_winner_evidence": true,
+      "claim": "固定综合评价和权重扰动下的冠军证据链",
+      "panels": {
+        "a": "half_violin_box_raw_points",
+        "b": "paired_effect_forest",
+        "c": "rank_acceptability_heatmap",
+        "d": "ternary_weight_winner_map"
+      }
+    },
+    "figure_2": {
+      "figure_role": "descriptive",
+      "eligible_for_winner_evidence": false,
+      "claim": "综合优势组成与工程权衡",
+      "panels": {
+        "a": "component_dot_heatmap",
+        "b": "rate_dot_interval",
+        "c": "aligned_cleveland_dot",
+        "d": "log_time_ecdf",
+        "e": "pareto_scatter_front"
+      }
+    },
+    "figure_3": {
+      "figure_role": "confirmatory",
+      "eligible_for_winner_evidence": false,
+      "claim": "完整方法相对四项消融的损失与来源",
+      "panels": {
+        "a": "paired_effect_forest",
+        "b": "component_dumbbell",
+        "c": "priority_coverage_dot",
+        "d": "termination_delta_heatmap"
+      }
+    },
+    "figure_4": {
+      "figure_role": "descriptive",
+      "eligible_for_winner_evidence": false,
+      "claim": "压力工况和节点规模变化下的稳健性",
+      "panels": {
+        "a": "id_stress_dumbbell_overall",
+        "b": "id_stress_dumbbell_safety",
+        "c": "scale_line_ci_overall",
+        "d": "scale_line_ci_effectiveness",
+        "e": "scale_log_time_line"
+      }
+    },
+    "figure_5": {
+      "figure_role": "descriptive",
+      "eligible_for_winner_evidence": false,
+      "claim": "预注册代表场景的访问顺序、资源消耗和安全返航",
+      "panels": {
+        "a": "top_down_route",
+        "b": "altitude_distance_profile",
+        "c": "cumulative_budget_curves",
+        "d": "metric_dot_table"
+      }
+    },
+    "supplementary_s1": {
+      "figure_role": "descriptive",
+      "eligible_for_winner_evidence": false,
+      "claim": "五训练种子下的收敛和交互预算",
+      "panels": {
+        "a": "core_model_episode_return_seed_traces_median_iqr",
+        "b": "all_variant_validation_weighted_coverage_median_iqr",
+        "c": "all_variant_validation_return_rate_median_iqr",
+        "d": "final_environment_interactions_seed_dot"
+      }
+    },
+    "supplementary_s2": {
+      "figure_role": "descriptive",
+      "eligible_for_winner_evidence": false,
+      "claim": "冻结检查点在正式测试上的种子稳定性",
+      "panels": {
+        "a": "seed_dot_median_range_overall",
+        "b": "seed_dot_median_range_effectiveness",
+        "c": "seed_variability_summary"
+      }
+    },
+    "supplementary_s3": {
+      "figure_role": "descriptive",
+      "eligible_for_winner_evidence": false,
+      "claim": "逐场景效用遗憾performance profile",
+      "panels": {
+        "a": "utility_regret_ecdf",
+        "b": "scenario_win_near_win_rate"
+      }
+    },
+    "supplementary_s4": {
+      "figure_role": "descriptive",
+      "eligible_for_winner_evidence": false,
+      "claim": "完整安全和失败模式图谱",
+      "panels": {
+        "a": "termination_100pct_stacked",
+        "b": "violation_rate_heatmap",
+        "c": "min_soc_distribution",
+        "d": "termination_rate_interval"
+      }
+    },
+    "supplementary_s5": {
+      "figure_role": "descriptive",
+      "eligible_for_winner_evidence": false,
+      "claim": "补充算法、最优性和计算诊断",
+      "panels": {
+        "a": "supplementary_effect_forest",
+        "b": "evaluations_log_ecdf",
+        "c": "milp_gap_dual_bound",
+        "d": "certification_timeout_status",
+        "e": "supplementary_runtime_log_ecdf"
+      }
+    },
+    "supplementary_s6": {
+      "figure_role": "confirmatory",
+      "eligible_for_winner_evidence": true,
+      "claim": "替代评分定义下的排名稳定性",
+      "panels": {
+        "a": "alternative_definition_bump_chart",
+        "b": "winner_and_pareto_status"
+      }
+    },
+    "showcase_v1": {
+      "figure_role": "showcase",
+      "eligible_for_winner_evidence": false,
+      "claim": "三维地形、道路、风场和航迹融合展示",
+      "panels": {
+        "a": "terrain_roads_wind_routes_3d",
+        "b": "graphical_abstract_candidate"
+      },
+      "fixed_view": {
+        "elevation_deg": 28,
+        "azimuth_deg": -55,
+        "vertical_exaggeration": 2.0
+      }
+    },
+    "showcase_v2": {
+      "figure_role": "showcase",
+      "eligible_for_winner_evidence": false,
+      "claim": "算法到覆盖状态和终止结果的场景等权流向",
+      "panels": {
+        "a": "algorithm_coverage_termination_alluvial"
+      }
+    },
+    "showcase_v3": {
+      "figure_role": "showcase",
+      "eligible_for_winner_evidence": false,
+      "claim": "输入难度与算法表现指纹",
+      "panels": {
+        "a": "input_condition_bands",
+        "b": "algorithm_relative_utility_fingerprint"
+      },
+      "scenario_order": "input_only_difficulty_index_then_scenario_id"
+    }
+  },
+  "forbidden_primary_charts": [
+    "radar_area_ranking",
+    "mean_only_bar_chart",
+    "three_dimensional_bar_chart",
+    "rainbow_heatmap",
+    "result_clustered_algorithm_order",
+    "unregistered_critical_difference_test"
+  ],
+  "exports": [
+    "svg",
+    "pdf",
+    "tiff_600dpi",
+    "png_preview",
+    "source_data_csv",
+    "caption_zh",
+    "figure_manifest_json"
+  ]
+}

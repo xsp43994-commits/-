@@ -1,0 +1,162 @@
+{
+  "schema_version": 2,
+  "output_root": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_14\\figures\\paper_redraw_multibackend_v3",
+  "prototype_gate": [
+    "M01",
+    "M02",
+    "M06",
+    "V02"
+  ],
+  "gate_state": "completed",
+  "prototype_review": {
+    "approved": [
+      "M01",
+      "M02",
+      "M06"
+    ],
+    "approved_after_revision": [
+      "V02"
+    ],
+    "v02_revision": "修复上方坐标轴裁切和图例/标注重叠"
+  },
+  "figures": {
+    "M01": {
+      "tier": "main",
+      "name": "优先级加权覆盖率分布",
+      "backend": "python",
+      "template": "custom_half_eye"
+    },
+    "M02": {
+      "tier": "main",
+      "name": "安全率与返航率效应",
+      "backend": "origin",
+      "template": "SCATTERINTERVAL.otp"
+    },
+    "M03": {
+      "tier": "main",
+      "name": "高中低优先级巡检效果",
+      "backend": "origin",
+      "template": "SCATTER.OTP"
+    },
+    "M04": {
+      "tier": "main",
+      "name": "能耗、航程与总任务时间",
+      "backend": "origin",
+      "template": "SCATTERINTERVAL.otp"
+    },
+    "M05": {
+      "tier": "main",
+      "name": "在线规划时间ECDF",
+      "backend": "origin",
+      "template": "LINE.OTP"
+    },
+    "M06": {
+      "tier": "main",
+      "name": "五种子收敛曲线",
+      "backend": "python",
+      "template": "median_iqr_learning_curve"
+    },
+    "M07": {
+      "tier": "main",
+      "name": "训练稳定性与样本效率",
+      "backend": "origin",
+      "template": "SCATTER.OTP"
+    },
+    "M08": {
+      "tier": "main",
+      "name": "未见地图与真实DSM迁移",
+      "backend": "origin",
+      "template": "SCATTER.OTP"
+    },
+    "M09": {
+      "tier": "main",
+      "name": "已知偏移与隐藏误差鲁棒性",
+      "backend": "python",
+      "template": "annotated_heatmap"
+    },
+    "M10": {
+      "tier": "main",
+      "name": "四项消融总体效应",
+      "backend": "origin",
+      "template": "SCATTER.OTP"
+    },
+    "S01": {
+      "tier": "supplementary",
+      "name": "全算法Performance Profile",
+      "backend": "python",
+      "template": "performance_profile"
+    },
+    "S02": {
+      "tier": "supplementary",
+      "name": "覆盖效果—在线时间Pareto",
+      "backend": "origin",
+      "template": "SCATTER.OTP"
+    },
+    "S03": {
+      "tier": "supplementary",
+      "name": "Oracle regret—计算代价",
+      "backend": "origin",
+      "template": "SCATTER.OTP"
+    },
+    "S04": {
+      "tier": "supplementary",
+      "name": "场景分层结果热力图",
+      "backend": "python",
+      "template": "annotated_heatmap"
+    },
+    "S05": {
+      "tier": "supplementary",
+      "name": "鲁棒性与失败模式",
+      "backend": "python",
+      "template": "directional_heatmap"
+    },
+    "S06": {
+      "tier": "supplementary",
+      "name": "七个学习模型训练过程",
+      "backend": "python",
+      "template": "learning_curve"
+    },
+    "S07": {
+      "tier": "supplementary",
+      "name": "七维指标与100分综合摘要",
+      "backend": "origin",
+      "template": "SCATTER.OTP"
+    },
+    "S08": {
+      "tier": "supplementary",
+      "name": "权重与归一化联合敏感性",
+      "backend": "python",
+      "template": "contour_heatmap"
+    },
+    "V01": {
+      "tier": "showcase",
+      "name": "固定合成任务路线",
+      "backend": "python",
+      "template": "route_map"
+    },
+    "V02": {
+      "tier": "showcase",
+      "name": "固定真实DSM地形路线",
+      "backend": "matlab",
+      "template": "terrain_route_2p5d"
+    }
+  },
+  "backend_counts": {
+    "origin": 10,
+    "python": 9,
+    "matlab": 1
+  },
+  "literature_audit": {
+    "paper_count": 20,
+    "figure_count": 60
+  },
+  "origin_template_revisions": {
+    "M03": "BeforeAfter.otpu -> SCATTER.OTP；避免模板默认连接和分组冲突",
+    "M07": "SCATTERINTERVAL.otp -> SCATTER.OTP；点区间由绘图数据显式构造",
+    "M08": "SCATTERINTERVAL.otp -> SCATTER.OTP；地图域分组和区间由显式图层控制",
+    "M10": "SCATTERINTERVAL.otp -> SCATTER.OTP；消融效应与零线人工排版",
+    "S02": "bubble.otpu -> SCATTER.OTP；全部安全率为100%，取消无信息量气泡大小",
+    "S03": "SCATTERINTERVAL.otp -> SCATTER.OTP；证书区间、零regret点和标签单独控制",
+    "S07": "ColorDots.otpu -> SCATTER.OTP；避免默认彩虹色和黑底，改为白底点阵"
+  }
+}

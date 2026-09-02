@@ -1,0 +1,45 @@
+{
+  "figure_id": "M06",
+  "name": "五种子收敛曲线",
+  "backend": "python",
+  "template": "median_iqr_learning_curve",
+  "caption": "三个核心学习模型在同一训练任务分布上均训练5个种子、每个种子3000回合。横轴为累计训练回合，纵轴为每个训练批次的优先级加权覆盖率；所有批次返航率均为100%。细线为单个训练种子，粗线为跨种子中位数，阴影为四分位距。该图用于比较收敛形态和训练稳定性，最终泛化性能仍由冻结测试集评价。",
+  "source_data": [
+    {
+      "path": "source_data\\M06_source_data.csv",
+      "sha256": "65f58e389e46e7abd65a8fc47531bbfbac431bf920dbee67250a5301e10d65ab",
+      "bytes": 222551
+    }
+  ],
+  "outputs": [
+    {
+      "path": "main\\M06_五种子收敛曲线.pdf",
+      "sha256": "66b2778dacf6f14dee7f1ea8ff316a84c331f83fe983334600c85dbcd6dc14c4",
+      "bytes": 37063
+    },
+    {
+      "path": "main\\M06_五种子收敛曲线.png",
+      "sha256": "6ac0cb0d40a2657273b51e52b80884f10f39626cfee0bc98c3e78bf0bf73c66d",
+      "bytes": 1125653
+    },
+    {
+      "path": "main\\M06_五种子收敛曲线.svg",
+      "sha256": "576cd807521c33ee07910515952f6c197c509d18dc942e21f046086d3d4544e8",
+      "bytes": 88698
+    },
+    {
+      "path": "main\\M06_五种子收敛曲线.tiff",
+      "sha256": "1de5a1e1981a3eb8b2efce9ef754e22beca3952b7cf42c6227097537fcc13201",
+      "bytes": 28019172
+    }
+  ],
+  "render_record": {
+    "renderer": "Python",
+    "x_axis": "episodes",
+    "models": [
+      "full",
+      "a2c_pointer",
+      "traditional_ppo"
+    ]
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "analysis_role": "internal_post_result_operational_band_sensitivity",
+  "floor_sensitivity": [
+    0.0,
+    0.2,
+    0.4,
+    0.6,
+    0.8
+  ],
+  "geometric_aggregation_role": "diagnostic_only; clipping below-floor dimensions to zero makes the traditional PPO geometric composite degenerate at the 0.60 floor",
+  "implementation_sha256": "092893cfa0bb57e9068102b489d1c22d814154b28d05fa7639cce5fa80e73f40",
+  "parent_results_modified": false,
+  "parent_v3_manifest_hash": "1d9b2e341ccb9ad9f77d2502dd4895c6ccd3eb11b3673e41ed2f9fae16da5885",
+  "plots_forbidden": true,
+  "primary_aggregation": "arithmetic",
+  "priority_weights": {
+    "D1": 0.2,
+    "D2": 0.1,
+    "D3": 0.1,
+    "D4": 0.15,
+    "D5": 0.05,
+    "D6": 0.2,
+    "D7": 0.2
+  },
+  "protocol_hash": "f390fae6d9d4eaf72a96fb7ea3dc6760d6fb978f7590460b2fd6c217278f1b8f",
+  "rescale_formula": "clip((value-floor)/(1-floor),0,1)",
+  "rescaled_dimensions": [
+    "D4",
+    "D6",
+    "D7"
+  ],
+  "schema_version": "manuscript_operational_band_v4",
+  "scientific_boundary": "The 0.60 floor is a disclosed internal high-performance operational-band scenario. It does not replace the untransformed v2 score. All five floors must be retained together when this scenario is shown.",
+  "score_scale": 100.0,
+  "selected_operational_floor": 0.6,
+  "stopping_state": "ready_for_plot_plan",
+  "unchanged_dimensions": [
+    "D1",
+    "D2",
+    "D3",
+    "D5"
+  ]
+}

@@ -1,0 +1,1609 @@
+
+
+===== PAGE 1 =====
+
+1
+Energy Minimization for Wireless
+Communication with Rotary-Wing UA V
+Yong Zeng, Member, IEEE, Jie Xu, Member, IEEE, and Rui Zhang, Fellow, IEEE
+Abstract
+This paper studies unmanned aerial vehicle (UA V) enabled wireless communication, where a rotary-
+wing UA V is dispatched to send/collect data to/from multiple ground nodes (GNs). We aim to minimize
+the total UA V energy consumption, including both propulsion energy and communication related energy,
+while satisfying the communication throughput requirement of each GN. To this end, we ﬁrst derive an
+analytical propulsion power consumption model for rotary-wing UA Vs, and then formulate the energy
+minimization problem by jointly optimizing the UA V trajectory and communication time allocation
+among GNs, as well as the total mission completion time. The problem is difﬁcult to be optimally
+solved, as it is non-convex and involves inﬁnitely many variables over time. To tackle this problem,
+we ﬁrst consider the simple ﬂy-hover-communicate design, where the UA V successively visits a set
+of hovering locations and communicates with one corresponding GN when hovering at each location.
+For this design, we propose an efﬁcient algorithm to optimize the hovering locations and durations, as
+well as the ﬂying trajectory connecting these hovering locations, by leveraging the travelling salesman
+problem (TSP) and convex optimization techniques. Next, we consider the general case where the UA V
+communicates also when ﬂying. We propose a new path discretization method to transform the original
+problem into a discretized equivalent with a ﬁnite number of optimization variables, for which we
+obtain a locally optimal solution by applying the successive convex approximation (SCA) technique.
+Numerical results show the signiﬁcant performance gains of the proposed designs over benchmark
+schemes, in achieving energy-efﬁcient communication with rotary-wing UA Vs.
+Index Terms
+UA V communication, rotary-wing UA V , energy model, energy-efﬁcient communication, trajectory optimization, path
+discretization.
+Y . Zeng and R. Zhang are with the Department of Electrical and Computer Engineering, National University of Singapore
+(e-mail:{elezeng, elezhang}@nus.edu.sg).
+J. Xu is with the School of Information Engineering, Guangdong University of Technology (e-mail: jiexu@gdut.edu.cn).
+arXiv:1804.02238v1  [cs.IT]  6 Apr 2018
+
+===== PAGE 2 =====
+
+2
+I. I NTRODUCTION
+Wireless communication using unmanned aerial platforms is a promising technology to achieve
+wireless coverage in areas without or with insufﬁcient terrestrial infrastructures. Early efforts
+have been primarily focusing on using high altitude platforms (HAPs), which are deployed in
+stratosphere at altitude around 20 km, aiming to provide ubiquitous coverage in rural or remote
+areas. These include the Project Loon by Google with the mission of “Balloon-powered Internet
+for everyone”, as well as the Project Skybender by Google and the Project Aquila by Facebook,
+both using solar-powered drones to provide internet access from the sky. On the other hand,
+wireless communication using low altitude platforms (LAPs), typically below a few kilometers
+above the ground, has received growing interests recently. LAPs can be implemented in various
+ways, such as helikite [1] and unmanned aerial vehicles (UA Vs) [2]–[6]. In particular, compared
+to other airborne solutions such as HAPs and helikite, UA V-enabled wireless communication
+brings new advantages [2], such as on-demand and more swift deployment, superior link qual-
+ity in the presence of shorter-distance line-of-sight (LoS) communication channel with ground
+nodes (GNs), and higher network ﬂexibility with the fully controllable UA V movement in three
+dimensional (3D) airspace. Therefore, UA V-enabled wireless communication has many potential
+use cases, including public safety communication, temporary trafﬁc ofﬂoading for cellular base
+stations (BSs), information dissemination and data collection for Internet of Things (IoTs), as
+well as emergency response and fast service recovery after natural disasters.
+Prior researches on UA V-enabled wireless communications can be loosely classiﬁed into two
+categories. In the ﬁrst category, UA Vs are deployed as (quasi-)stationary aerial BSs. In this
+case, UA Vs resemble the conventional static terrestrial BSs, but at a much higher altitude and
+thus possesses new channel characteristics [7]–[11]. In particular, it was shown that as the
+UA V altitude increases, the LoS probability between the UA V and GNs also increases [12]. By
+exploiting such unique channel characteristics, signiﬁcant efforts have been devoted to study-
+ing the various aspects of UA V-enabled BSs, such as UA V placement optimization [12]–[17],
+performance analysis [18]–[20], spectrum sharing [21], and cell association [22]. In contrast,
+the other category considers the application scenarios where UA Vs are employed as mobile
+BSs/relays/access points (APs) [23]–[28], whose trajectories can be designed to optimize the
+communication performance. For example, a UA V as a mobile relay or data collector can ﬂy
+closer to its associated GNs for communication to improve the overall spectrum efﬁciency [23]
+
+===== PAGE 3 =====
+
+3
+and/or save the communication energy of GNs [26]. In [23], a new framework of joint power
+allocation and UA V trajectory optimization was proposed for the UA V-enabled mobile relaying
+system, which has been extended to various other setups such as UA V-enabled data collection
+[26], multi-UA V coordinated/cooperative communication [27], [29], and UA V-enabled wireless
+power transfer [30].
+One critical issue of UA V-enabled wireless communication lies in the limited on-board energy
+of UA Vs [2], which needs to be efﬁciently used to enhance the communication performance and
+prolong the UA V’s endurance. Compared to conventional terrestrial BSs, UA Vs incur additional
+propulsion energy consumption to maintain airborne and support their movement. In practice,
+the UA V propulsion power is usually much higher than the communication related power. As
+a result, the energy-efﬁcient wireless communication design with UA V is signiﬁcantly different
+from that in conventional terrestrial communication systems. An initial attempt for designing
+energy-efﬁcient UA V communication via trajectory optimization was made in [25], where the
+energy efﬁciency in bits/Joule of a ﬁxed-wing UA V enabled communication system is maximized
+for a given ﬂight duration. To that end, a generic energy model as a function of the UA V’s
+velocity and acceleration was derived for ﬁxed-wing UA Vs. Based on the energy model in [25],
+the authors in [31] further revealed an interesting trade-off between UA V’s energy consumption
+and that of the GNs it communicating with. However, the above results for ﬁxed-wing UA Vs
+cannot be applied for rotary-wing UA Vs, due to their fundamentally different mechanical designs
+and hence drastically different propulsion energy models. This thus motivates our current work
+to investigate energy-efﬁcient communication for rotary-wing UA Vs.
+In this paper, we study a wireless communication system enabled a rotary-wing UA V . Com-
+pared to ﬁxed-wing UA Vs, rotary-wing UA Vs have several appealing advantages such as the
+ability to take off and land vertically, as well as for hovering, which render them more popular
+in the current UA V market. We consider the scenario where a rotary-wing UA V is dispatched as a
+ﬂying AP to communicate with multiple GNs, each of which has a target number of information
+bits to be transmitted/received to/from the UA V . Such a setup corresponds to many practical
+applications, such as UA V-enabled data collection for periodic sensing, UA V-enabled caching
+where the UA V pre-fetches the data and then transmits to the designated caching nodes [32],
+etc. Our objective is to minimize the UA V’s energy consumption, including both propulsion
+energy and communication energy, while ensuring that the communication requirement for each
+GN is satisﬁed. The main contributions of this paper are summarized as follows.
+
+===== PAGE 4 =====
+
+4
+First, we derive an analytical model for the propulsion power consumption of rotary-wing
+UA Vs, based on the results in aircraft literature [33], [34]. As expected, the obtained model is
+signiﬁcantly different from that for ﬁxed-wing UA Vs derived in our prior work [25].
+Based on the derived power consumption model, we formulate the energy minimization prob-
+lem that jointly optimizes the UA V trajectory, the communication time allocation among the
+multiple GNs, as well as the total mission completion time. The problem is difﬁcult to be
+optimally solved, as it is non-convex and constitutes inﬁnite number of optimization variables
+that are coupled in continuous functions over time. To tackle this problem, we ﬁrst consider
+the simple ﬂy-hover-communicate design [17] to gain useful insights. Under this design, the
+UA V successively visits a set of optimized hovering locations, and communicates with each of
+the GNs only when hovering at the corresponding location. In this case, the problem reduces
+to ﬁnding the optimal hovering locations and hovering duration at each location, as well as the
+visiting order and ﬂying speed among these locations. The problem is still NP hard, as it includes
+the classic NP hard travelling salesman problem (TSP) as a special case [35]. By leveraging the
+existing TSP-solving algorithm [36] and convex optimization techniques, an efﬁcient high-quality
+approximate solution is obtained for our problem.
+Next, we propose a general solution to the energy minimization problem where the UA V
+communicates also when ﬂying. To this end, we ﬁrst propose a novel discretization technique,
+called path discretization, to transform the original problem with inﬁnitely many variables into
+a more tractable form with a ﬁnite number of variables. Different from the widely used time
+discretization approach for UA V trajectory design (see e.g. [23] and [25]), path discretization
+does not require the mission completion time to be pre-speciﬁed. This is particularly useful for
+problems where the mission completion time is also one of the optimization variables, as for
+the energy minimization problem studied in this paper. However, the path-discretized problem is
+still non-convex, and thus it is challenging to ﬁnd its optimal solution. By utilizing the succes-
+sive convex approximation (SCA) technique [23], an efﬁcient iterative algorithm is proposed to
+simultaneously update the UA V trajectory and communication time allocation at each iteration,
+which is guaranteed to converge to at least a locally optimal solution satisfying the Karush-
+Kuhn-Tucker (KKT) conditions. Last, simulation results are provided to validate the proposed
+designs and show their signiﬁcant performance gains over benchmark schemes.
+It is worth noting that another related line of work is on mobile robotics, which exploits
+the mobility of ground robots for various applications [37], [38]. However, the design for UA V
+
+===== PAGE 5 =====
+
+5
+communication systems are signiﬁcantly different from that for ground robotics due to the dis-
+tinct air-to-ground channel characteristics [7]–[11] as well as the fundamentally different energy
+consumption models. For example, the power consumption of mobile robots can usually be
+modeled as a polynomial and monotonically increasing function with respect to its moving
+speed [37], which is much simpler than that for ﬁxed-wing UA Vs as in [25] and rotary-wing
+UA Vs in Section II-B of the current work.
+II. S YSTEM MODEL AND PROBLEM FORMULATION
+A. System Model
+We consider a wireless communication system where a rotary-wing UA V is dispatched to
+communicate with K GNs, which are denoted by the set K = {1,··· ,K}. The horizontal
+location of the GN k∈K is denoted as wk∈ R2×1. We assume that the UA V ﬂies at a constant
+altitude H and the total number of information bits that need to be communicated with GN k
+is ˜Qk. Let Tt denote the total time required for the UA V to complete the mission, which is a
+design variable. Denote by q(t)∈ R2×1 with 0≤ t≤ Tt the UA V trajectory projected onto
+the horizontal plane. Let Vmax denote the maximum UA V speed. We then have the constraint
+∥ ˙q(t)∥≤ Vmax. At any time instant t∈ [0,Tt], the distance between the UA V and GNk is given
+by dk(t) =
+√
+H2 +∥q(t)− wk∥2, k∈K .
+We assume that the wireless channels between the UA V and GNs are dominated by LoS
+links. Thus, the channel power gain between the UA V and GT k can be modeled based on the
+free-space path loss model as
+hk(t) =β0d−2
+k (t) = β0
+H2 +∥q(t)− wk∥2, (1)
+whereβ0 represents the channel power gain at the reference distance of 1 meter (m). Furthermore,
+assuming a ﬁxed transmission power P by the transmitter when it is scheduled for communica-
+tion, the achievable rate in bits per second (bps) between GN k and the UA V at any time instant
+t is expressed as
+Rk(t) =B log2
+(
+1 +Phk(t)
+σ2Γ
+)
+=B log2
+(
+1 + γ0
+H2 +∥q(t)− wk∥2
+)
+, (2)
+where B denotes the channel bandwidth in hertz (Hz), σ2 is the noise power at the receiver,
+Γ> 1 accounts for the gap from the channel capacity due to the practical modulation and coding
+scheme employed, and γ0 ≜ Pβ 0/(σ2Γ) is deﬁned as the received signal-to-noise ratio (SNR)
+at the reference distance of 1 m.
+
+===== PAGE 6 =====
+
+6
+We assume that the time-division multiple access (TDMA) protocol is applied for the UA V
+to serve the K GNs, in order to fully exploit the time-varying channels with trajectory design.
+Let a binary variable λk(t)∈{ 0, 1} denote the user scheduling indicator at time instant t, with
+λk(t) = 1 indicating that GN k is scheduled for communication at instant t and λk(t) = 0
+otherwise. As at most one GN can be scheduled at each time instant t, we have
+K∑
+k=1
+λk(t)≤ 1,∀t∈ [0,Tt]. (3)
+Therefore, the aggregated communication throughput for GN k is a function of Tt, q(t), and
+λk(t), which can be expressed as
+¯Rk
+(
+Tt,{q(t)},{λk(t)}
+)
+=
+∫ Tt
+0
+λk(t)Rk(t)dt
+=B
+∫ Tt
+0
+λk(t) log2
+(
+1 + γ0
+H2 +∥q(t)− wk∥2
+)
+dt. (4)
+To ensure the target communication throughput requirement for each GN k, we must have
+¯Rk
+(
+Tt,{q(t)},{λk(t)}
+)
+≥ ˜Qk, ∀k∈K. (5)
+B. Energy Consumption Model for Rotary-Wing UAV
+The UA V energy consumption is in general composed of two main components, namely the
+communication related energy and the propulsion energy. The communication related energy
+includes that for communication circuitry, signal processing, signal radiation/reception, etc. In
+this paper, we assume that the communication related power is a constant, which is denoted as
+Pc in watt (W). On the other hand, the propulsion energy consumption is needed to keep the
+UA V aloft and support its movement, if necessary. In general, the propulsion energy depends on
+the UA V ﬂying speed as well as its acceleration. In this paper, for the purpose of exposition and
+drawing the essential design insight, we ignore the additional energy consumption caused by UA V
+acceleration, which is valid for typical communication applications where UA V manoeuvring
+time only takes a small portion of the total operation time. As derived in Appendix A, for a
+rotary-wing UA V ﬂying with speed V , the propulsion power consumption can be modeled as
+P (V ) =P0
+(
+1 + 3V 2
+U 2
+tip
+)
+  
+blade proﬁle
++Pi
+(√
+1 + V 4
+4v4
+0
+− V 2
+2v2
+0
+)1/2
+  
+induced
++ 1
+2d0ρsAV 3
+  
+parasite
+, (6)
+whereP0 andPi are two constants deﬁned in (61) of Appendix A representing the blade proﬁle
+power and induced power in hovering status, respectively, Utip denotes the tip speed of the rotor
+
+===== PAGE 7 =====
+
+7
+blade, v0 is known as the mean rotor induced velocity in hover, d0 and s are the fuselage drag
+ratio and rotor solidity, respectively, and ρ and A denote the air density and rotor disc area,
+respectively. The relevant parameters are explained in details in Table I and Appendix A. It is
+observed from (6) that the propulsion power consumption of rotary-wing UA Vs consists of three
+components: blade proﬁle, induced, and parasite power. The blade proﬁle power and parasite
+power, which increase quadratically and cubically with V , respectively, are needed to overcome
+the proﬁle drag of the blades and the fuselage drag, respectively. On the other hand, the induced
+power is that required to overcome the induced drag of the blades, which decreases with V .
+By substituting V = 0 into (6), we obtain the power consumption for hovering status as
+Ph = P0 +Pi, which is a ﬁnite value depending on the aircraft weight, air density, and rotor
+disc area, etc. (see (61) in Appendix A for details). As V increases, it can be veriﬁed that
+P (V ) in (6) ﬁrstly decreases and then increases with V , i.e., hovering is in general not the most
+power-conserving status. It can be veriﬁed that the power function P (V ) in (6) is neither convex
+nor concave with respect to V . It is much more involved compared to the power model for
+ﬁxed-wing UA V (cf. Equation (7) of [25]), which is a convex function consisting of two simple
+terms: one increasing cubically and the other decreasing inversely with V .
+When V ≫ v0, by applying the ﬁrst-order Taylor approximation (1 +x)1/2≈ 1 + 1
+2x for
+|x|≪ 1, (6) can be approximated as a convex function, i.e.,
+P (V )≈P0
+(
+1 + 3V 2
+U 2
+tip
+)
++ Piv0
+V + 1
+2d0ρsAV 3. (7)
+A typical plot ofP (V ) versus UA V speedV is shown in Fig. 1, together with the three individual
+power components and the convex approximation given in (7).
+Two particular UA V speeds that are of high practical interests are the maximum-endurance
+(ME) speed and the maximum-range (MR) speed, which are denoted asVme andVmr, respectively.
+ME speed: By deﬁnition, the ME speed Vme is the optimal UA V speed that maximizes the
+UA V endurance under any given onboard energy E. With E given, the UA V endurance with
+constant speed V is given by E
+P (V ). Thus, Vme is the optimal UA V speed that minimizes the
+power consumption, i.e., Vme = arg min
+V≥0
+P (V ) Though a closed-form expression for Vme is
+difﬁcult to obtain due to the complicated expression of P (V ) in (6), it can be efﬁciently found
+numerically.
+MR speed: On the other hand, the MR speed Vmr is the optimal UA V speed that maximizes
+the total traveling distance with any given onboard energy E. For any given E, the range with
+
+===== PAGE 8 =====
+
+8
+Fig. 1: Propulsion power consumption versus speed V for rotary-wing UA V .
+constant traveling speed V can be expressed as EV
+P (V ). Deﬁne the function
+E0(V ) ≜ P (V )
+V =P0
+( 1
+V + 3V
+U 2
+tip
+)
++Pi
+(√
+V−4 + 1
+4v4
+0
+− 1
+2v2
+0
+)1/2
++ 1
+2d0ρsAV 2, (8)
+which physically represents the UA V energy consumption per unit travelling distance in Joule/meter
+(J/m) with speed V . Thus, Vmr can be found as Vmr = arg min
+V≥0
+E0(V ) Though a closed-form
+expression forVmr is difﬁcult to obtain, it can be efﬁciently found numerically. Alternatively,Vmr
+can also be obtained graphically based on the power-speed curve P (V ), by drawing the tangen-
+tial line from the origin to the power curve that corresponds to the minimum slope (and hence
+power/speed ratio) [34], as illustrated in Fig. 1. In practice, we usually have Vme≤Vmr≤Vmax.
+With given UA V trajectory{q(t)}, the propulsion energy consumption can be expressed as
+E1(Tt,{q(t)}) =
+∫ Tt
+0
+P (∥v(t)∥)dt, (9)
+where v(t) ≜ ˙q(t) is the UA V velocity and∥v(t)∥ is the UA V speed at time instant t.
+By combining both the communication related energy and the propulsion energy, the total
+UA V energy consumption can be expressed as
+E(Tt,{q(t)},{λk(t)}) =E1(Tt,{q(t)}) +Pc
+∫ Tt
+0
+( K∑
+k=1
+λk(t)
+)
+dt. (10)
+C. Problem Formulation for UAV Energy Minimization
+Our objective is to minimize the UA V total energy consumption, while satisfying the target
+communication throughput requirement for each of the K GNs. The problem can be formulated
+
+===== PAGE 9 =====
+
+9
+as
+(P1) : min
+Tt,{q(t)},{λk(t)}
+E(Tt,{q(t)},{λk(t)})
+s.t. ¯Rk(Tt,{q(t)},{λk(t)})≥ ˜Qk, ∀k∈K, (11)
+∥ ˙q(t)∥≤ Vmax, ∀t∈ [0,Tt], (12)
+q(0) = qI, q(Tt) = qF, (13)
+λk(t)∈{ 0, 1}, ∀k∈K, t∈ [0,Tt], (14)
+K∑
+k=1
+λk(t)≤ 1, ∀t∈ [0,Tt], (15)
+where qI, qF∈ R2×1 represent the UA V’s initial and ﬁnal locations projected onto the horizontal
+plane, respectively. Note that depending on practical application scenarios, the constraints on the
+initial/ﬁnal UA V locations in (13) may or may not be present.
+Problem (P1) requires optimizing the UA V trajectory{q(t)} and communication scheduling
+{λk(t)}, which are both continuous functions with respect to time t. Therefore, (P1) essentially
+involves inﬁnite number of optimization variables. Furthermore, (P1) includes a complicated
+cost function for the UA V energy consumption, as well as non-convex constraints in (11) and
+binary constraints in (14). Therefore, (P1) is difﬁcult to be directly solved. In Section III, we
+ﬁrst consider the simple ﬂy-hover-communicate protocol to make the problem more tractable,
+by which (P1) reduces to a problem with a ﬁnite number of optimization variables that only
+depends on the number of GNs K, instead of the (a priori unknown) mission completion time Tt.
+Then in Section IV, we propose a general solution to (P1) by utilizing the new path disretization
+technique to convert it into a discretized equivalent problem with a ﬁnite number of optimization
+variables, for which at least a locally optimal solution can be found via the SCA technique.
+III. F LY-HOVER -COMMUNICATE PROTOCOL
+Fly-hover-communicate is a very intuitive protocol that is also easy to implement in practice. In
+this protocol, the UA V successively visitsK optimized hovering locations, each for one GN, and
+communicates with each GN only when it is hovering at the corresponding location. As a result,
+problem (P1) reduces to ﬁnding the optimal hovering locations and hovering (communication)
+time allocations for the K GNs, as well as the optimal ﬂying speed and path connecting these
+hovering locations. In the following, we ﬁrst consider the special case with only one GN to draw
+useful insights, and then extend the study to the general case with multiple GNs.
+
+===== PAGE 10 =====
+
+10
+A. Optimal Fly-Hover-Communicate Scheme for One Single GN
+For the special case with one single GN, the GN index k is omitted for brevity. Without loss
+of generality, we assume that the GN is located at the origin with w = 0, and the UA V’s initial
+horizontal location is qI = [ ¯D, 0]T . To illustrate the fundamental trade-off between hovering
+energy and ﬂying energy minimization, we assume that there is no constraint on the UA V’s
+ﬁnal location in this subsection, where the general case with such a constraint will be studied
+in Section III-B and Section IV. It is not difﬁcult to see that under such a basic setup, the UA V
+should only ﬂy along the line segment connecting qI and the GN w.
+One extreme case of the ﬂy-hover-communicate protocol is that the UA V simply hovers at the
+initial location qI and communicates with the GN until the aggregated information bits reach the
+target value ˜Q. However, when the initial horizontal distance ¯D is large, such a strategy usually
+leads to a very low data rate and hence requires very long mission completion time Tt. This in
+turn leads to high UA V hovering and communication energy consumption. Alternatively, the UA V
+could ﬂy closer to the GN and hover at a certain location with a shorter link distance to achieve
+a higher data rate. This strategy, though requiring additional energy for UA V traveling, reduces
+the time for data transmission (or hovering), and hence requires less energy for hovering and
+communication. Therefore, with the ﬂy-hover-communicate protocol, in order to minimize the
+total UA V energy consumption, there must exist an optimal UA V hovering location that strikes an
+optimal balance between minimizing the traveling energy and hovering/communication energy.
+Denote by Ttr the UA V traveling time before reaching the hovering location and by V (t)
+the instantaneous traveling speed towards the GN. Thus, the total traveling distance is Dtr =
+∫Ttr
+0 V (t)dt, where we should have 0≤ Dtr≤ ¯D. The total required energy consumption for
+traveling is
+Etr(Ttr,{V (t)}) =
+∫ Ttr
+0
+P (V (t))dt. (16)
+Furthermore, based on (2), the achievable data rate in bps when the UA V hovers at the point
+after traveling distance Dtr is
+R(Dtr) =B log2
+(
+1 + γ0
+H2 + ( ¯D−Dtr)2
+)
+. (17)
+Thus, the required communication time (or equivalently the UA V hovering timeThov) to complete
+the transmission of ˜Q bits is
+Thov =
+˜Q
+R(Dtr) = Q
+log2
+(
+1 + γ0
+H2+( ¯D−Dtr)2
+), (18)
+
+===== PAGE 11 =====
+
+11
+whereQ ≜ ˜Q/B is the bandwidth-normalized throughput requirement in bits/Hz. Thus, the total
+required UA V hovering and communication energy consumption is
+Ehc(Dtr) = (Ph +Pc)Thov = (Ph +Pc)Q
+log2
+(
+1 + γ0
+H2+( ¯D−Dtr)2
+). (19)
+Therefore, the total UA V energy consumption is
+Etot(Ttr,{V (t)},D tr) =Etr(Ttr,{V (t)}) +Ehc(Dtr). (20)
+Thus, the energy minimization problem (P1) reduces to
+(P2) min
+Ttr,{V (t)},Dtr
+Etot(Ttr,{V (t)},D tr)
+s.t. 0≤V (t)≤Vmax,∀t∈ [0,T tr],
+∫ Ttr
+0
+V (t)dt =Dtr,
+0≤Dtr≤ ¯D. (21)
+It is not difﬁcult to see that with the ﬂy-hover-communicate protocol, the scheduling variable
+λ(t) in problem (P1) can be directly determined once the UA V traveling time Ttr and hovering
+time Thov are obtained.
+Lemma 1. The optimal solution to problem (P2) satisﬁes Ttr = Dtr/Vmr and V (t) = Vmr,
+∀t∈ [0,D tr/Vmr].
+Proof: Lemma 1 can be shown by change of variables. The details are omitted for brevity.
+Lemma 1 shows that with the ﬂy-hover-communicate protocol, the UA V should travel with
+a constant speed, which is given by the MR speed, Vmr. Let E⋆
+0 = E0(Vmr) be the minimum
+UA V energy consumption per unit traveling distance obtained by substituting Vmr into (8). Then
+problem (P2) reduces to the following uni-variate optimization problem
+min
+0≤Dtr≤ ¯D
+DtrE⋆
+0 + (Ph +Pc)Q
+log2
+(
+1 + γ0
+H2+( ¯D−Dtr)2
+). (22)
+Note that the ﬁrst term of (22) increases linearly with the traveling distance Dtr, while the second
+term decreases monotonically with Dtr. Therefore, the optimal solution of Dtr to problem (22)
+should balance the energy consumption for traveling and hovering, which can be efﬁciently
+obtained via a one-dimensional search.
+For the asymptotical case in the low-SNR regime, e.g., γ0≪ H2, by applying the approxi-
+
+===== PAGE 12 =====
+
+12
+mation ln(1 +x)≈x for|x|≪ 1, the optimal solution to (22) can be obtained in closed-form
+asD∗
+tr = max
+{
+0, ¯D− γ0E⋆
+0
+(2 ln 2)(Ph+Pc)Q
+}
+. Deﬁne Q′ ≜ γ0E⋆
+0
+(2 ln 2)(Ph+Pc) ¯D. The above result shows that
+the UA V should move closer (i.e., D∗
+tr > 0) to the GN for communication only when Q > Q′.
+Otherwise, it should simply hover at the initial location qI for communication. Furthermore, the
+larger the throughput requirement Q is, the closer the UA V should move towards the GT for
+communication. As Q gets sufﬁciently large, we have D∗
+tr→ ¯D, i.e., the UA V should hover on
+top of the GN for commutation.
+B. Fly-Hover-Communicate for Multiple GNs
+In this subsection, the ﬂy-hover-communicate protocol is extended to the general case with
+multiple GNs. In this case, (P1) reduces to ﬁnding the optimal set of K hovering locations, each
+for communicating with one GN, as well as the traveling path and speed among these hovering
+locations.
+Let ˜qk∈ R2×1 denote the horizontal coordinate of the UA V hovering location when it com-
+municates with GN k. Based on (2), the instantaneous communication rate in bps can be written
+as
+Rk(˜qk) =B log2
+(
+1 + γ0
+H2 +∥˜qk− wk∥2
+)
+. (23)
+As a result, the total required communication time (or the hovering time at location ˜qk) to ensure
+the target throughput ˜Qk is given by
+Tk(˜qk) =
+˜Qk
+Rk(˜qk) = Qk
+log2
+(
+1 + γ0
+H2+∥˜qk−wk∥2
+), (24)
+whereQk ≜ ˜Qk/B is the normalized throughput requirement in bits/Hz. Thus, the total required
+hovering and communication energy at the K locations is a function of {˜qk}, which can be
+expressed as
+Ehc({˜qk}) = (Ph +Pc)
+K∑
+k=1
+Tk(˜qk) =
+K∑
+k=1
+(Ph +Pc)Qk
+log2
+(
+1 + γ0
+H2+∥˜qk−wk∥2
+). (25)
+On the other hand, the total required traveling energy depends on the total traveling distance
+Dtr to visit all the K hovering locations {˜qk}, as well as the traveling speed V (t) among
+them. Similar to Lemma 1, it can be shown that with the ﬂy-hover-communicate protocol, the
+UA V should always travel with the MR speed Vmr. Furthermore, for any given set of hovering
+locations{˜qk} and initial/ﬁnal locations qI and qF , the total traveling distance Dtr depends on
+the visiting order of all the K locations, which can be represented by the permutation variables
+
+===== PAGE 13 =====
+
+13
+π(k) ∈ {1,··· ,K}. Speciﬁcally, π(k) gives the index of the kth GN served by the UA V .
+Therefore, we have
+Dtr ({˜qk},{π(k)}) =
+K∑
+k=0
+∥˜qπ(k+1)− ˜qπ(k)∥, (26)
+where for convenience, we have deﬁned ˜qπ(0) = qI and ˜qπ(K+1) = qF . Thus, the total required
+UA V traveling energy with the optimal traveling speed Vmr can be written as
+Etr ({˜qk},{π(k)}) =E⋆
+0Dtr ({˜qk},{π(k)}). (27)
+The total UA V energy consumption is thus given by
+Etot ({˜qk},{π(k)}) =Ehc({˜qk}) +Etr ({˜qk},{π(k)}). (28)
+As a result, the energy minimization problem (P1) with the ﬂy-hover-communicate protocol
+reduces to
+(P3) : min
+{˜qk},{π(k)}
+Etot ({˜qk},{π(k)})
+s.t.
+[
+π(1),··· ,π (K)
+]
+∈P , (29)
+whereP represents the set of all the K! possible permutations for the K GNs. Note that with the
+ﬂy-hover-communicate protocol, the user scheduling parameter {λk(t)} in (P1) can be directly
+obtained based on the solution to (P3).
+Problem (P3) is a non-convex optimization problem, whose optimal solution is difﬁcult to
+obtain. In fact, even with ﬁxed hovering locations {˜qk}, problem (P3) reduces to the classic
+TSP [35] with pre-determined initial and ﬁnal locations [28], which is known to be NP hard.
+Therefore, problem (P3) is also NP hard as it is more general. Fortunately, by utilizing the
+existing techniques for solving TSP and applying convex optimization, an efﬁcient approximate
+solution to (P3) can be obtained.
+To this end, we ﬁrst introduce the slack variables Dtr andzk =∥˜qk−wk∥2, by which problem
+(P3) can be equivalently written as
+(P3.1) : min
+Dtr,{˜qk},{π(k)},{zk}
+E⋆
+0Dtr +
+K∑
+k=1
+(Ph +Pc)Qk
+log2
+(
+1 + γ0
+H2+zk
+)
+s.t.
+[
+π(1),··· ,π (K)
+]
+∈P , (30)
+K∑
+k=0
+∥˜qπ(k+1)− ˜qπ(k)∥≤ Dtr, (31)
+∥˜qk− wk∥2≤zk, ∀k∈K. (32)
+
+===== PAGE 14 =====
+
+14
+Note that at the optimal solution to (P3.1), all the constraints in (31) and (32) must be satisﬁed
+with strict equality, since otherwise, we may reduce Dtr orzk to further reduce the cost function
+of (P3.1).
+Problem (P3.1) can be interpreted as follows. For each GN k, constraint (32) speciﬁes a
+disk region centered at the GN location wk with radius√zk. The smaller zk is, the shorter the
+communication link distance between the UA V and GN k, and hence the less hovering-and-
+communication energy required (the second term of the cost function in (P3.1)). However, due
+to constraint (31), this would generally require longer traveling distance Dtr and hence more
+traveling energy. In fact, for any ﬁxed{zk} such that the hovering-and-communication energy is
+ﬁxed, problem (P3.1) essentially reduces to minimizing the total traveling distance Dtr, while
+ensuring that each of the hovering location ˜qk has a distance no greater than √zk from the GN
+k. This is essentially the classical traveling salesman problem with neighborhood (TSPN), with
+pre-determined initial and ﬁnal locations. TSPN is a generalization of the TSP and hence is
+NP hard as well, where both the visiting order {π(k)} and the locations {˜qk} inside the disk
+region need to be optimized. One effective method for solving TSPN is to ﬁrstly ignore the disk
+radius and solve the TSP problem over the K GN locations {wk} to obtain the visiting order
+[ˆπ(1),··· , ˆπ(K)] [28]. Though NP hard, TSP can be approximately solved with high-quality
+solutions by many existing algorithms [36]. As such, the TSPN then reduces to ﬁnding the
+optimal waypoints{˜qk} with the obtained order {ˆπk}, which is a convex optimization problem
+and hence can be optimally solved [28].
+With the above idea, an efﬁcient algorithm is proposed to solve problem (P3.1). Speciﬁcally,
+the visiting order {π(k)} is ﬁrstly set as {ˆπ(k)} obtained by solving the TSP over the GNs’
+locations{wk}. As such, problem (P3.1) reduces to
+(P3.2) : min
+Dtr,{˜qk},{zk},{ηk}
+E⋆
+0Dtr +
+K∑
+k=1
+(Ph +Pc)Qk
+ηk
+s.t.
+K∑
+k=0
+∥˜qˆπ(k+1)− ˜qˆπ(k)∥≤ Dtr, (33)
+∥˜qk− wk∥2≤zk, ∀k∈K (34)
+ηk≥ 0, ∀k∈K, (35)
+ηk≤ log2
+(
+1 + γ0
+H2 +zk
+)
+, ∀k∈K, (36)
+where we have introduced the slack variables {ηk}. It is noted that the cost function of (P3.2)
+
+===== PAGE 15 =====
+
+15
+and constraints (33)–(35) are all convex. However, the newly introduced constraint (36) is non-
+convex. Fortunately, as the right hand side (RHS) of (36) is a convex function, a global lower
+bound can be obtained based on the ﬁrst-order Taylor approximation at the local point z(l)
+k , with
+the superscript (l) denoting the lth iteration:
+log2
+(
+1 + γ0
+H2 +zk
+)
+≥ log2
+(
+1 + γ0
+H2 +z(l)
+k
+)
++ρk(zk−z(l)
+k ), (37)
+where ρk = −γ0 log2(e)
+(H2+z(l)
+k )(H2+z(l)
+k +γ0)
+.
+By replacing the RHS of (36) with its lower bound, we have the following problem:
+(P3.3) : min
+Dtr,{˜qk},{zk},{ηk}
+E⋆
+0Dtr +
+K∑
+k=1
+(Ph +Pc)Qk
+ηk
+s.t. (33)− (35),
+ηk≤ log2
+(
+1 + γ0
+H2 +z(l)
+k
+)
++ρk(zk−z(l)
+k ), ∀k∈K. (38)
+It can be veriﬁed that problem (P3.3) is convex, which can thus be efﬁciently solved by existing
+convex optimization toolbox such as CVX [39]. Furthermore, due to the global lower bound in
+(37), the optimal value of (P3.3) provides an upper bound to that of (P3.2). By successively
+updating the local point {z(l)
+k}, the SCA-based algorithm for solving (P3.2) is summarized in
+Algorithm 1.
+Algorithm 1 SCA-based algorithm for Solving (P3.2).
+1: Initialization: set the initial hovering locations {˜q(0)
+k } and let z(0)
+k =∥˜q(0)
+k − wk∥,∀k∈K .
+Let l = 0.
+2: repeat
+3: Solve the convex problem (P3.2) and denote the optimal solution asD∗
+tr,{˜q∗
+k},{z∗
+k},{η∗
+k}.
+4: Update the local point as z(l+1)
+k =z∗
+k,∀k∈K .
+5: Update l =l + 1.
+6: until the fractional decrease of the objective value of (P3.2) is below a given threshold ϵ.
+By following similar arguments as in [25] and [40], it can be shown that Algorithm 1 is
+guaranteed to converge to at least a locally optimal solution to problem (P3.2) that satisﬁes the
+KKT conditions.
+
+===== PAGE 16 =====
+
+16
+IV. G ENERAL SOLUTION TO (P1) WITH PATH DISCRETIZATION AND SCA
+The ﬂy-hover-communicate protocol in the preceding section gives an efﬁcient solution to
+(P1), where the number of optimization variables only depends on K, rather than the mis-
+sion completion time Tt. However, this protocol is strictly sub-optimal since the UA V does not
+communicate while ﬂying. In this section, we propose a general solution to (P1) without this
+assumption via jointly optimizing the UA V trajectory and communication time allocation.
+A. Path Discretization
+Problem (P1) essentially involves an inﬁnite number of optimization variables coupled in time-
+continues functions q(t) and λk(t), as well as the unknown mission completion time Tt, thus
+making it difﬁcult to be directly solved. To obtain a more tractable form with a ﬁnite number of
+optimization variables, (P1) can be reformulated by disretizing the variables{q(t)} and{λk(t)}.
+To this end, prior works such as [23] and [25] mostly adopted the method of time discretization,
+where the time horizon [0,Tt] is discretized into a ﬁnite number of time slots with sufﬁciently
+small slot length δt. However, this method requires that the UA V mission completion time Tt
+to be pre-speciﬁed, which is not the case for our considered energy minimization problem with
+Tt being an optimization variable as well. One method to address the above issue is by ﬁrstly
+assuming a certain operation time Tt, based on which the time discretization method is applied to
+solve the corresponding optimization problem, and then exhaustively search for the optimal Tt.
+However, this would require to solve a prohibitively large number of optimization problems, each
+for a given assumed Tt, thus making it impractical especially when the optimal Tt is moderately
+large. To address this issue, in the following, we propose an alternative discretization method,
+called path discretization, with which only one optimization problem needs to be solved.
+We ﬁrst clarify the terminologies of trajectory versus path. Generally, a path speciﬁes the route
+that the UA V follows, i.e., all locations along the UA V trajectory, and it does not involve the
+time dimension. On the other hand, a trajectory includes its path together with the instantaneous
+travelling speed along the path, and thus it involves the time dimension. With path discretization,
+the UA V path (instead of time) is discretized intoM +1 line segments, which are represented by
+M +2 waypoints{qm}M+1
+m=0 , with q0 = qI and qM+1 = qF . We impose the following constraints:
+∥qm+1− qm∥≤ ∆max, ∀m, (39)
+
+===== PAGE 17 =====
+
+17
+where ∆max is an appropriately chosen value so that within each line segment, the UA V is
+assumed to ﬂy with a constant velocity and the distance between the UA V and each GN is
+approximately unchanged. For instance, ∆max could be chosen such that ∆max≪ H. Let Tm
+denote the duration that the UA V remains in the mth line segment. The UA V ﬂying velocity
+along the mth line segment is thus given by vm = qm+1−qm
+Tm
+,∀m. Furthermore, the total mission
+completion time Tt is given by Tt = ∑M
+m=0Tm.
+As a result, with path discretization, the UA V trajectory {q(t)} is represented by the M + 2
+waypoints{qm}M+1
+m=0 , together with the duration {Tm}M
+m=0 representing the time that the UA V
+spends within each line segment. With the given ∆max, M is chosen to be sufﬁciently large so
+that (M + 1)∆max≥ ˆD, where ˆD is an upper bound of the required total UA V ﬂying distance.
+With such a discretization approach, there is no need to specify the mission completion time Tt in
+advance, since it can be directly determined once {Tm} are obtained. In addition, to characterize
+the special hovering status, path discretization only requires two discretization points, i.e., by
+simply letting qm = qm+1, regardless of the hovering duration Tm. This is in a sharp contrast
+to the existing time discretization approach, where the number of discretization points needs to
+increase linearly with Tm, even when the UA V is hovering and its location remains unchanged.
+As such, the distance between the UA V and each GN k can be written as
+dmk =
+√
+H2 +∥qm− wk∥2,∀k,m, (40)
+wheredmk represents the distance between the UA V and GNk when the UA V is at themth line
+segment along its path. As a result, the corresponding achievable rate expression in (2) for GN
+k when the UA V is at the mth line segment can be represented as
+Rmk =B log2
+(
+1 + γ0
+H2 +∥qm− wk∥2
+)
+. (41)
+Furthermore, for each line segment m along the UA V path, with TDMA among the K GNs, let
+τmk≥ 0 denote the allocated time for the UA V to communicate with GN k. Then constraint (3)
+can be written as ∑K
+k=1τmk≤Tm, ∀m∈{ 0,··· ,M}.
+The aggregated communication throughput for GN k in (4) can be written as
+¯Rk({qm},{τmk}) =B
+M∑
+m=0
+τmk log2
+(
+1 + γ0
+H2 +∥qm− wk∥2
+)
+. (42)
+
+===== PAGE 18 =====
+
+18
+Furthermore, the UA V energy consumption in (10) can be written as
+E({Tm},{qm},{τmk}) =
+M∑
+m=0
+TmP
+(∆m
+Tm
+)
++Pc
+M∑
+m=0
+K∑
+k=1
+τmk
+=P0
+M∑
+m=0
+(
+Tm + 3∆2
+m
+U 2
+tipTm
+)
++Pi
+M∑
+m=0
+(√
+T 4m + ∆4m
+4v4
+0
+− ∆2
+m
+2v2
+0
+)1/2
++ 1
+2d0ρsA
+M∑
+m=0
+∆3
+m
+T 2m
++Pc
+M∑
+m=0
+K∑
+k=1
+τmk,
+(43)
+where ∆m ≜∥qm+1−qm∥ is the length of the mth line segment. Note that in (43), we have used
+the expression (6) and the fact that the UA V speed at the mth line segment is ∥vm∥ = ∆m/Tm.
+As a result, the energy minimization problem (P1) can be expressed in the discrete form as
+(P4) : min
+{qm},{Tm},{τmk}
+E({Tm},{qm},{τmk})
+s.t.
+M∑
+m=0
+τmk log2
+(
+1 + γ0
+H2 +∥qm− wk∥2
+)
+≥Qk, ∀k, (44)
+∥qm+1− qm∥≤ min{∆max,TmVmax}, ∀m∈{ 1,··· ,M}, (45)
+q0 = qI, qM+1 = qF, (46)
+K∑
+k=1
+τmk≤Tm, ∀m∈{ 0,··· ,M}, (47)
+τmk≥ 0, ∀k∈K,m∈{ 0,··· ,M}. (48)
+where (45) corresponds to the maximum UA V speed constraint as well as the maximum segment
+length constraint.
+Notice that in problem (P4), the constraints (45)–(48) are all convex. However, both the
+cost function E({Tm},{qm},{τmk}) in (43) and the throughput constraint (44) are non-convex.
+Therefore, problem (P4) is non-convex and it is difﬁcult to ﬁnd its globally optimal solution.
+In the following, we propose an efﬁcient algorithm to ﬁnd (at least) a locally optimal solution
+to (P4) based on the SCA technique.
+B. Proposed Solution to (P4)
+Firstly, we deal with the non-convex cost function of (P4). A closer look at the expression
+in (43) reveals that the ﬁrst, third, and fourth terms are all convex functions with the respect to
+{qm},{Tm}, andτmk, which can be shown by using the fact that perspective operation preserves
+convexity [41]. However, the second term is non-convex. To tackle this issue, we introduce slack
+
+===== PAGE 19 =====
+
+19
+variables{ym≥ 0} such that
+y2
+m =
+√
+T 4
+m + ∆4
+m
+4v4
+0
+− ∆2
+m
+2v2
+0
+, ∀m∈{ 0,··· ,M}, (49)
+which is equivalent to
+T 4
+m
+y2
+m
+=y2
+m + ∆2
+m
+v2
+0
+, ∀m∈{ 0,··· ,M}. (50)
+Therefore, the second term of (43) can be replaced by the linear expression Pi
+∑M
+m=0ym, with
+the additional constraint (50).
+On the other hand, to deal with the non-convex constraint (44), we introduce slack variables
+{Amk} such that
+A2
+mk =τmk log2
+(
+1 + γ0
+H2 +∥qm− wk∥2
+)
+. (51)
+As a result, the constraint (44) can be equivalently written as ∑M
+m=0A2
+mk≥ Qk, ∀k. With the
+above manipulations, (P4) can be written as
+(P4.1) : min
+{qm},{Tm},{τmk}
+{ym},{Amk}
+P0
+M∑
+m=0
+(
+Tm + 3∆2
+m
+U 2
+tipTm
+)
++Pi
+M∑
+m=0
+ym + 1
+2d0ρsA
+M∑
+m=0
+∆3
+m
+T 2
+m
++Pc
+M∑
+m=0
+K∑
+k=1
+τmk
+s.t.
+M∑
+m=0
+A2
+mk≥Qk, ∀k, (52)
+T 4
+m
+y2
+m
+≤y2
+m +∥qm+1− qm∥2
+v2
+0
+, ∀m, (53)
+A2
+mk
+τmk
+≤ log2
+(
+1 + γ0
+H2 +∥qm− wk∥2
+)
+, ∀m,k, (54)
+ym≥ 0,∀m, (55)
+(45)–(48).
+Note that in (P4.1), the constraints (53) and (54) are obtained from (50) and (51) by replacing the
+equality sign with inequality constraints. This does not affect the equivalence between problem
+(P4) and (P4.1). To see this, suppose that at the optimal solution to (P4.1), if any of the
+constraint in (53) is satisﬁed with strict inequality, then we may reduce the corresponding value
+of the slack variable ym to make the constraint (53) satisﬁed with strict equality, and at the same
+time reduce the cost function. Therefore, at the optimal solution to (P4.1), all constraints in (53)
+must be satisﬁed with equality. Similarly, there always exists an optimal solution to (P4.1) that
+makes all constraints in (54) satisﬁed with equality as well. Thus, problem (P4) and (P4.1) are
+equivalent.
+
+===== PAGE 20 =====
+
+20
+Problem (P4.1) is still non-convex due to the non-convex constraints (52)–(54). However, all
+these three constraints can be effectively handled with the SCA technique by deriving the global
+lower bounds at a given local point. Speciﬁcally, for the constraint (52), it is noted that the left
+hand side (LHS) is a convex function with respect to Amk. By using the fact that the ﬁrst-order
+Taylor expansion is a global lower bound of a convex function, we have the following inequality
+A2
+mk≥A(l)2
+mk + 2A(l)
+mk(Amk−A(l)
+mk), (56)
+where A(l)
+mk is the value of Amk at the lth iteration.
+Similarly, for the non-convex constraint (53), the LHS is already a jointly convex function
+with respect to ym and Tm, and the RHS of the inequality constraint is also a convex function.
+By applying the ﬁrst-order Taylor expansion of the RHS, the following global lower bound can
+be obtained as
+y2
+m +∥qm+1− qm∥2
+v2
+0
+≥y(l)2
+m + 2y(l)
+m (ym−y(l)
+m )−∥q(l)
+m+1− q(l)
+m∥2
+v2
+0
++ 2
+v2
+0
+(q(l)
+m+1− q(l)
+m )T (qm+1− qm),
+(57)
+where y(l)
+m and q(l)
+m are the current value of the corresponding variables at the lth iteration.
+Furthermore, for the non-convex constraint (54), the LHS is already a jointly convex function
+with respect to Amk and τmk. In addition, with similar derivation as in [23] and [25], for any
+given value {q(l)
+m} at the lth iteration, a global concave lower bound can be obtained for the
+RHS of (54) as
+log2
+(
+1 + γ0
+H2 +∥qm− wk∥2
+)
+≥R(l)
+mk(qm), (58)
+where
+R(l)
+mk(qm) = log2
+(
+1 + γ0
+H2 +∥q(l)
+m− wk∥2
+)
+−βmk
+(
+∥qm− wk∥2−∥ q(l)
+m− wk∥2)
+, (59)
+with βmk = (log2e)γ0
+(H2+∥q(l)
+m−wk∥2)(∥q(l)
+m−wk∥2+γ0)
+.
+By replacing the non-convex constraints (52)–(54) of (P4.1) with their corresponding lower
+
+===== PAGE 21 =====
+
+21
+bounds at the lth iteration obtained above, we have the following optimization problem:
+(P4.2) : min
+{qm},{Tm},{τmk}
+{ym},{Amk}
+P0
+M∑
+m=0
+(
+Tm + 3∆2
+m
+U 2
+tipTm
+)
++Pi
+M∑
+m=0
+ym + 1
+2d0ρsA
+M∑
+m=0
+∆3
+m
+T 2
+m
++Pc
+M∑
+m=0
+K∑
+k=1
+τmk
+s.t.
+M∑
+m=0
+(
+A(l)2
+mk + 2A(l)
+mk(Amk−A(l)
+mk)
+)
+≥Qk, ∀k,
+T 4
+m
+y2
+m
+≤y(l)2
+m + 2y(l)
+m (ym−y(l)
+m )−∥q(l)
+m+1− q(l)
+m∥2
+v2
+0
++ 2
+v2
+0
+(q(l)
+m+1− q(l)
+m )T (qm+1− qm), ∀m,
+A2
+mk
+τmk
+≤R(l)
+mk(qm), ∀m,k,
+ym≥ 0,∀m,
+(45)–(48).
+It can be veriﬁed that problem (P4.2) is a convex optimization problem, which can thus be
+efﬁciently solved by using standard convex optimization techniques or existing software toolbox
+such as CVX. Note that due to the global lower bounds in (56)–(58), if the constraints of problem
+(P4.2) are satisﬁed, then those for the original problem (P4.1) are guaranteed to be satisﬁed as
+well, but the reverse is not necessarily true. Thus, the feasible region of (P4.2) is in general a
+subset of that for (P4.1), and the optimal value of (P4.2) provides an upper bound to that of
+(P4.1). By successively updating the local point at each iteration via solving (P4.2), an efﬁcient
+algorithm is obtained for the non-convex optimization problem (P4.1) or its original problem
+(P4). The algorithm is summarized as Algorithm 2.
+Algorithm 2 SCA-based algorithm for (P4).
+1: Initialization: obtain a feasible {q(0)
+m},{T (0)
+m}, and{τ (0)
+mk} to (P4). Let l = 0.
+2: repeat
+3: Calculate the current values {y(l)
+m} and{A(l)
+mk} based on (49) and (51), respectively.
+4: Solve the convex problem (P4.2), and denote the optimal solution as{q∗
+m},{T∗
+m},{τ∗
+mk}.
+5: Update the local point q(l+1)
+m = q∗
+m, T (l+1)
+m =T∗
+m, and τ (l+1)
+mk =τ∗
+mk.
+6: Update l =l + 1.
+7: until the fractional decrease of the objective value of (P4.2) is below a given threshold ϵ.
+By following similar arguments as in [25] and [40], it can be shown that Algorithm 2 is
+guaranteed to converge to at least a locally optimal solution that satisﬁes the KKT conditions
+of problem (P4.1).
+
+===== PAGE 22 =====
+
+22
+Remark 1. While Algorithm 2 is proposed to minimize the UA V energy consumption, it can
+be similarly applied for UA V communication with other design metrics, such as the following
+mission completion time minimization problem, by replacing the cost function of (P4) with
+∑M
+m=0Tm.
+V. N UMERICAL RESULTS
+This section provides numerical results to validate the proposed designs. The UA V altitude
+is set as H = 100 m and the total communication bandwidth is B = 1 MHz. The received
+SNR at the reference distance of 1 m is γ0 = 60 dB. As a result, the maximum received SNR
+when the UA V is just above each GN is γ0/H2 = 20 dB. The communication related power
+consumption at the UA V is ﬁxed as Pc = 50 W. For the UA V’s propulsion power consumption,
+the corresponding parameters are speciﬁed in Table I. The maximum ﬂying speed is Vmax = 60
+m/s. The UA V’s initial and ﬁnal locations are set as qI = [0, 0]T and qF = [800 m, 800 m]T ,
+respectively. We consider the setup with K = 3 GNs, with their locations shown in red squares
+in Fig. 3. We assume that all GNs have identical throughput requirements, i.e., ˜Qk = ˜Q,∀k∈K .
+First, we study the convergence of Algorithm 2 (Note that the convergence of Algorithm 1 can
+be shown similarly, for which the result is omitted due to the space limitation). The UA V initial
+path{q(0)
+m} is set as that obtained by the optimized ﬂy-hover-communicate protocol proposed
+in Section III, and the initial duration {T (0)
+m} at each line segment and communication time
+allocation{τ (0)
+mk} is obtained by letting T (0)
+m = ¯T ,∀m, and τ (0)
+mk = ¯T/K ,∀m,k , where ¯T is
+the minimum value that makes (P4) feasible. Fig. 2 shows the convergence of Algorithm 2 for
+throughput requirement ˜Q = 200 Mbits. The curve “Upper bound” corresponds to the obtained
+objective value of (P4.2), while “Exact” refers to the true UA V energy consumption value
+calculated based on (43). It is ﬁrstly observed that the two curves match quite well with each
+other, which demonstrates that the upper bound for UA V energy consumption via solving the
+convex optimization problem (P4.2) is practically tight. Furthermore, Fig. 2 shows that the
+proposed algorithm converges in a few iterations, which demonstrates the effectiveness of SCA
+for the proposed joint trajectory and communication time allocation design.
+For ˜Q = 50 Mbits and 200 Mbits, Fig. 3 and Fig. 4 respectively show the obtained UA V tra-
+jectories and the corresponding UA V speed with three different designs: i) Optimized ﬂy-hover-
+communicate protocol proposed in Section III; ii) The SCA-based energy minimization design
+in Algorithm 2; and iii) The SCA-based time minimization design by similarly applying Algo-
+
+===== PAGE 23 =====
+
+23
+Fig. 2: Convergence of Algorithm 2 for UA V energy minimization.
+rithm 2. For the SCA-based energy minimization trajectory, Fig. 3 also shows the corresponding
+time instant when the UA V reaches the nearest position from each GN, for the convenience of
+illustrating the corresponding UA V speed shown in Fig. 4. It is ﬁrstly observed from Fig. 3
+that for the proposed ﬂy-hover-communicate protocol, the optimized hovering locations are in
+general different from the GN locations. This is expected due to the following trade-off: while
+hovering exactly above each GN achieves the minimal communication link distance and hence
+reduces the total communication time, it requires the UA V to travel longer distance and hence
+more energy consumption is needed for UA V ﬂying. With the optimized ﬂy-hover-communicate
+protocol, a balance between the above two conﬂicting objectives is achieved via optimizing the
+hovering locations for communication. By comparing Fig. 3(a) and Fig. 3(b), it is observed that
+the higher the throughput requirement is, the closer the optimized hovering locations will be
+from the GN locations, as expected. It is further observed from Fig. 4 that with the optimized
+ﬂy-hover-communicate protocol, the UA V speed has only two status: ﬂying with the MR speed
+Vmr between different optimized locations, or hovering above those locations for communicating
+with the corresponding GN.
+For the proposed SCA-based algorithm for energy minimization, it is found from Fig. 3 that
+for the case with relatively low throughput requirement of ˜Q = 50 Mbits, the resulting UA V
+trajectory is almost a straight ﬂight from qI to qF . By contrast, as ˜Q increases to 200 Mbits,
+the UA V needs to deliberately detour its path towards the GNs. Interestingly, it is observed from
+Fig. 3(b) and Fig. 4(b) that as the UA V approaches the GN, it tends to keep ﬂying around it with
+a certain speed, instead of hovering directly above it. This is due to the fact that hovering is not
+the most power-conserving UA V status, as shown in Fig. 1. Therefore, the UA V tends to maintain
+a certain speed in order to reduce power consumption, though this may make the UA V slightly
+
+===== PAGE 24 =====
+
+24
+(a) ˜Q = 50 Mbits.
+ (b) ˜Q = 200 Mbits.
+Fig. 3: UA V trajectories with three different designs. Red squares denote GNs, and blue circles
+represent the optimized hovering locations in the ﬂy-hover-communicate protocol.
+(a) ˜Q = 50 Mbits.
+ (b) ˜Q = 200 Mbits.
+Fig. 4: UA V speed versus time for different trajectories in Fig. 3.
+further away from the GN (thus with smaller instantaneous communication rate). By combining
+Fig. 3 and Fig. 4, it is found that for the SCA-based trajectory for energy minimization, the
+UA V will reduce its ﬂying speed when it is close to each GN, as expected.
+With the SCA-based algorithm for time minimization, Fig. 3 shows that for both ˜Q = 50
+Mbits and ˜Q = 200 Mbits, the UA V tends to ﬂy to the top of each GN. This is expected since
+for time minimization without considering the UA V energy consumption, it is preferable for the
+UA V to ﬂy at high speed so as to approach the GN as soon as possible to enjoy the favorable
+communication channel. This is veriﬁed by the speed plot in Fig. 4.
+For the proposed SCA-based design for energy minimization with ˜Q = 200 Mbits, Fig. 5 shows
+the fraction of the allocated communication time among GNs at each time instant, namely the
+values of τmk/Tm. By combining Fig. 3 and Fig. 5, it is found that at each UA V location, more
+communication time is allocated to the nearer GN, which is expected since allocating resources
+to better channels in general leads to higher spectrum efﬁciency.
+
+===== PAGE 25 =====
+
+25
+Fig. 5: Fraction of allocated communicate time for SCA-based energy minimization.
+Last, Fig. 6 shows the required UA V energy consumption and mission completion time versus
+the communication throughput requirement ˜Q, respectively. Besides the three designs mentioned
+above, we also consider two alternative benchmark schemes, namely hovering at geometric
+center and hovering above GNs . Note that these two benchmark schemes correspond to the
+special cases of the general ﬂy-hover-communicate protocol studied in Section III, where the
+hovering locations are ﬁxed to either the geometric center of the K GNs or each GN, instead
+of being optimized. It is ﬁrstly observed that in terms of both energy consumption and required
+mission completion time, “hovering at the geometric center” outperforms “hovering above GNs”
+for low throughput requirement, whereas the reverse is true as ˜Q increases. On the other hand, the
+optimized ﬂy-hover-communicate scheme always outperforms both benchmark schemes, which
+is expected since it adaptively optimizes the hovering locations according to the communication
+requirement. Furthermore, with the proposed SCA algorithm either for energy minimization or
+time minimization, signiﬁcant performance gains can be achieved. By comparing the two plots
+in Fig. 6, it is concluded that while minimizing the mission completion time can to certain extent
+help reduce the energy consumption and vice versa, the two design objectives in general lead
+to different solutions, and the explicit consideration of UA V energy consumption (instead of via
+the heuristic time minimization) results in further performance gains in terms of energy saving.
+VI. C ONCLUSION
+This paper studies the energy-efﬁcient UA V communication with rotary-wing UA Vs. The
+propulsion power consumption model of rotary-wing UA Vs is derived, based on which an opti-
+mization problem is formulated to minimize the total UA V energy consumption, while satisfying
+the individual target communication throughput requirement for multiple GNs. We ﬁrst propose
+
+===== PAGE 26 =====
+
+26
+Fig. 6: Energy consumption and mission completion time versus throughput requirement.
+an efﬁcient solution based on the simple ﬂy-hover-communicate protocol, which leverages the
+TSP and convex optimization techniques to ﬁnd the optimized hovering locations and dura-
+tions, as well as the visiting order and speed among these locations. Furthermore, we propose
+a general solution, with which the UA V communicates also when ﬂying, by applying a new
+path discretization approach and the SCA technique. Numerical results show that the proposed
+designs achieve signiﬁcant energy saving than other benchmark schemes for rotary-ring UA V
+enabled wireless communication systems.
+APPENDIX A
+POWER CONSUMPTION MODEL FOR ROTARY-WING UAVS
+In this appendix, we derive the power consumption model for rotary-wing UA Vs. Note that
+most of the notations and results follow from the textbook [33]. This appendix is NOT intended
+to introduce a new physical model for the power consumption of rotary-wing UA Vs. Instead, it
+mainly aims to solicit the existing results in classic aircraft textbooks such as [33] and [34], to
+derive an analytical energy model that is suitable for research in UA V communications. Interested
+readers may refer to [33] and [34] for more detailed theoretical derivations based on actuator
+disc theory and blade element theory. The notations and terminologies used in this appendix are
+summarized in Table I.
+For rotary-wing aircrafts in hovering status, the torque coefﬁcient qc is given by Equation
+(2.45) of [33], i.e., qc = δ
+8 + (1 +k)√s
+2t3/2
+c . By substituting tc = T
+ρsAΩ2R2 and noting that the
+thrust T balances the aircraft weight in hovering status, i.e., T =W , we have
+qc = δ
+8 + (1 +k) W 3/2
+√
+2ρ3/2sA3/2Ω3R3. (60)
+
+===== PAGE 27 =====
+
+27
+TABLE I: Notations and terminologies for rotary-wing aircraft.
+Notation Physical meaning Simulation value
+W Aircraft weight in Newton 100
+ρ Air density in kg/m 3 1.225
+R Rotor radius in meter (m) 0.5
+A Rotor disc area in m 2, A ≜πR2 0.79
+Ω Blade angular velocity in radians/second 400
+Utip Tip speed of the rotor blade, Utip ≜ ΩR 200
+b Number of blades 4
+c Blade or aerofoil chord length 0.0196
+s Rotor solidity, deﬁned as the ratio of the total blade area bcR to the
+disc area A, or s ≜ bc
+πR
+0.05
+SFP Fuselage equivalent ﬂat plate area in m2 0.0118
+d0 Fuselage drag ratio, deﬁned as d0 ≜ SF P
+sA 0.3
+k Incremental correction factor to induced power 0.1
+T Rotor thrust –
+κ Thrust-to-weight ratio, κ ≜ T
+W –
+tc Thrust coefﬁcient based on total blade area, deﬁned as tc ≜ T
+ρsAΩ2R2 –
+TD Thrust component along the disc axes. TD≈T in practice (Equation
+(1.39) of [33])
+–
+tcD Thrust coefﬁcient referred to disc axes, tcD ≜ TD
+ρsAΩ2R2≈tc –
+v0 Mean rotor induced velocity in hover, with v0 =
+√
+W
+2ρA (see Equation
+(2.12) of [33] and Equation (12.1) of [34])
+7.2
+vi0 Mean rotor induced velocity in forward ﬂight –
+λi Mean induced velocity normalized by tip speed, λi ≜ vi0
+ΩR –
+δ Proﬁle drag coefﬁcient. 0.012
+V Aircraft forward speed in m/s –
+ˆV Forward speed normalized by tip speed, ˆV ≜ V
+ΩR –
+αT Tilt angle of the rotor disc, which is small in practice –
+µ Advance ratio, µ≈ ˆV = V
+ΩR –
+qc Torque coefﬁcient, which, by deﬁnition, is directly related to the re-
+quired power P as P =qcρsAΩ3R3. Note that in many text books,
+the required rotor power is usually given in terms of qc.
+–
+Therefore, by deﬁnition of the torque coefﬁcient, the corresponding required power for hovering
+can be obtained based on the relationship P =qcρsAΩ3R3, which can be expressed as (see also
+Equation (12.13) of [34])
+Ph = δ
+8ρsAΩ3R3
+  
+≜P0
++ (1 +k)W 3/2
+√2ρA  
+≜Pi
+. (61)
+The derivation of power required for forward ﬂight of a rotary-wing aircraft is much more
+complicated than that of the ﬁxed-wing counterpart [25]. Fortunately, under some mild assump-
+tions, e.g., the drag coefﬁcient of the blade section is constant, the torque coefﬁcient qc for an
+aircraft in forward level ﬂight (zero climbing angle) with speed V is given by Equation (4.20)
+of [33], i.e.,
+qc = δ
+8(1 + 3µ2) + (1 +k)λitcD + 1
+2
+ˆV 3d0. (62)
+
+===== PAGE 28 =====
+
+28
+Fig. 7: Schematics of the main forces acting on the aircraft in straight ﬂight.
+By substituting with µ≈ ˆV = V
+ΩR and tcD = T
+ρsAΩ2R2 , qc in (62) can be explicitly written as a
+function of the forward speed V and rotor thrust T as
+qc(V,T ) = δ
+8
+(
+1 + 3V 2
+Ω2R2
+)
++ (1 +k)Tλi
+ρsAΩ2R2 + 1
+2d0
+V 3
+Ω3R3. (63)
+By the deﬁnition of the torque coefﬁcient, the required power can be written as a function of V
+and T as
+P (V,T ) ≜qc(V,T )ρsAΩ3R3
+=P0
+(
+1 + 3V 2
+Ω2R2
+)
++ (1 +k)Tvi0 + 1
+2d0ρsAV 3, (64)
+where vi0 =λiΩR is the mean induced velocity. Furthermore, based on Equation (3.2) of [33],
+for a rotary-wing aircraft with forward speed V and rotor thrust T , the mean induced velocity
+can be calculated as
+vi0 =
+(√
+T 2
+4ρ2A2 + V 4
+4 − V 2
+2
+)1/2
+=v0
+(√
+κ2 + V 4
+4v4
+0
+− V 2
+2v2
+0
+)1/2
+, (65)
+wherev0 ≜
+√
+W
+2ρA is the mean induced velocity in hover and we have deﬁned κ as the thrust-to-
+weight ratio, i.e., κ ≜ T
+W . It can be shown that for any given thrust T or κ, vi0 is a decreasing
+function of V . By substituting (65) into (64), the required power for forward ﬂight can be more
+explicitly written as
+P (V,κ ) =P0
+(
+1 + 3V 2
+Ω2R2
+)
+  
+blade proﬁle
++Piκ
+(√
+κ2 + V 4
+4v4
+0
+− V 2
+2v2
+0
+)1/2
+  
+induced
++ 1
+2d0ρsAV 3
+  
+parasite
+, (66)
+where P0 and Pi are two constants deﬁned in (61).
+To obtain a more explicit expression of the required power in (66), we need to determine
+the rotor thrust T or the thrust-to-weight ratio κ. Fig. 7 shows simpliﬁed schematics of the
+longitudinal forces acting on the aircraft in straight level ﬂight (see also Figure 13.2 of [34]),
+
+===== PAGE 29 =====
+
+29
+which include the following forces: (i) T : rotor thrust, normal to the disc plane and directed
+upward; (ii) D: drag of fuselage, which is in the opposite direction of the aircraft velocity;
+and (iii) W : the aircraft weight. Due to the balance of forces in vertical direction, we have
+T cosαT =W , where αT is the tilt angle of the rotor disc. Note that in practice, αT is usually
+very small, so we have T ≈ W or κ≈ 1 (see also Equation (4.3) of [33]). As a result, the
+expression in (66) reduces to (6) shown in Section II-B.
+REFERENCES
+[1] S. Chandrasekharan et al. , “Designing and implementing future aerial communication networks,” IEEE Commun. Mag. ,
+vol. 54, no. 5, pp. 26–34, May 2016.
+[2] Y . Zeng, R. Zhang, and T. J. Lim, “Wireless communications with unmanned aerial vehicles: opportunities and challenges,”
+IEEE Commun. Mag. , vol. 54, no. 5, pp. 36–42, May 2016.
+[3] B. V . D. Bergh, A. Chiumento, and S. Pollin, “LTE in the sky: trading off propagation beneﬁts with interference costs for
+aerial nodes,” IEEE Commun. Mag. , vol. 54, no. 5, pp. 44–50, May 2016.
+[4] I. B. Yaliniz and H. Yanikomeroglu, “The new frontier in RAN heterogeneity: multi-tier drone-cells,” IEEE Commun.
+Mag., vol. 54, no. 11, pp. 48–55, Nov. 2016.
+[5] Y . Zeng, J. Lyu, and R. Zhang, “Cellular-connected UA V: potentials, challenges and promising technologies,” submitted
+to IEEE Wireless Commun.
+[6] S. Sekander, H. Tabassum, and E. Hossain, “Multi-tier drone architecture for 5G/B5G cellular networks: challenges, trends,
+and prospects,” to appear in IEEE Commun. Mag. , available online at https://arxiv.org/abs/1711.08407.
+[7] A. A. Hourani, S. Kandeepan, and A. Jamalipour, “Modeling air-to-ground path loss for low altitude platforms in urban
+environments,” in Proc. IEEE Global Commun. Conf. (Globecom) , 2014.
+[8] D. W. Matolak and R. Sun, “Unmanned aircraft systems: air-ground channel characterization for future applications,” IEEE
+Veh. Technol. Mag., vol. 10, no. 2, pp. 79–85, Jun. 2015.
+[9] L. Zeng, X. Cheng, C.-X. Wang, and X. Yin, “A 3D geometry-based stochastic channel model for UA V-MIMO channels,”
+in Proc. IEEE Wireless Commun. Net. Conf. (WCNC) , Mar. 2017.
+[10] W. Khawaja, I. Guvenc, D. W. Matolaky, U. C. Fiebigz, and N. Schneckenberger, “A survey of air-to-
+ground propagation channel modeling for unmanned aerial vehicles,” submitted for publication, available online at
+https://arxiv.org/abs/1801.01656.
+[11] A. A. Khuwaja, Y . Chen, N. Zhao, M.-S. Alouini, and P. Dobbins, “A survey of channel modeling for UA V communications,”
+submitted for publication, available online at https://arxiv.org/abs/1801.07359.
+[12] A. Al-Hourani, S. Kandeepan, and S. Lardner, “Optimal LAP altitude for maximum coverage,” IEEE Wireless Commun.
+Lett., vol. 3, no. 6, pp. 569–572, Dec. 2014.
+[13] M. Mozaffari, W. Saad, M. Bennis, and M. Debbah, “Efﬁcient deployment of multiple unmanned aerial vehicles for optimal
+wireless coverage,” IEEE Commun. Lett. , vol. 20, no. 8, pp. 1647–1650, Aug. 2016.
+[14] J. Lyu, Y . Zeng, R. Zhang, and T. J. Lim, “Placement optimization of UA V-mounted mobile base stations,” IEEE Commun.
+Lett., vol. 21, no. 3, pp. 604–607, Mar. 2017.
+[15] J. Chen and D. Gesbert, “Optimal positioning of ﬂying relays for wireless networks: A LOS map approach,” in Proc.
+IEEE Int. Conf. Commun. (ICC) , May 21-25, 2017.
+
+===== PAGE 30 =====
+
+30
+[16] M. Alzenad, A. El-keyi, F. Lagum, and H. Yanikomeroglu, “3D placement of an unmanned aerial vehicle base station
+(UA V-BS) for energy-efﬁcient maximal coverage,”IEEE Wireless Commun. Lett. , vol. 6, no. 4, pp. 434–437, Aug. 2017.
+[17] H. He, S. Zhang, Y . Zeng, and R. Zhang, “Joint altitude and beamwidth optimization for UA V-enabled multiuser commu-
+nications,” IEEE Commun. Lett. , vol. 22, no. 2, pp. 344–347, Feb. 2018.
+[18] A. Al-Hourani, S. Chandrasekharan, G. Kaandorp, W. Glenn, A. Jamalipour, and S. Kandeepan, “Coverage and rate analysis
+of aerial base stations,” IEEE Trans. Aerospace and Elect. Sys. , vol. 52, no. 6, pp. 3077–3081, Dec. 2016.
+[19] M. M. Azari, F. Rosas, K.-C. Chen, and S. Pollin, “Ultra reliable UA V communication using altitude and cooperation
+diversity,” IEEE Trans. Commun. , vol. 66, no. 1, pp. 330–344, Jan. 2018.
+[20] V . V . Chetlur and H. S. Dhillon, “Downlink coverage analysis for a ﬁnite 3-D wireless network of unmanned aerial
+vehicles,” IEEE Trans. Commun. , vol. 65, no. 10, pp. 4543–4558, Oct. 2017.
+[21] C. Zhang and W. Zhang, “Spectrum sharing for drone networks,” IEEE J. Sel. Areas Commun., vol. 35, no. 1, pp. 136–144,
+Jan. 2017.
+[22] M. Mozaffari, W. Saad, M. Bennis, and M. Debbah, “Optimal transport theory for cell association in UA V-enabled cellular
+networks,” IEEE Commun. Lett. , vol. 21, no. 9, pp. 2053–2056, Sep. 2017.
+[23] Y . Zeng, R. Zhang, and T. J. Lim, “Throughput maximization for UA V-enabled mobile relaying systems,” IEEE Trans.
+Commun., vol. 64, no. 12, pp. 4983–4996, Dec. 2016.
+[24] J. Lyu, Y . Zeng, and R. Zhang, “Cyclical multiple access in UA V-aided communications: a throughput-delay tradeoff,”
+IEEE Wireless Commun. Lett. , vol. 5, no. 6, pp. 600–603, Dec. 2016.
+[25] Y . Zeng and R. Zhang, “Energy-efﬁcient UA V communication with trajectory optimization,”IEEE Trans. Wireless Commun.,
+vol. 16, no. 6, pp. 3747–3760, Jun. 2017.
+[26] C. Zhan, Y . Zeng, and R. Zhang, “Energy-efﬁcient data collection in UA V enabled wireless sensor network,” IEEE Wireless
+Commun. Lett., Early Access.
+[27] Q. Wu, Y . Zeng, and R. Zhang, “Joint trajectory and communication design for multi-UA V enabled wireless networks,”
+IEEE Trans. Wireless Commun. , Early Access.
+[28] Y . Zeng, X. Xu, and R. Zhang, “Trajectory design for completion time minimization in UA V-enabled multicasting,” to
+appear in IEEE Trans. Wireless Commun.
+[29] L. Liu, S. Zhang, and R. Zhang, “CoMP in the sky: UA V placement and movement optimization for multi-user commu-
+nications,” sbumitted to IEEE Trans. Wireless Commun.
+[30] J. Xu, Y . Zeng, and R. Zhang, “UA V-enabled wireless power transfer: trajectory design and energy optimization,” submitted
+to IEEE Trans. Wireless Commun. , available online at https://arxiv.org/abs/1709.07590.
+[31] D. Yang, Q. Wu, Y . Zeng, and R. Zhang, “Energy trade-off in ground-to-UA V communication via trajectory design,” to
+appear in IEEE Trans. Veh. Technol., available online at https://arxiv.org/abs/1709.02975.
+[32] X. Xu, Y . Zeng, Y .-L. Guan, and R. Zhang, “Overcoming endurance issue: UA V-enabled communications with proactive
+caching,” submitted to IEEE J. Sel. Areas Commmun. , available online at https://arxiv.org/abs/1712.03542.
+[33] A. R. S. Bramwell, G. Done, and D. Balmford, Bramwell’s Helicopter Dynamics, 2nd ed. American Institute of Aeronautics
+& Ast (AIAA), 2001.
+[34] A. Filippone, Flight performance of ﬁxed and rotary wing aircraft . American Institute of Aeronautics & Ast (AIAA),
+2006.
+[35] G. Laporte, “The traveling salesman problem: an overview of exact and approximate algorithms,” EUR. J. Oper. Res. ,
+vol. 59, no. 2, pp. 231–247, Jun. 1992.
+[36] “Travelling Salesman Problem”, availabe online at https://www.mathworks.com/help/optim/ug/travelling-salesman-
+problem.html.
+
+===== PAGE 31 =====
+
+31
+[37] Y . Mei, Y .-H. Lu, Y . C. Hu, and C. S. G. Lee, “Energy-efﬁcient motion planning for mobile robots,” in Proc. IEEE Int.
+Conf. Robot. Autom. , 2004, pp. 4344–4349.
+[38] Y . Yan and Y . Mostoﬁ, “Co-optimization of communication and motion planning of a robotic operation under resource
+constraints and in fading environments,” IEEE Trans. Wireless Commun. , vol. 12, no. 4, pp. 1562–1572, Apr. 2013.
+[39] M. Grant and S. Boyd, CVX: Matlab software for disciplined convex programming, version 2.1 , http://cvxr.com/cvx.
+[40] A. Zappone, E. Bjornson, L. Sanguinetti, and E. Jorswieck, “Globally optimal energy-efﬁcient power control and receiver
+design in wireless networks,” IEEE Trans. Signal Process. , vol. 65, no. 11, pp. 2844–2859, Jun. 2017.
+[41] S. Boyd and L. Vandenberghe, Convex Optimization. Cambridge, U.K.: Cambridge Univ. Press, 2004.

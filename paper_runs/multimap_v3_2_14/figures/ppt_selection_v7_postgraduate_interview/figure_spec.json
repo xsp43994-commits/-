@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "package_id": "ppt-selection-v7-postgraduate-interview",
+  "audience": "postgraduate recommendation interview panel",
+  "purpose": "selected frozen scientific figures and authenticity evidence for a presentation",
+  "source_suite": "../paper_redraw_multibackend_v7_drones_style_fullsuite",
+  "mutation_policy": "copy-only; source suite, training, formal evaluation and frozen results remain unchanged",
+  "presentation_order": [
+    {
+      "order": 1,
+      "figure_id": "V02",
+      "export": "exports/01_V02_real_DSM_route_en.png",
+      "language": "en",
+      "evidence_role": "descriptive frozen real-DSM simulation task",
+      "backend": "MATLAB",
+      "independent_unit": "one frozen representative task",
+      "representative_case": "real_test__cn_taihang__road_00__task_08; route seed 42"
+    },
+    {
+      "order": 2,
+      "figure_id": "M01",
+      "export": "exports/02_M01_map_level_distribution_zh.png",
+      "language": "zh",
+      "evidence_role": "map-level distributional comparison",
+      "backend": "Python/matplotlib",
+      "independent_unit": "map",
+      "uncertainty_or_distribution": "individual maps, KDE and median"
+    },
+    {
+      "order": 3,
+      "figure_id": "S09",
+      "export": "exports/03_S09_training_return_dynamics_zh.png",
+      "language": "zh",
+      "evidence_role": "training-return dynamics",
+      "backend": "Python/matplotlib",
+      "independent_unit": "training seed",
+      "uncertainty_or_distribution": "five seed traces, median and IQR at 192 recorded training batches"
+    },
+    {
+      "order": 4,
+      "figure_id": "M10",
+      "export": "exports/04_M10_paired_ablation_zh.png",
+      "language": "zh",
+      "evidence_role": "paired map-level mechanism ablation",
+      "backend": "Origin editable source plus standardized Python bilingual export",
+      "independent_unit": "paired map",
+      "uncertainty_or_distribution": "Hodges-Lehmann estimate and bootstrap interval; Holm-adjusted paired Wilcoxon significance"
+    }
+  ],
+  "alternatives": [
+    {
+      "figure_id": "S06",
+      "export": "alternatives/S06_seven_model_training_coverage_zh.png",
+      "use_when": "the panel asks about training dynamics of all seven learned models"
+    },
+    {
+      "figure_id": "M06",
+      "export": "alternatives/M06_fixed_validation_learning_curve_zh.png",
+      "use_when": "the panel asks whether training return is consistent with performance on a fixed external validation set"
+    }
+  ],
+  "known_limitations": [
+    "V02 is real-DSM simulation evidence, not real-flight validation.",
+    "V02 Chinese export is excluded because its colorbar label contains invalid square glyphs.",
+    "S09 reward is a reward-schema-dependent training signal and is not final test performance.",
+    "S06 training-batch coverage must not be interpreted as external generalization.",
+    "M06 episode count is not an environment-interaction sample-efficiency axis.",
+    "M10 supports the composite return-aware multi-resource feasibility mask, not separately ablated sub-masks."
+  ]
+}

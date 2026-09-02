@@ -1,0 +1,1613 @@
+
+
+===== PAGE 1 =====
+
+Optimization by Simulated Annealing
+S. Kirkpatrick; C. D. Gelatt; M. P. Vecchi
+Science, New Series, Vol. 220, No. 4598. (May 13, 1983), pp. 671-680.
+Stable URL:
+http://links.jstor.org/sici?sici=0036-8075%2819830513%293%3A220%3A4598%3C671%3AOBSA%3E2.0.CO%3B2-8
+Science is currently published by American Association for the Advancement of Science.
+Your use of the JSTOR archive indicates your acceptance of JSTOR's Terms and Conditions of Use, available at
+http://www.jstor.org/about/terms.html. JSTOR's Terms and Conditions of Use provides, in part, that unless you have obtained
+prior permission, you may not download an entire issue of a journal or multiple copies of articles, and you may use content in
+the JSTOR archive only for your personal, non-commercial use.
+Please contact the publisher regarding any further use of this work. Publisher contact information may be obtained at
+http://www.jstor.org/journals/aaas.html.
+Each copy of any part of a JSTOR transmission must contain the same copyright notice that appears on the screen or printed
+page of such transmission.
+The JSTOR Archive is a trusted digital repository providing for long-term preservation and access to leading academic
+journals and scholarly literature from around the world. The Archive is supported by libraries, scholarly societies, publishers,
+and foundations. It is an initiative of JSTOR, a not-for-profit organization with a mission to help the scholarly community take
+advantage of advances in technology. For more information regarding JSTOR, please contact support@jstor.org.
+http://www.jstor.org
+Fri Nov 16 18:37:47 2007
+
+===== PAGE 2 =====
+
+SCIENCE13 May 1983, Volume 220, Number 4598 
+Optimization by 
+Simulated Annealing 
+S. Kirkpatrick, C. D. Gelatt, Jr., M. P. Vecchi 
+In this article we briefly review the 
+central constructs in combinatorial opti- 
+mization and in statistical mechanics and 
+then develop the similarities between the 
+two fields. We show how the Metropolis 
+algorithm for approximate numerical 
+simulation of the behavior of a many-
+body system at a finite temperature pro- 
+vides a natural tool for bringing the tech- 
+niques of statistical mechanics to bear on 
+optirn~ization. 
+We have applied this point of view to a 
+number of problems arising in optimal 
+design of computers. Applications to 
+partitioning, component placement, and 
+wiring of electronic systems are de-
+scribed in this article. In each context, 
+we introduce the problem and discuss 
+the improvements available from optimi- 
+zation. 
+Of classic optimization problems, the 
+travel~~ngsalesman problem has received 
+the most intensive study. To test the 
+power of simulated annealing, we used 
+the algorithm on traveling salesman 
+problems with as many as several thou- 
+sand cities. This work is described in a 
+final section, followed by our conclu-
+sions. 
+Combinatorial Optimization 
+The subject of combinatorial optimiza- 
+tion (1) consists of a set of problems that 
+are central to the disciplines of computer 
+science and engineering. Research in this 
+area aims at developing efficient tech- 
+niques for finding minimum or maximum 
+values of a function of very many inde- 
+pendent variables (2). This function, usu- 
+ally called the cost function or objective 
+function, represents a quantitative mea- 
+13 MAY I983 
+sure of the "goodness" of some complex 
+system. The cost function depends on 
+the detailed configuration of the many 
+parts of that system. We are most famil- 
+iar with optimization problems occurring 
+in the physical design of computers, so 
+examples used below are drawn from 
+with N, so that in practice exact solu- 
+tions can be attempted only on problems 
+involving a few hundred cities or less. 
+The traveling salesman belongs to the 
+large class of NP-complete (nondeter- 
+ministic polynomial time complete) 
+problems, which has received extensive 
+study in the past 10years (3).No method 
+for exact solution with a computing ef- 
+fort bounded by a power of N has been 
+found for any of these problems, but if 
+such a solution were found, it could be 
+mapped into a procedure for solving all 
+members of the class. It is not known 
+what features of the individual problems 
+in the NP-complete class are the cause of 
+their difficulty. 
+Since the NP-complete class of prob- 
+lems contains many situations of practi- 
+cal interest, heuristic methods have been 
+developed with computational require- 
+Summary. There is a deep and useful connection between statistical mechanics 
+(the behavior of systems with many degrees of freedom in thermal equilibrium at a 
+finite temperature) and multivariate or combinatorial optimization (finding the mini- 
+mum of a given function depending on many parameters). A detailed analogy with 
+annealing in solids provides a framework for optimization of the properties of very 
+large and complex systems. This connection to statistical mechanics exposes new 
+information and provides an unfamiliar perspective on traditional optimization prob- 
+lems and methods. 
+that context. The number of variables 
+involved may range up into the tens of 
+thousands. 
+The classic example, because it is so 
+simply stated, of a combinatorial optimi- 
+zation problem is the traveling salesman 
+problem. Given a list of N cities and a 
+means of calculating the cost of traveling 
+between any two cities, one must plan 
+the salesman's route, which will pass 
+through each city once and return finally 
+to the starting point, minimizing the total 
+cost. Problems with this flavor arise in 
+all areas of scheduling and design. Two 
+subsidiary problems are of general inter- 
+est: predicting the expected cost of the 
+salesman's optimal route, averaged over 
+some class of typical arrangements of 
+cities, and estimating or obtaining 
+bounds for the computing effort neces- 
+sary to determine that route. 
+All exact methods known for deter- 
+mining an optimal route require a com- 
+puting effort that increases exponentially 
+ments proportional to small powers of N. 
+Heuristics are rather problem-specific: 
+there is no guarantee that a heuristic 
+procedure for finding near-optimal solu- 
+tions for one NP-complete problem will 
+be effective for another. 
+There are two basic strategies for 
+heuristics: "divide-and-conquer" and it- 
+erative improvement. In the first, one 
+divides the problem into subproblems of 
+manageable size, then solves the sub- 
+problems. The solutions to the subprob- 
+lems must then be patched back togeth- 
+er. For this method to produce very good 
+solutions, the subproblems must be natu- 
+rally disjoint, and the division made must 
+be an appropriate one, so that errors 
+made in patching do not offset the gains 
+S. Kirkpatrick and C. D. Gelatt, Jr., are research 
+staff members and M. P. Vecchi was a visiting 
+scientist at IBM Thomas J. Watson Research Cen- 
+ter, Yorktown Heights, New York 10598. M. P. 
+Vecchi's present address is Instituto Venezolano de 
+lnvestigaciones Cientificas, Caracas 1010A. Vene- 
+znela. 
+
+===== PAGE 3 =====
+
+obtained in applying more powerful 
+methods to the subproblems (4). 
+In iterative improvement (5, 6), one 
+starts with the system in a known config- 
+uration. A standard rearrangement oper- 
+ation is applied to all parts of the system 
+in turn, until a rearranged configuration 
+that improves the cost function is discov- 
+ered. The rearranged configuration then 
+becomes the new configuration of the 
+system, and the process is continued 
+until no further improvements can be 
+found. Iterative improvement consists of 
+a search in this coordinate space for 
+rearrangement steps which lead down- 
+hill. Since this search usually gets stuck 
+in a local but not a global optimum, it is 
+customary to carry out the process sev- 
+eral times, starting from different ran-
+domly generated configurations, and 
+save the best result. 
+There is a body of literature analyzing 
+the results to be expected and the com- 
+puting requirements of common heuris- 
+tic methods when applied to the most 
+popular problems (1-3). This analysis 
+usually focuses on the worst-case situa- 
+tion-for instance, attempts to bound 
+from above the ratio between the cost 
+obtained by a heuristic method and the 
+exact minimum cost for any member of a 
+family of similarly structured problems. 
+There are relatively few discussions of 
+the average performance of heuristic al- 
+gorithms, because the analysis is usually 
+more difficult and the nature of the ap- 
+propriate average to study is not always 
+clear. We will argue that as the size of 
+optimization problems increases, the 
+worst-case analysis of a problem will 
+become increasingly irrelevant, and the 
+average performance of algorithms will 
+dominate the analysis of practical appli- 
+cations. This large number limit is the 
+domain of statistical mechanics. 
+Statistical Mechanics 
+Statistical mechanics is the central dis- 
+cipline of condensed matter physics, a 
+body of methods for analyzing aggregate 
+properties of the large numbers of atoms 
+to be found in samples of liquid or solid 
+matter (7).Because the number of atoms 
+is of order 1O2>er cubic centimeter, 
+only the most probable behavior of the 
+system in thermal equilibrium at a given 
+temperature is observed in experiments. 
+This can be characterized by the average 
+and small fluctuations about the average 
+behavior of the system, when the aver- 
+age is taken over the ensemble of identi- 
+cal systems introduced by Gibbs. In this 
+ensemble, each configuration, defined 
+by the set of atomic positions, {r,), of the 
+system is weighted by its Boltzmann 
+probability factor, exp(-E({r,))lkBT), 
+where E({ri}) is the energy of the config- 
+uration, kB is Boltzmann's constant, and 
+T is temperature. 
+A fundamental question in statistical 
+mechanics concerns what happens to the 
+system in the limit of low temperature- 
+for example, whether the atoms remain 
+fluid or solidify, and if they solidify, 
+whether they form a crystalline solid or a 
+glass. Ground states and configurations 
+close to them in energy are extremely 
+rare among all the configurations of a 
+macroscopic body, yet they dominate its 
+properties at low temperatures because 
+as T is lowered the Boltzmann distribu- 
+tion collapses into the lowest energy 
+state or states. 
+As a simplified example, consider the 
+magnetic properties of a chain of atoms 
+whose magnetic moments, yi, are al-
+lowed to point only "up" or "down," 
+states denoted by pi = +1. The interac- 
+tion energy between two such adjacent 
+spins can be written Jyiyi+,. Interaction 
+between each adjacent pair of spins con- 
+tributes ?J to the total energy of the 
+chain. For an N-spin chain, if all configu- 
+rations are equally likely the interaction 
+energy has a binomial distribution, with 
+the maximum and minimum energies giv- 
+en by +NJ and the most probable state 
+having zero energy. In this view, the 
+ground state configurations have statisti- 
+cal weight exp(-Nl2) smaller than the 
+zero-energy configurations. A Boltz-
+mann factor, exp(-El/cBT), can offset 
+this if kBT is smaller than J. If we focus 
+on the problem of finding empirically the 
+system's ground state, this factor is seen 
+to drastically increase the efficiency of 
+such a search. 
+In practical contexts, low temperature 
+is not a sufficient condition for finding 
+ground states of matter. Experiments 
+that determine the low-temperature state 
+of a material-for example, by growing a 
+single crystal from a melt-are done by 
+careful annealing, first melting the sub- 
+stance, then lowering the temperature 
+slowly, and spending a long time at tem- 
+peratures in the vicinity of the freezing 
+point. If this is not done, and the sub- 
+stance is allowed to get out of equilibri- 
+um, the resulting crystal will have many 
+defects, or the substance may form a 
+glass, with no crystalline order and only 
+metastable, locally optimal structures. 
+Finding the low-temperature state of a 
+system when a prescription for calculat- 
+ing its energy is given is an optimization 
+problem not unlike those encountered in 
+combinatorial optimization. However, 
+the concept of the temperature of a phys- 
+ical system has no obvious equivalent in 
+the systems being optimized. We will 
+introduce an effective temperature for 
+optimization, and show how one can 
+carry out a simulated annealing process 
+in order to obtain better heuristic solu- 
+tions to combinatorial optimization prob- 
+lems. 
+Iterative improvement, commonly ap- 
+plied to such problems, is much like the 
+microscopic rearrangement processes 
+modeled by statistical mechanics, with 
+the cost function playing the role of 
+energy. However, accepting only rear-
+rangements that lower the cost function 
+of the system is like extremely rapid 
+quenching from high temperatures to 
+T = 0, so it should not be surprising that 
+resulting solutions are usually metasta- 
+ble. The Metropolis procedure from sta- 
+tistical mechanics provides a generaliza- 
+tion of iterative improvement in which 
+controlled uphill steps can also be incor- 
+porated in the search for a better solu- 
+tion. 
+Metropolis et al. (8), in the earliest 
+days of scientific computing, introduced 
+a simple algorithm that can be used to 
+provide an efficient simulation of a col- 
+lection of atoms in equilibrium at a given 
+temperature. In each step of this algo- 
+rithm, an atom is given a small random 
+displacement and the resulting change, 
+AE, in the energy of the system is com- 
+puted. If AE 5 0, the displacement is 
+accepted, and the configuration with the 
+displaced atom is used as the starting 
+point of the next step. The case AE > 0 
+is treated probabilistically: the probabili- 
+ty that the configuration is accepted is 
+P(AE) = exp(-AElkBT). Random num-
+bers uniformly distributed in the interval 
+(0,l) are a convenient means of imple- 
+menting the random part of the algo- 
+rithm. One such number is selected and 
+compared with P(AE). If it is less than 
+P(AEI), the new configuration is retained; 
+if not, the original configuration is used 
+to start the next step. By repeating the 
+basic step many times, one simulates the 
+thermal motion of atoms in thermal con- 
+tact with a heat bath at temperature T. 
+This choice of P(Ab7 has the conse-
+quence that the system evolves into a 
+Boltzmann distribution. 
+Using the cost function in place of the 
+energy and defining configurations by a 
+set of parameters {x,}, it is straightfor- 
+ward with the Metropolis procedure to 
+generate a population of configurations 
+of a given optimization problem at some 
+effective temperature. This temperature 
+is simply a control parameter in the same 
+units as the cost function. The simulated 
+annealing process consists of first "melt- 
+ing" the system being optimized at a 
+high effective temperature, then lower- 
+SCIENCE, VOI.. 220 
+
+===== PAGE 4 =====
+
+ing the temperature by slow stages until 
+the system "freezes" and no further 
+changes occur. At each temperature, the 
+simulation must proceed long enough for 
+the system to reach a steady state. The 
+sequence of temperatures and the num- 
+ber of rearrangements of the {x,) attempt-
+ed to reach equilibrium at each tempera- 
+ture can be considered an annealing 
+schedule. 
+Annealing, as implemented by the Me- 
+tropolis procedure, differs from iterative 
+improvement in that the procedure need 
+not get stuck since transitions out of a 
+local optimum are always possible at 
+nonzero temperature. A second and 
+more important feature is that a sort of 
+adaptive divide-and-conquer occurs. 
+Gross features of the eventual state of 
+the system appear at higher tempera- 
+tures; fine details develop at lower tem- 
+peratures. This will be discussed with 
+specific examples. 
+Statistical mechanics contains many 
+useful tricks for extracting properties of 
+a macroscopic system from microscopic 
+averages. Ensemble averages can be ob- 
+tained from a single generating function, 
+the partition function, Z, 
+Z = Tr exp -(;;I
+in which the trace symbol, Tr, denotes a 
+sum over all possible configurations of 
+the atoms in the sample system. The 
+logarithm of Z, called the free energy, 
+F(T), contains information about the av- 
+erage energy, <E(T)>, and also the en- 
+tropy, S(T), which is the logarithm of the 
+number of configurations contributing to 
+the ensemble at T: 
+Boltzn~ann-weighted ensemble averages 
+are easily expressed in terms of deriva- 
+tives of F. Thus the average energy is 
+given by 
+and the: rate of change of the energy with 
+respect to the control parameter, T, is 
+related to the size of typical variations in 
+the energy by 
+In statistical mechanics C(T) is called the 
+specfic heat. A large value of C signals a 
+change in the state of order of a system, 
+and car1 be used in the optimization 
+context to indicate that freezing has be- 
+13 MAY 1983 
+gun and hence that very slow cooling is 
+required. It can also be used to deter- 
+mine the entropy by the thermodynamic 
+relation 
+Integrating Eq. 5 gives 
+where TI is a temperature at which S is 
+known, usually by an approximation val- 
+id at high temperatures. 
+The analogy between cooling a fluici 
+and optimization may fail in one impor- 
+tant respect. In ideal fluids all the atoms 
+are alike and the ground state is a regular 
+crystal. A typical optimization problem 
+will contain many distinct, noninter-
+changeable elements, so a regular solu- 
+tion is unlikely. However, much re-
+search in condensed matter physics is 
+directed at systems with quenched-in 
+randomness, in which the atoms are not 
+all alike. An important feature of such 
+systems, termed "frustration," is that 
+interactions favoring different and in-
+compatible kinds of ordering may be 
+simultaneously present (Y). The magnet- 
+ic alloys known as "spin glasses," which 
+exhibit competition between ferromag- 
+netic and antiferromagnetic spin order- 
+ing, are the best understood example of 
+frustration (10). It is now believed that 
+highly frustrated systems like spin glass- 
+es have many nearly degenerate random 
+ground states rather than a single ground 
+state with a high degree of symmetry. 
+These systems stand in the same relation 
+to conventional magnets as glasses do to 
+crystals, hence the name. 
+The physical properties of spin glasses 
+at low temperatures provide a possible 
+guide for understanding the possibilities 
+of optimizing complex systems subject 
+to conflicting (frustrating) constraints. 
+Physical Design of Computers 
+The physical design of electronic sys- 
+tems and the methods and simplifica-
+tions employed to automate this process 
+have been reviewed (11, 12). We first 
+provide some background and defini-
+tions related to applications of the simu- 
+lated annealing framework to specific 
+problems that arise in optimal design of 
+computer systems and subsystems. 
+Physical design follows logical design. 
+After the detailed specification of the 
+logic of a system is complete, it is neces- 
+sary to specify the precise physical real- 
+ization of the system in a particular tech- 
+nology. 
+This process is usually divided into 
+several stages. First, the design must be 
+partitioned into groups small enough to 
+fit the available packages, for example, 
+into groups of circuits small enough to fit 
+into a single chip, or into groups of chips 
+and associated discrete components that 
+can fit onto a card or other higher level 
+package. Second, the circuits are as-
+signed specific locations on the chip. 
+This stage is usually called placement. 
+Finally, the circuits are connected by 
+wires formed photolithographically out 
+of a thin metal film, often in several 
+layers. Assigning paths, or routes, to the 
+wires is usually done in two stages. In 
+rough or global wiring, the wires are 
+assigned to regions that represent sche- 
+matically the capacity of the intended 
+package. In detailed wiring (also called 
+exact embedding), each wire is given a 
+unique complete path. From the detailed 
+wiring results, masks can be generated 
+and chips made. 
+At each stage of design one wants to 
+optimize the eventual performance of the 
+system without compromising the feasi- 
+bility of the subsequent design stages. 
+Thus partitioning must be done in such a 
+way that the number of circuits in each 
+partition is small enough to fit easily into 
+the available package, yet the number of 
+signals that must cross partition bound- 
+aries (each requiring slow, power-con- 
+suming driver circuitry) is minimized. 
+The major focus in placement is on mini- 
+mizing the length of connections, since 
+this translates into the time required for 
+propagation of signals, and thus into the 
+speed of the finished system. However, 
+the placements with the shortest implied 
+wire lengths may not be wirable, because 
+of the presence of regions in which the 
+wiring is too congested for the packag- 
+ing technology. Congestion, therefore, 
+should also be anticipated and minimized 
+during the placement process. In wiring, 
+it is desirable to maintain the minimum 
+possible wire lengths while minimizing 
+sources of noise, such as cross talk be- 
+tween adjacent wires. We show in this 
+and the next two sections how these 
+conflicting goals can be combined and 
+made the basis of an automatic optimiza- 
+tion procedure. 
+The tight schedules involved present 
+major obstacles to automation and opti- 
+mization of large system design, even 
+when computers are employed to speed 
+up the mechanical tasks and reduce the 
+chance of error. Possibilities of feed- 
+back, in which early stages of a design 
+are redone to solve problems that be- 
+came apparent only at later stages, are 
+greatly reduced as the scale of the over- 
+all system being designed increases. Op-
+
+===== PAGE 5 =====
+
+0 
+The objective function ,f has precisely 
+the form of a Hamiltonian, or energy 
+function, studied in the theory of random 
+magnets, when the common simplifying 
+assumption is made that the spins, pi, 
+have only two allowed orientations (up 
+or down), as in the linear chain example 
+of the previous section. It combines lo- 5:
+cal, random, attractive ("ferromagnet-
+ic") interactions, resulting from the a,'s, 
+5
+5 'i
+C
+I;
+with a long-range repulsive ("antiferro- z 2 Boundary 
+magnetic") interaction due to A. No con- 
+1000~ 2000 3000 4000 5000 6000 
+Sum of pins on the two chips 
+Fig. 1. Distribution of total number of pins 
+required in two-way partition of a micro-
+processor at various temperatures. Arrow in- 
+dicates best solution obtained by rapid 
+quenching as opposed to annealing. 
+timization procedures that can incorpo- 
+rate, even approximately, information 
+about the chance of success of later 
+stages of such complex designs will be 
+increasingly valuable in the limit of very 
+large scale. 
+System performance is almost always 
+achieved at the expense of design conve- 
+nience. The partitioning problem pro-
+vides a clean example of this. Consider 
+N circuits that are to be partitioned be- 
+tween two chips. Propagating a signal 
+across a chip boundary is always slow, 
+so the number of signals required to 
+cross between the two must be mini- 
+mized. Putting all the circuits on one 
+chip eliminates signal crossings, but usu- 
+ally there is no room. Instead, for later 
+convenience, it is desirable to divide the 
+circuits about equally. 
+If we have connectivity information in 
+a matrix whose elements {aii} are the 
+number of signals passing between cir- 
+cuits i and j, and we indicate which chip 
+circuit i is placed on by a two-valued 
+variable p,; = t 1, then N,, the number 
+of signals that must cross a chip bound- 
+ary is given by Ci:.,(a;,i4)(pi - p,J2. Cal-
+culating &pi gives the difference be- 
+tween the numbers of circuits on the two 
+chips. Squaring this imbalance and intro- 
+ducing a coefficient, A, to express the 
+relative costs of imbalance and boundary 
+crossings, we obtain an objective func- 
+tion, j; for the partition problem: 
+Reasonable values of A should satisfy 
+A s 212, where z is the average number 
+of circuits connected to a typical circuit 
+(fan-in plus fan-out). Choosing A = 212 
+implies giving equal weight to changes in 
+the balance and crossing scores. 
+figuration of the {pl} can simultaneously 
+satisfy all the interactions, so the system 
+is "frustrated," in the sense formalized 
+by Toulouse (9). 
+If the aij are completely uncorrelated, 
+it can be shown (13) that this Hamilto- 
+nian has a spin glass phase at low tem- 
+peratures. This implies for the associated 
+magnetic problem that there are many 
+degenerate "ground states" of nearly 
+equal energy and no obvious symmetry. 
+The magnetic state of a spin glass is very 
+stable at low temperatures (14), so the 
+ground states have energies well below 
+the energies of the random high-tempera- 
+ture states, and transforming one ground 
+state into another will usually require 
+considerable rearrangement. Thus this 
+analogy has several implications for opti- 
+mization of partition: 
+1) Even in the presence of frustration, 
+significant improvements over a random 
+starting partition are possible. 
+2) There will be many good near-opti- 
+ma1 solutions, so a stochastic search 
+procedure such as simulated annealing 
+should find some. 
+3) No one of the ground states is sig- 
+nificantly better than the others, so it is 
+not very fruitful to search for the abso- 
+lute optimum. 
+In developing Eq. 7 we made several 
+severe simplifications, considering only 
+two-way partitioning and ignoring the 
+fact that most signals connect more than 
+two circuits. Objective functions analo- 
+gous tof that include both complications 
+are easily constructed. They no longer 
+have the simple quadratic form of Eq. 7, 
+but the qualitative feature, frustration, 
+remains dominant. The form of the Ham- 
+iltonian makes no difference in the Me- 
+tropolis Monte Carlo algorithm. Evalua- 
+tion of the change in function when a 
+circuit is shifted to a new chip remains 
+rapid as the definition of f becomes 
+more complicated. 
+It is likely that the aii are somewhat 
+correlated, since any design has consid- 
+erable logical structure. Efforts to under- 
+stand the nature of this structure by 
+analyzing the surface-to-volume ratio of 
+components of electronic systems [as in 
+"Rent's rule" (15)] conclude that the 
+Fig. 2. Construction of a horizontal net-cross- 
+ing histogram. 
+circuits in a typical system could be 
+connected with short-range interactions 
+if they were embedded in a space with 
+dimension between two and three. Un- 
+correlated connections, by contrast, can 
+be thought of as infinite-dimensional, 
+since they are never short-range. 
+The identification of Eq. 7 as a spin 
+glass Hamiltonian is not agected by the 
+reduction to a two- or three-dimensional 
+problem, as long as AN = 212. The de- 
+gree of ground state degeneracy in-
+creases with decreasing dimensionality. 
+For the uncorrelated model, there are 
+typically of order N'I2nearly degenerate 
+ground states (14), while in two and three 
+dimensions, 2"N, for some small value, 
+a, are expected (16). This implies that 
+finding a near-optimum solution should 
+become easier, the lower the effective 
+dimensionality of the problem. The en- 
+tropy, measurable as shown in Eq. 6, 
+provides a measure of the degeneracy of 
+solutions. S(T) is the logarithm of the 
+number of solutions equal to or better 
+than the average result encountered at 
+temperature T. 
+As an example of the partitioning 
+problem, we have taken the logic design 
+for a single-chip IBM "370 microproces- 
+sor" (17) and considered partitioning it 
+into two chips. The original design has 
+approximately 5000 primitive logic gates 
+and 200 external signals (the chip has 200 
+logic pins). The results of this study are 
+plotted in Fig. 1. If one randomly assigns 
+gates to the two chips, one finds the 
+distribution marked T = M- for the num- 
+ber of pins required. Each of the two 
+chips (with about 2500 circuits) would 
+need 3000 pins. The other distributions 
+in Fig. 1 show the results of simulated 
+annealing. 
+Monte Carlo annealing is simple to 
+implement in this case. Each proposed 
+configuration change simply flips a ran- 
+domly chosen circuit from one chip to 
+the other. The new number of exkrnal 
+connections, C, to the two chips is calcu- 
+lated (an external connection is a net 
+with circuits on both chips, or a circuit 
+SCIENCE, VOI.. 220 
+
+===== PAGE 6 =====
+
+connected to one of the pins of the 
+original single-chip design), as is the new 
+balance score, H, calculated as in deriv-
+ing Eq. 7. The objective function analo-
+gous to Eq. 7 is 
+where C is the sum of the number of 
+external connections on the two chips 
+and B is the balance score. For this 
+example, h - 0.01. 
+For the annealing schedule we chose 
+to start at a high "temperature," 
+TO = 10, where essentially all proposed 
+circuit flips are accepted, then cool ex-
+ponentially, T,, = (T11T0)"7;,, with the ra-
+tio Tl/TI, = 0.9. At each temperature 
+enough flips are attempted that either 
+there are ten accepted flips per circuit on 
+the average (for this case, 50,000 accept-
+ed flips at each temperature), or the 
+tiumber of attempts exceeds 100 times 
+the number of circuits before ten flips 
+per circuit have been accepted. If the 
+desired number of acceptances is not 
+achieved at three successive tempera-
+tures, the system is considered "frozen" 
+and annealing stops. 
+The finite temperature curves in Fig. 1 
+show the distribution of pins per chip for 
+the configurations sampled at 7' = 2.5, 
+1 .O, and 0.1. As one would expect from 
+the statistical mechanical analog, the dis-
+tribution shifts to fewer pins and shar-
+pens as the temperature is decreased. 
+The sharpening is one consequence of 
+the decrease in the number of configura-
+tions that contribute to the equilibriom 
+ensemble at the lower temperature. In 
+the language of statistical mechanics, the 
+entropy of the sysiem decreases. For 
+this sample run in the low-temperature 
+limit, the two chips required 353 and 321 
+pins, respectively. There are 237 nets 
+connecting the two chips (requiring a pin 
+on each chip) in addition to the 200 
+inputs and outputs of the original chip. 
+'The final pal-tition in this example has 
+the circuits exactly evenly distributed 
+between the two partitions. Using a 
+more complicated balance score, which 
+did not penalize imbalance of less than 
+100 circuits, we found partitions result-
+ing in chips with 271 and 183 pins. 
+If, instead of slowly cooling, one were 
+to start from a random partition and 
+accept only flips that reduce the objec-
+tive function (equivalent to setting T = 0 
+in the Metropolis rule), the result is chips 
+with approximately 700 pins (several 
+such runs led to results with 677 to 
+730 pins). Kapid cooling results in a 
+system frozen into a metastable state 
+far from the optimal configuration. The 
+best result obtained after several rapid 
+quenches is indicated by the arrow in 
+Fig. I. 
+Placement 
+Placement is a further refinement of 
+the logic partitioning process, in which 
+the circuits are given physical positions 
+(11, 12, 18, 19). In principle, the two 
+stages could be combined, although this 
+is not often possible in practice. The 
+objectives in placement are to minimize 
+Initial position T: 10000 
+........... . . ..... 
+99 98 92 83 72 :)>: :<<2: :a> 71 92 95 94 07 :53 '6'2'..... 's?: :?? ..... 405 ........568 . . .. . . ' :: ' 
+93 95 55 54 52 25 :??, $, L:Z: .a,?: 83 8(+ 97 73 72 j$$ ?:f::2:2; ...760 ,, q i:: ,:: ... 563 ..... 
+97 69 71 @$ , 6.2. .6:1: 'G.3: 95 99 98 @ 52 :&:I: :?% 12 23 
+809 .- .. . 559 
+90 53 87 @ .& @ 94 73 'gl 5 15 90$za@a 
+7 0 0 560 
+89 27 67 78 23 12 10 11 16 25 78 55 69 10 a 11 1 
+7 18 591 
+29 41 15 16 1 91 @ 33 79 89 27 67 53 64 #I#/ @ a 
+717 595 . 
+5 a I 30 49 @ fa! !mHl 
+.-- -. 
+8 19 15 29 49 - illltii @ ill#l 
+785 562 
+28 18 79 5 rn 36 +@@ @ 6 51 @ ll[#ll a 
+695 555 
+l9 rn- m W I/\\IIiWil rn 7 9 '+l gg fg z* ///I//// 
+499 := a =-g -- - 395 
+-- -- IN#] :& 30 28 71 36 \\#i/i 33 
+c 477 700 892 782 820 932 909 736 689 d 373 471 569 613 580 625 632 590 334 
+Fig. 3. Ninety-eight chips on a ceramic module from the IBM 3081. Chips are identified by number (I to 100, with 20 and 100 absent) and function. 
+The dark squares comprise an adder. the three types of squares wit11 ruled lines are chips that contr-ol and supply data to the adder, the lightly dot-
+ted chips perform logical arithmetic (bitwise ANII. OK, and so on), and the open squares denote genera-purpose registers, which serve both 
+arithmetic units. The numbers at the left and lower edges of the module image are the vertrcal and horizontal net-crossing histograms, 
+respectively. (a) Original chip placement; (b) a configuration at 7' =- 10,000; (c) T = 1250; (d) a zero-temperature result. 
+13 MAY 1983 075 
+
+===== PAGE 7 =====
+
+signal propagation times or distances 
+while satisfying prescribed electrical 
+constraints, without creating regions so 
+congested that there will not be room 
+later to connect the circuits with actual 
+wire. 
+Physical design of computers includes 
+several distinct categories of placement 
+problems, depending on the packages 
+involved (20). The larger objects to be 
+placed include chips that must reside in a 
+higher level package, such as a printed 
+circuit card or fired ceramic "module" 
+(21). These chip carriers must in turn be 
+placed on a backplane or "board," 
+which is simply a very large printed 
+circuit card. The chips seen today con- 
+tain from tens to tens of thousands of 
+logic circuits, and each chip carrier or 
+board will provide from one to ten thou- 
+sand interconnections. The partition and 
+placement problems decouple poorly in 
+this situation, since the choice of which 
+chip should carry a given piece of logic 
+will be influenced by the position of that 
+chip. 
+The simplest placement problems 
+arise in designing chips with structured 
+layout rules. These are called "gate ar-
+ray" or "master slice" chips. In these 
+chips, standard logic circuits, such as 
+three- or four-input NOR'S, are pre-
+placed in a regular grid arrangement, and 
+the designer specifies only the signal 
+wiring, which occupies the final, highest, 
+layers of the chip. The circuits may all be 
+identical, or they may be described in 
+terms of a few standard groupings of two 
+or more adjacent cells. 
+As an example of a placement problem 
+with realistic complexity without too 
+many complications arising from pack- 
+age idiosyncrasies, we consider 98 chips 
+packaged on one multilayer ceramic 
+module of the IRM 3081 processor (21). 
+Each chip can be placed on any of 100 
+sites, in a I0 x I0 grid on the top surface 
+of the module. Information about the 
+connections to be made through the sig- 
+nal-carrying planes of the module is con- 
+tained in a "netlist," which groups sets 
+of pins that see the same signal. 
+The state of the system can be briefly 
+represented by a list of the 98 chips with 
+their x and y coordinates, or a list of the 
+contents of each of the 100 legal loca- 
+tions. A sufficient set of moves to use for 
+annealing is interchanges of the contents 
+of two locations. This results in either 
+the interchange of two chips or the inter- 
+change of a chip and a vacancy. For 
+more efficient search at low tempera- 
+tures, it is helpful to allow restrictions on 
+the distance across which an interchange 
+may occur. 
+To measure congestion at the same 
+time as wire length, we use a convenient 
+intermediate analysis of the layout, a 
+net-crossing histogram. Its construction 
+is summarized in Fig. 2. We divide the 
+package surface by a set of natural 
+boundaries. In this example, we use the 
+boundaries between adjacent rows or 
+columns of chip sites. The histogram 
+then contains the number of nets cross- 
+ing each boundary. Since at least one 
+wire must be routed across each bound- 
+ary crossed, the sum of the entries in the 
+histogram of Fig. 2 is the sum of the 
+horizontal extents of the rectangles 
+bounding each net, and is a lower bound 
+to the horizontal wire length required. 
+Constructing a vertical net-crossing his- 
+togram and summing its entries gives a 
+similar estimate of the vertical wire 
+length. 
+The peak of the histogram provides a 
+lower bound to the amount of wire that 
+must be provided in the worst case, since 
+each net requires at least one wiring 
+channel somewhere on the boundary. To 
+combine this information into a single 
+objective function, we introduce a 
+threshold level for each histogram-an 
+amount of wire that will nearly exhaust 
+the available wire capacity-and then 
+sum for all histogram elements that ex- 
+ceed the threshold the square of the 
+excess over threshold. Adding this quan- 
+tity to the estimated length gives the 
+objective function that was used. 
+Figure 3 shows the stages of a simulat- 
+ed annealing run on the 98-chip module. 
+Figure 3a shows the chip locations from 
+the original design, with vertical and 
+horizontal net-crossing histograms indi- 
+cated. The different shading patterns dis- 
+tinguish the groups of chips that carry 
+out different functions. Each such group 
+was designed and placed together, usual- 
+ly by a single designer. The net-crossing 
+histograms show that the center of the 
+layout is much more congested than the 
+edges, most likely because the chips 
+known to have the most critical timing 
+constraints were placed in the center of 
+the module to allow the greatest number 
+of other chips to be close to them. 
+Heating the original design until the 
+chips diffuse about freely quickly pro- 
+duces a random-looking arrangement, 
+Fig. 3b. Cooling very slowly until the 
+chips move sluggishly and the objective 
+function ceases to decrease rapidly with 
+change of temperature produced the re- 
+sult in Fig. 3c. The net-crossing histo- 
+grams have peaks comparable to the 
+peak heights in the original placement, 
+but are much flatter. At this "freezing oi___~.~.--i 
+to1 lo2 lo3 I o4 
+Temperature 
+Fig. 4. Specific heat as a function of ternpera- 
+ture for the design of Fig. 3, a to d. 
+Pig. 5. Examples of (a) L-shaped and (b) %-
+shaped wire rearrangements. 
+point," we find that the functionally re- 
+lated groups of chips have reorganized 
+from the melt, but now are spatially 
+separated in an overall arrangement 
+quite dilferent from the original place- 
+ment. In the final result, Fig. 3d, the 
+histogram peaks are about 30 percent 
+less than in the original placement. Inte- 
+grating them, we find that total wire 
+length, estimated in this way, is de-
+creased by about 10 percent. The com- 
+puting requirements for this example 
+were modest: 250,000 interchanges were 
+attempted, requiring 12 minutes of com- 
+putation on an IBM 3033. 
+Between the temperature at which 
+clusters form and freezing starts (Fig. 3c) 
+and the final result (Fig. 3d) there are 
+many further local rearrangements. The 
+functional groups have remained in the 
+same regions, but their shapes and rela- 
+tive alignments continue to change 
+throughout the low-temperature part of 
+the annealing process. This illustrates 
+that the introduction of temperature to 
+the optimization process permits a con- 
+trolled, adaptive division of the problem 
+S('IENCE, VOL. 220 
+
+===== PAGE 8 =====
+
+through the evolution of natural clusters 
+at the freezing temperature. Early pre- 
+scription of natural clusters is also a 
+central feature of several sophisticated 
+placement programs used in master slice 
+chip placement (22, 23). 
+A quantity corresponding to the ther- 
+nlodynamic specific heat is defined for 
+this problem by taking the derivative 
+with respect to temperature of the aver- 
+age value of the objective function ob- 
+served at a given temperature. 'I'his is 
+plotted in Fig. 4. Just as a maximum in 
+the specific heat of a fluid indicates the 
+onset of freezing or the formation of 
+clusters, we find specific heat maxima at 
+two temperatures, each indicating a dif- 
+ferent type of ordering in the problem. 
+The higher temperature peak corre-
+sponds to the aggregation of clusters of 
+functionally related objects, driven apart 
+by the congestion term in the scoring. 
+The lower temperature peak indicates 
+the further decrease in wire length ob- 
+tained by local rearrangements. l'his sort 
+of measurement can be useful in practice 
+as a means of determining the tempera- 
+ture ranges in which the important rear- 
+rangements in the design are occurring, 
+wherc slower cooling with be helpful. 
+Wiring 
+After placement, specific legal rout-
+ing~ must be found for the wires needed 
+to connect the circuits. The techniques 
+typic;rlly applied to generate such rout- 
+ing~are sequential in nature, treating one 
+wire at a time with incomplete informa- 
+tion about the positions and effects of the 
+other wires (11, 24). Annealing is inher- 
+ently free of this sequence dependence. 
+In this section we describe a simulated 
+annealing approach to wiring, using the 
+ceramic module of the last section as an 
+example. 
+Nets with many pins must first be 
+broken into connections-pairs of pins 
+joinetd by a single continuous wire. 'l'his 
+"ordering" of each net is highly depen- 
+dent on the nature of the circuits being 
+connected and the package technology. 
+Orderings permitting more than two pins 
+to be connected are sometimes allowed, 
+but will not be discussed here. 
+The usual procedure, given an order- 
+ing, is first to construct a coarse-scale 
+routing for each connection from which 
+the ultimate detailed wiring can be com- 
+pleted. Package technologies and struc- 
+turecl image chips have prearranged ar-
+eas of fixed capacity for the wires. For 
+the rough routing to be successful, it 
+must not call for wire densities that ex- 
+ceed this capacity. 
+Random M.C. 2-paths 
+Grid size 10 Grid size 10 
+Fig. 6 (left). Wire density in the OX-chip mod ule with the connections randomly assigned to 
+perimeter routes. Chips are in the original pl acement. Fig. 7 (right). Wire density after 
+simulated annealing of the wire routing. using %-shaped moves. 
+We can model the rough routing prob- tailed wiring. In that case, all the links 
+lem (and even simple cases of detailed have either one or no wires, and links 
+embedding) by lumping all actual pin with two or more wires are illegal. For 
+positions into a regular grid of points, this limit the best possible value of F will 
+which are treated as the sources and be NwINL.. 
+sinks of all connections. The wires are For the L,-shaped moves, F has a 
+then to be routed along the links that relatively simple form. L,et t,,, = +I 
+connect ad.jacent grid points. along the links that connection i has for 
+'I'he objectives in global routing are to one orientation. -1 for the other orienta- 
+minimize wire length and, often, the tion, and 0 otherwise. Let (I;,, be 1 if the 
+number of bends in wires, while spread- ith connection can run through the vth 
+ing the wire as evenly as possible to link in either of its two positions, and 0 
+simplify exact embedding and later revi- otherwise. Note that (I;, is just E;,;. Then 
+sion. Wires are to be routed around if p, = + 1 indicates which route the ith 
+regions in which wire demand exceeds connection has taken, we obtain for the 
+capacity if possible, so that they will not number of wires along the vth link, 
+"overflow," requiring drastic rearrange- 
+ments of the other wires during exact n,, = (Il"(e,L,Fl + 1) + nu(()) (9) 
+embedding. Wire bends are costly in , 2 
+packages that confine the north-south where n,,(O) is the contribution from 
+and east-west wires to different layers, straight wires, which cannot move with- 
+since each bend requires a connection out increasing their length, or blockages. 
+between two layers. 'I'wo classes of Summing the n,,2 gives 
+moves that maintain the minimum wire 
+length are shown in Fig. 5. In the L-
+shaped move of Fig. 5a, only the essen- 
+tial bends are permitted, while the Z- which has the form of the Hamiltonian 
+shaped move of Fig. 5b introduces one for a random magnetic alloy or spin 
+extra bend. We will explore the optimi- glass, like that discussed earlier. The 
+zation possible with these two moves. "random field," hi, felt by each movable 
+For a simple objective function that connection reflects the ditference, on the 
+will reward the most balanced arrange- average, between the congestion associ- 
+ment of wire, we calculate the square of ated with the two possible paths: 
+the number of wires on each link of the 
+network, sum the squares for all links, 
+and term the result F. If there are NI, 
+links and Nw wires, a global routing The interaction between two wires is 
+program that deals with a high density of proportional to the number of links on 
+wires will attempt to route precisely the which the two nets can overlap, its sign 
+average number of wires, NwlNI,, along depending on their orientation conven- 
+each link. In this limit I.' is bounded tions: 
+below by N~*/N,,. One can use the same 
+ob.jective function for a low-density (or 
+high-resolution) limit appropriate for de- 
+
+===== PAGE 9 =====
+
+Both Jii and hi vanish, on average, so it is 
+the fluctuations in the terms that make 
+up F which will control the nature of the 
+low-energy states. This is also true in 
+spin glasses. We have not tried to exhibit 
+a functional form for the objective func- 
+tion with Z-moves allowed, but simply 
+calculate it by first constructing the actu- 
+al amounts of wire found along each link. 
+To assess the value of annealing in 
+wiring this model, we studied an ensem- 
+ble of randomly situated connections, 
+under various statistical assumptions. 
+Here we consider routing wires for the 
+9.3 chips on a module considered earlier. 
+First, we show in Fig. 6 the arrangement 
+of wire that results from assigning each 
+wire to an L-shaped path, choosing ori- 
+entations at random. The thickness of 
+the links is proportional to the number of 
+wires on each link. The congested area 
+that gave rise to the peaks in the histo- 
+grams discussed above is seen in the 
+wiring just below and to the right of the 
+center of the module. The maximum 
+numbers of wires along a single link in 
+Fig. 6 are 173 (x direction) and 143 0, 
+direction), so the design is also aniso- 
+tropic. Various ways of rearranging the 
+wiring paths were studied. Monte Carlo 
+annealing with Z-moves gave the best 
+solution, shown in Fig. 7. In this exam- 
+Pig. 8. Histogram of the rnaxi- 
+mum wire densities within a 
+given column of x-links, for 
+........ 	 the various methods of rout- 
+ing. 
+I:.: : : : J ,: 
+2 4 6 8 10 
+1 3 5 7 9 
+Channel position 
+Fig. 9. Results at four temperatures for a clustered 400-city traveling salesman problem. The 
+points are uniformly distributed in nine regions. (a) T = 1.2, a = 2.0567; (b) T = 0.8, 
+n = 1.515; (c) T = 0.4, a = 1.055; (d) T = 0.0, n = 0.7839. 
+ple, the largest numbers of wires on a 
+single link are 105 (x) and 96 (y). 
+We compare the various methods of 
+improving the wire arrangement by plot- 
+ting (Fig. 8) the highest wire density 
+found in each column ofx-links for each 
+of the methods. The unevenness of the 
+density profiles was already seen when 
+we considered net-crossing histograms 
+as input information to direct placement. 
+The lines shown represent random as-
+signment of wires with 1,-moves; align- 
+ing wires in the direction of least average 
+congestion-that is, along h,-followed 
+by cooling for one pass at zero T; simu-
+lated annealing with L-moves only; and 
+annealing with Z-moves. Finally, the 
+light dashed line shows the optimum 
+result, in which the wires are distributed 
+with all links carrying as close to the 
+average weight as possible. The opti- 
+mum cannot be attained in this example 
+without stretching wires beyond their 
+minimum length, because the connec-
+tions are too unevenly arranged. Any 
+method of optimization gives a signifi-
+cant improvement over the estimate ob- 
+tained by assigning wire routings at ran- 
+dom. All reduce the peak wire density on 
+a link by more than 45 percent. Simulat- 
+ed annealing with %-moves improved the 
+random routing by 57 percent, averaging 
+results for both x and y links. 
+Traveling Salesmen 
+Quantitative analysis of the simulated 
+annealing algorithm or comparison be- 
+tween it and other heuristics requires 
+problems simpler than physical design of 
+computers. There is an extensive litera- 
+ture on algorithms for the traveling sales- 
+man problem (3, 4), so it provides a 
+natural context for this discussion. 
+If the cost of travel between two cities 
+is proportional to the distance between 
+them, then each instance of a traveling 
+salesman problem is simply a list of the 
+positions of N cities. For example, an 
+arrangement of N points positioned at 
+random in a square generates one in-
+stance. The distance can be calculated in 
+either the Euclidean metric or a "Man- 
+hattan" metric, in which the distance 
+between two points is the sum of their 
+separations along the two coordinate 
+axes. The latter is appropriate for physi- 
+cal design applications, and easier to 
+compute, so we will adopt it. 
+We let the side of the square have 
+length N"~, SO that the average distance 
+between each city and its nearest neigh- 
+bor is independent of N. It can be shown 
+that this choice of length units leaves the 
+optimal tour length per step independent 
+of N, when one averages over many 
+
+===== PAGE 10 =====
+
+instances, keeping N fixed (25). Call this 
+average optimal step length a. To bound 
+a firom above, a numerical experiment 
+was performed with the following 
+"greedy" heuristic algorithm. From 
+each city, go to the nearest city not 
+already on the tour. From the Nth city, 
+return directly to the first. In the worst 
+case, the ratio of the length of such a 
+greedy tour to the optimal tour is propor- 
+tional to In(N) (26), but on average, we 
+find that its step length is about 1.12. The 
+variance of the greedy step length de- 
+creases as N-''~, SO the situation envi- 
+sioned in the worst case analysis is unob- 
+servably rare for large N. 
+To construct a simulated annealing 
+algorithm, we need a means of represent- 
+ing the tour and a means of generating 
+random rearrangements of the tour. 
+Each tour can be described by a permut- 
+ed list of the numbers I to N, which 
+represents the cities. A powerful and 
+general set of moves was introduced by 
+Lin and Kernighan (27, 28). Each move 
+consists of reversing the direction in 
+which a section of the tour is traversed. 
+More complicated moves have been 
+used to enhance the searching effective- 
+ness of iterative improvement. We find 
+with the adaptive divide-and-conquer ef- 
+fect of annealing at intermediate tem- 
+peratures that the subsequence reversal 
+moves are sufficient (29). 
+An annealing schedule was deter-
+mined empirically. The temperature at 
+which segments flow about freely will be 
+of order N"*, since that is the average 
+bond length when the tour is highly ran- 
+dom. Temperatures less than 1 should be 
+cold. We were able to anneal into locally 
+optimal solutions with a 5 0.95 for N up 
+to 6000 sites. The largest traveling sales- 
+man problem in the plane for which a 
+proved exact solution has been obtained 
+and published (to our knowledge) has 
+318 points (30). 
+Real cities are not uniformly distribut- 
+ed, but are clumped, with dense and 
+sparse regions. To introduce this feature 
+into an ensemble of traveling salesman 
+problems, albeit in an exaggerated form, 
+we confine the randomly distributed cit- 
+ies to nine distinct regions with empty 
+gaps between them. The temperature 
+gives the simulated annealing method a 
+mean:; of separating out the problem of 
+the coarse structure of the tour from the 
+local details. At temperatures, such as 
+T = 1.2 (Fig. 9a), where the small-scale 
+structure of the paths is completely dis- 
+ordered, the longer steps across the gaps 
+are already becoming infrequent and 
+steps joining regions more than one gap 
+are eliminated. The configurations stud- 
+ied below T = 0.8 (for instance, Fig. 9b) 
+had the minimal number of long steps, 
+but the detailed arrangement of the long 
+steps continued to change down to 
+T = 0.4 (Fig. 9c). Below T = 0.4, no 
+further changes in the arrangement of the 
+long steps were seen, but the small-scale 
+structure within each region continued to 
+evolve, with the result shown in Fig. 9d. 
+Summary and Conclusions 
+Implementing the appropriate Metrop- 
+olis algorithm to simulate annealing of a 
+combinatorial optimization problem is 
+straightforward, and easily extended to 
+new problems. Four ingredients are 
+needed: a concise description of a con- 
+figuration of the system; a random gener- 
+ator of "moves" or rearrangements of 
+the elements in a configuration; a quanti- 
+tative objective function containing the 
+trade-offs that have to be made; and an 
+annealing schedule of the temperatures 
+and length of times for which the system 
+is to be evolved. The annealing schedule 
+may be developed by trial and error for a 
+given problem, or may consist of just 
+warming the system until it is obviously 
+melted, then cooling in slow stages until 
+diffusion of the components ceases. In- 
+venting the most effective sets of moves 
+and deciding which factors to incorpo- 
+rate into the objective function require 
+insight into the problem being solved and 
+may not be obvious. However, existing 
+methods of iterative improvement can 
+provide natural elements on which to 
+base a simulated annealing algorithm. 
+The connection with statistical me-
+chanics offers some novel perspectives 
+on familiar optimization problems. Mean 
+field theory for the ordered state at low 
+temperatures may be of use in estimating 
+the average results to be obtained by 
+optimization. The comparison with mod- 
+els of disordered interacting systems 
+gives insight into the ease or difficulty of 
+finding heuristic solutions of the associ- 
+ated optimization problems, and pro-
+vides a classification more discriminat- 
+ing than the blanket "worst-case" as-
+signment of many optimization problems 
+to the NP-complete category. It appears 
+that for the large optimization problems 
+that arise in current engineering practice 
+a "most probable" or average behavior 
+analysis will be more useful in assessing 
+the value of a heuristic than the tradition- 
+al worst-case arguments. For such analy- 
+sis to be useful and accurate, better 
+knowledge of the appropriate ensembles 
+is required. 
+Freezing, at the temperatures where 
+large clusters form, sets a limit on the 
+energies reachable by a rapidly cooled 
+spin glass. Further energy lowering is 
+possible only by slow annealing. We 
+expect similar freezing effects to limit the 
+effectiveness of the common device of 
+employing iterative improvement repeat- 
+edly from different random starting con- 
+figurations. 
+Simulated annealing extends two of 
+the most widely used heuristic tech-
+niques. The temperature distinguishes 
+classes of rearrangements, so that rear- 
+rangements causing large changes in the 
+objective function occur at high tempera- 
+tures, while the small changes are de- 
+ferred until low temperatures. This is an 
+adaptive form of the divide-and-conquer 
+approach. Like most iterative improve- 
+ment schemes, the Metropolis algorithm 
+proceeds in small steps from one config- 
+uration to the next, but the temperature 
+keeps the algorithm from getting stuck 
+by permitting uphill moves. Our numeri- 
+cal studies suggest that results of good 
+quality are obtained with annealing 
+schedules in which the amount of com- 
+putational effort scales as Nor as a small 
+power of N. The slow increase of effort 
+with increasing N and the generality of 
+the method give promise that simulated 
+annealing will be a very widely applica- 
+ble heuristic optimization technique. 
+Dunham (5) has described iterative 
+improvement as the natural framework 
+for heuristic design, calling it "design by 
+natural selection." [See Lin (6) for a 
+fuller discussion.] In simulated anneal- 
+ing, we appear to have found a richer 
+framework for the construction of heu- 
+ristic algorithms, since the extra control 
+provided by introducing a temperature 
+allows us to separate out problems on 
+different scales. 
+Simulation of the process of arriving at 
+an optimal design by annealing under 
+control of a schedule is an example of an 
+evolutionary process modeled accurate- 
+ly by purely stochastic means. In fact, it 
+may be a better model of selection pro- 
+cesses in nature than is iterative im- 
+provement. Also, it provides an intrigu- 
+ing instance of "artificial intelligence," 
+in which the computer has arrived al- 
+most uninstructed at a solution that 
+might have been thought to require the 
+intervention of human intelligence. 
+References and Notes 
+1. E. 	 L. Lawlor, Combinutorial Optimization 
+(Holt. Rinehart & Winston, New York, 1976). 
+2. 	 A. V. Aho. J. E. Hopcroft, J. D. Ullman, The 
+Design and Analysis of Computer Algorithms 
+(Addison-Wesley, Reading. Mass., 1974). 
+3. 	M. R. Garey and D. S. Johnson, Computers and 
+Intrartubilitj,: A Guide to the Theory uf' NP-
+Completmess (Freeman, San Francisco, 1979). 
+4. R. Karp, Muth. Oper. Kes. 2, 209 (1977). 
+5. B. Dunham, Synrhese 15. 254 (1961). 
+6. S. Lin. Networks 5, 33 (1975). 
+7. For a 	concise and elegant presentation of the 
+basic ideas of statistical mechanics, see E. Shro-
+dinger. Stuti.ctica1 Thermodynumics (Cambridge 
+Univ. Press, London, 1946). 
+8. N. Metropolis, A. Rosenbluth, M. Rosenbluth. 
+A. Teller. E. Teller, J. Chem. Phys. 21. 1087 
+110511
+,.,<*,. 
+9. G. Toulouse, Commun. Plzj's. 2, 115 (1977). 
+
+===== PAGE 11 =====
+
+10. For review articles, see C. Castellani. C. DiCas- 
+tro, L,. Peliti, Eds., Disordered Svstrrn~ ~nd 
+Locolizotion (Springer, New York. 1981). 
+11. J. Soukup, Proc. IEEE 69, 1281 (1981). 
+12. 	M. A. Breuer. Ed., Desi~n Automutiow of Digi-
+tal Sy~terns (Prentice-Hall, Engelwood Cliffs, 
+N.J., 1972). 
+11. D. Sherrington and S. Kirkpatrick, Phy~. Rev. 
+1,ett. 35, 1792 (1975): S. Kirkpatrick and I). 
+Sherrington, Phys. He,,. R 17, 4184 (1978). 
+14. 	A. P. Young and S. Klrkpatrick, Pllys. Rev. B 
+25, 440 (1982). 
+15. R. Mandelhrot. Frill tr11.s: Form, C'llrrnre, and 
+Dirnensior~ (Freeman, San Francisco, 1979). pp. 
+717-719-., -.,. 
+16. S. Kirkpatrick, 1'h.y~. Rev. R 16, 4630 (1977). 
+17. C. Davis, G. Maley! K. Simmons, H. Stoller, K. 
+Warren, T. Wohr, In I'roceediwgs of the 1IXE 
+Interni~fioni~l ConJPrence ow ('ircuits and Corn- 
+pulers, N. B. Guy Kabbat, Ed. (IEUE, New 
+York, 1980), pp. 669-673. 
+18. 	M. A. Hanan, P. K. Wolff, B. .I. Agule, .I. Des 
+Autom. Fi1ul1-7'i)lerur1t Cornnut. 2. 145 119781. 
+19. M. Breuer, ibid. 1, 343 (1977). 
+20. P. W. Case, M. Correia, W. Gianopulos, W. K. 
+Heller. H. Ofek, T. C. Raymond, K. I,. Simek, 
+C. B. Steiglitr, 1NM.I. Res. Dev. 25, 631 (1981). 
+21. A. J. Blodgett and D. K. Barbout, 	 ihid. 26, 10 
+(1982); A. J. Blodgett, in Proceedings of' tlle 
+~eetrr~wie~ und Cornprrter~ ('onJ'erenc.r (IEEE, 
+New York, 19801, pp. 283-285. 
+22. K. A. Chen, M. 	I'euer, K. H. Khokhani, N. 
+Nan. S. Schmidt. in Pror~eedin~~.~ 14thor the 
+IEEE Desixn Aufornution ~o~fci4ncb Or-(N~W 
+leans, La., 1977), pp. 298-102. 
+21. K. W. Lallier, J. B. Hickson. Jr.. K. K. Jackson. 
+paper presented at the European Conference on 
+Design Automation, September 1981. 
+24. 	1).Hightower, in Proi.eedings of file 6th IEEE 
+De~ign A~tonliltiow Worksllop (Miami Beach, 
+Fla., June 1969), pp. 1-24. 
+25. J. Beardwood, J. H. Halton, J. M. Hammers-
+Bone Cell Differentiation 
+and Growth Factors 
+Marshall R. Urist, Robert J. DeLange, G. A. M. Einerman 
+Bone differs from other tissue not only 
+in physiochemical structure but also in 
+its extraordinary capacity for growth, 
+continuous internal remodeling, and re- 
+generation throughout postfetirl life, 
+even in long-lived higher vertebrates. 
+How much of this capacity can be ac- 
+more than a century and is measured in 
+reactions of periosteum and endosteum 
+to injury, diet, vitamins, and hormones. 
+Bone-derived growth factors (B1)GF) 
+stimulate osteoprogenitor cells to prolif- 
+erate in serum-free tissue culture media 
+(3,4). The mechanisms of action of BMP 
+Summary. Bone morphogenetic protein and bone-derived growth factors are 
+biochemical tools for research on induced cell differentiation and local mechanisms 
+controlling cell proliferation. Bone morphogenetic protein irreversibly induces differen- 
+tiation of perivascular mesenchymal-type cells into osteoprogenitor cells. Bone- 
+derived growth factors are secreted by and for osteoprogenitor cells and stimulate 
+DNA synthesis. Bone generation and regeneration are attributable to the co-efficiency 
+of bone morphogenetic protein and bone-derived growth factors. 
+counted for by proliferation of preditfer- 
+entiated osteoprogenitor cells and how 
+much can be attributed to induced differ- 
+entiation of mesenchymal-ty pe cells 
+have been challenging questions for a 
+long time. A basic assumption is that 
+regeneration occurs by a combination of 
+the two processes. 'The process of in- 
+duced cell differentiation has been ob- 
+served from measurements of the quanti- 
+ties of bone formed in response to im- 
+plants of either bone matrix or purified 
+bone morphogenetic protein (BMP) in 
+extraskeletal (I) and intraskeletal (2) 
+sites. The osteoprogenitor cell prolifera- 
+tion process has been well known for 
+and Bl>GF are primarily local, but sec- 
+ondary systemic immunologic reactions 
+could have either permissive or depres- 
+sive effects. 
+Recent progress in the field, surveyed 
+in this article, suggest that BMP and 
+BDGF are coefficient: BMP initiates the 
+covert stage and Bl>GF stimulates the 
+overt stage of bone development. The 
+egects of BMP are observed on morpho- 
+logically unspecialized mesenchymal-
+type cells either in systems in vitro or in 
+vivo. The action of BDGF is demonstra- 
+ble only in tissue culture, ostensibly on 
+morphologically difl'erentiated bone 
+cells. 
+ley, Proc. Cumbridge I'lzilos. Soc. 55, 299 
+(19591. 
+26. 	i). ~.'Kesenkrantz, K. E. Stearns, P. M. Lewis, 
+SlAM (Soc. Ind. AppI. Moth.) .I. Contpnt. 6, 563 
+(19771. 
+27. S. in. Beli Syst. Tech. J. 44, 2245 (1965). 
+28. 	 and B. W. Kernighan, Oper. RPJ. 21,498 
+(19731. 
+29. 	V. Cerny has described an approach to the 
+traveling salesman problem similar to ours in a 
+manuscrivt received after this article was sub- 
+mitted f& publication. 
+30. H. Crowder and M. W. Padberg, Munuge. Si.;. 
+26, 495 (1980). 
+31. The 	 experience and collaborative efforts of 
+many of our colleagues have been essential to 
+this work. In particular, we thank J. Cooper, W. 
+Donath, B. Dunham, T. Enger, W. Heller, J. 
+Hickson, G. Hsi, D. Jepsen, H. Koch, K. 
+Linsker, C. Mehanian, S. Kothman, and lJ. 
+Schultz. 
+Induced Bone Morphogenesis 
+l'he theory of cell ditferentiation by 
+induction originates in observations on 
+transplants of embryonic tissues and is a 
+main tenet of modern developmental bi- 
+ology. Development begins with a mor- 
+phogenetic phase and ends with a cyto- 
+differentiation phase (5). The morpho- 
+genetic phase consists of cell disaggre- 
+gation, migration, reaggregation, and 
+proliferation. Through interaction of in- 
+tra- and extracellular influences, cytodif- 
+ferentiation follows and a mature func- 
+tional specialized tissue emerges. As cy- 
+todifferentiation occurs, pattern forma- 
+tion is established by the positional 
+values of cells in a three-dimensional 
+extracellular coordinate system (6). Pat-
+tern formation is a difficult concept to 
+explain because it is heritable, encom-
+passes morphogenesis, and is the culmi- 
+nation of manifold physiochemical pro- 
+cesses. Present evidence indicates that 
+chondro-osteogenetic gene activation is 
+induced at the onset of the morphogenet- 
+ic phase of bone development and is 
+regulated by a combination of extra- and 
+intracellular Sactors. 
+Previous studies on extracellular ma- 
+trix factors consisted chiefly of biochem- 
+ical interpretations of descriptive mor- 
+phology. The emphasis has been on 
+uncertainties about when the morpholog- 
+ically predifferentiated (protodifferen-
+tiated or covert) stage of development 
+begins, if and when an inductive agent is 
+transferred from extracellular matrix to 
+responding cell surfaces, and how alter- 
+ations in the genome occur. Since alter- 
+ations ultimately occur at the level of 
+DNA, clear-cut distinctions between ex- 
+Dr. lirist is director of the Bone Research L,abora- 
+tory and a professor of surgery (orthopedics), at the 
+University of California LJos Angeles (UCLA) Medi- 
+cal School, Los Angcles 90024. Dr. DeLtinge is a 
+professor of biological chemistry, at UCLA, and Dr. 
+Finerman is a professor of orthopedic surgery at 
+UCLA. 
+
+===== PAGE 12 =====
+
+You have printed the following article:
+Optimization by Simulated Annealing
+S. Kirkpatrick; C. D. Gelatt; M. P. Vecchi
+Science, New Series, Vol. 220, No. 4598. (May 13, 1983), pp. 671-680.
+Stable URL:
+http://links.jstor.org/sici?sici=0036-8075%2819830513%293%3A220%3A4598%3C671%3AOBSA%3E2.0.CO%3B2-8
+This article references the following linked citations. If you are trying to access articles from an
+off-campus location, you may be required to first logon via your library web site to access JSTOR. Please
+visit your library's website or contact a librarian to learn about options for remote access to JSTOR.
+References and Notes
+4 Probabilistic Analysis of Partitioning Algorithms for the Traveling-Salesman Problem in the
+Plane
+Richard M. Karp
+Mathematics of Operations Research, Vol. 2, No. 3. (Aug., 1977), pp. 209-224.
+Stable URL:
+http://links.jstor.org/sici?sici=0364-765X%28197708%292%3A3%3C209%3APAOPAF%3E2.0.CO%3B2-B
+30 Solving Large-Scale Symmetric Travelling Salesman Problems to Optimality
+Harlan Crowder; Manfred W. Padberg
+Management Science, Vol. 26, No. 5. (May, 1980), pp. 495-509.
+Stable URL:
+http://links.jstor.org/sici?sici=0025-1909%28198005%2926%3A5%3C495%3ASLSTSP%3E2.0.CO%3B2-M
+http://www.jstor.org
+LINKED CITATIONS
+- Page 1 of 1 -
+NOTE: The reference numbering from the original has been maintained in this citation list.

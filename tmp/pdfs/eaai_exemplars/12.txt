@@ -1,0 +1,1236 @@
+
+
+===== PAGE 1 =====
+Engineering Applications of Artificial Intelligence 120 (2023) 105891
+Contents lists available at ScienceDirect
+Engineering Applications of Artificial Intelligence
+journal homepage: www.elsevier.com/locate/engappai
+Multi-UAV trajectory optimizer: A sustainable system for wireless data
+harvesting with deep reinforcement learning✩
+Mincheol Seong a, Ohyun Job, Kyungseop Shinc,∗
+a The Republic of Korea Army, Daejeon, The Republic of Korea
+b Department of Computer Science, Chungbuk National University, Cheongju, The Republic of Korea
+c Department of Computer Science, Sangmyung University, Seoul, The Republic of Korea
+A R T I C L E I N F O
+Keywords:
+Wireless sensor network
+UAVs
+Data harvesting
+MARL
+Transfer learning
+Scenario parameters
+A B S T R A C T
+A wireless sensor network assisted by multiple autonomous unmanned aerial vehicles (UAVs) is a promising
+solution for harvesting data and monitoring the circumstance in various applications. However, the complicated
+path planning problem of each UAV is still problematic. In this paper, we propose an optimal operation
+strategy based on multi-agent reinforcement learning (MARL) to tackle these hurdles. Various parameters
+such as the number of deployed UAVs, charging start capacity, and charging complete capacity define a
+multi-UAV system. This approach is applicable without a time-consuming and costly policy control. We also
+describe how to balance multiple objectives, such as data harvesting, charging, and collision avoidance, using
+transfer learning. Finally, learning a policy control that generalizes multiple scenario parameters allows us
+to analyze the performance of individual parameters in a specific scenario, which helps find the macro-level
+optimal parameter within a particular scenario. Videos are available at https://github.com/mincheolseong/
+UAV-Trajectory-Optimizer.
+1. Introduction
+There are many fields where data harvesting applications are
+needed; preventing large-scale disasters, unmanned farming systems,
+watching in the military system, monitoring natural environment
+changes, et al.. For example, it is essential to continuously monitor
+changes in the sea environment, such as climate change or contaminant
+detection. Many studies have been conducted for dynamic information
+monitoring systems in the sea environment through wireless sensor
+nodes (Alkandari et al., 2012; Bottarelli et al., 2019; Liu et al., 2010).
+It is still challenging for sensor nodes to collect the data continuously
+produced in a sea environment due to the limited transmission energy
+and the long distance from a receiver located on land. Autonomous
+unmanned aerial vehicles (UAVs) as data harvesters can be one of
+the promising solutions to resolve these problems. They have many
+advantages over satellites and ground base stations (Kishk et al., 2020).
+A quick and straightforward deployment would cover a wide range of
+areas and reduce the cost of the infrastructure installed on the land.
+This paper focuses on building a UAV-aided data collection system
+based on a deep reinforcement learning mechanism to maximize its
+sustainability. A team of UAVs consists of a variable number of homo-
+geneous drones with the same task of collecting data. While carrying
+out these tasks, the UAVs need to return to the charging station when
+✩ This work was supported by the National Research Foundation of Korea [grant number 2021R1F1A1064059].
+∗ Corresponding author.
+E-mail addresses: smc5741@gmail.com (M. Seong), ohyunjo@chungbuk.ac.kr (O. Jo), ksshin@smu.ac.kr (K. Shin).
+the battery gets low. This issue imposes complex constraints on the
+design of the trajectory of the UAV for optimal data collection with
+limited battery capacity. Moreover, avoiding collisions between the
+UAVs should be taken into consideration to optimize the efficiency of
+the network when the number of UAVs increases.
+In this regard, deep reinforcement learning (DRL) might provide
+an opportunity to alleviate the challenges to our goals. First, it can
+be applied to complex problems with many constraints through an
+intuitive combination of reward functions. In addition, bearing in mind
+that the UAV control problems in the communication scenario have
+been proven to be NP-hard in many cases (Zeng et al., 2019; Zhang
+et al., 2019), the DRL is computationally efficient for approaching such
+kind of NP-hard problem as shown in Shen et al. (2019).
+1.1. Related work
+Multi-UAVs are actively being studied for their flexible and effi-
+cient operations in various fields, including communications and net-
+works (Pérez-Carabaza et al., 2019; Skorobogatov et al., 2020). In Fu
+et al. (2021), the authors suggested a method for a UAV to collect
+data through wireless charging. They adopted a single agent approach
+using Q-learning. However, it is impossible to consider all the complex
+https://doi.org/10.1016/j.engappai.2023.105891
+Received 6 September 2022; Received in revised form 18 January 2023; Accepted 19 January 2023
+Available online 27 January 2023
+0952-1976/© 2023 Elsevier Ltd. All rights reserved.
+
+===== PAGE 2 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+constraints and requirements in reality with the single agent approach.
+There have been studies on approaches using DRL in UAV-aided net-
+works to describe the complex environment in reality (Lahmeri et al.,
+2021; Ullah et al., 2020). They considered convolutional neural net-
+works and partial observability to define the environment as a par-
+tially observable Markov decision process (POMDP) for multi-UAV path
+planning. In a vast scenario parameter space in which environmental
+parameters are changed, there is no need for a separate relearning
+to be introduced in Bayerlein et al. (2021). It is possible to measure
+the performance of various scenario parameters. By the way, multiple
+objectives including data harvesting, charging, and collision avoidance
+have not been considered, which makes multi-UAV unsustainable. In
+addition, the agents’ action set is limited to cardinal directions, making
+it challenging to clarify the agent’s practical behaviors.
+Multiple objectives within the DRL approach are studied in Punma,
+Unpublished results (0000), where Deep Q-Network (DQN) and transfer
+learning are leveraged in a multi-agent setting. They tried to achieve
+multiple objectives for autonomous vehicles to fulfill customer de-
+mands for charging in 7 × 7 or 10 × 10 grid environments. However,
+to optimize the charging system, it needs to consider more realistic
+environments with large grid numbers or detailed charging conditions.
+We focus on constructing a sustainable UAV-aided network system
+by training UAVs with multiple objectives, including data collection,
+navigation constraints, and charging in a dynamic sea environment. To
+the best of the authors’ knowledge, this study is the first to address
+multi-UAV path planning based on the collective combination of a
+multi-agent DRL and a transfer learning in which the learned control
+policies can achieve multiple objectives.
+1.2. Organization
+The rest of this paper is organized as follows. In Section 2, we
+describe the system model to present the UAV, network environment,
+and channel. All the system parameters are reflected in the POMDP
+to consider our practical DRL application scenarios in Section 3. The
+multi-agent DRL learning approach and transfer learning to optimize
+the system are introduced in Section 4. Simulation results are presented
+and analyzed in Section 5. Our conclusions and prospects for future
+work are given in Section 6.
+2. System model
+2.1. Environmental model
+In this section, a system model is presented to make the RL approach
+applicable to the real world’s dynamics. The architecture and the pa-
+rameters are designed for applying the RL method to our environmental
+model.
+The first step required to apply the RL model is to create an
+environmental model that reflects the behavior of the agents which is
+likely to occur in real environments. This environmental model contains
+places where UAVs can take off and charge and sensing points where
+sensor nodes are located. An example of a grid world is illustrated
+in Fig. 1, and a single UAV trajectory is marked as described in the
+attached legend in Table 1.
+2.2. UAV model
+The UAVs are placed and move within the grid world with a size of
+𝑀 × 𝑀. The state of UAV 𝑖 at time 𝑡, 𝒔𝑖(𝑡), includes the following three
+elements:
+(1) position 𝒑𝑖(𝑡) = [ 𝑥𝑖(𝑡), 𝑦𝑖(𝑡), 𝑧𝑖(𝑡)]𝑇 ∈ R3, where the altitude 𝑧𝑖(𝑡) ∈
+{ℎ} is a constant altitude ℎ;
+(2) operational status 𝝓𝑖(𝑡) ∈ {0, 1}, either inactive or active;
+(3) battery energy level 𝒃𝑖(𝑡) ∈ N.
+Fig. 1. Example of a single UAV system of size 16 × 16 collecting data from sensor
+nodes with a blue-colored start and charging zone 𝐋. Colored circles refer to sensor
+nodes, and different colors for each node make it easy to figure out which sensor node
+the UAV is communicating with.
+Table 1
+Legend for scenario plots.
+Symbol Description
+DQN
+ Start and charging zone
+Input
+ Sensor node
+Starting positions during an episode
+Termination of an episode
+Visualization
+ UAV movement while comm. with red node
+Hovering while comm. with red device
+Hovering while charging
+Total operation time is set to 𝑻 time steps for all UAVs. A mission
+time step with length 𝛿𝑡 is divided into 𝑚 communication time steps. We
+use a simple version of charging, considering a partial charging prin-
+ciple and serving time from Zhang et al. (2018). The partial charging
+principle is to charge only the needed amount without a full charge
+when the energy level is low. In realistic environments, the battery
+charging process requires service time, expressed as the serving time.
+Now, we employ 𝒃𝑛
+𝑖 (𝑡) to represent a remaining energy ratio as 𝒃𝑛
+𝑖 (𝑡) =
+𝒃𝑖(𝑡)∕𝒃𝑖(0) (%). When the UAV starts charging or completes charging,
+𝒃𝑛
+𝑖 (𝑡) is defined as charging start capacity or charging complete capacity,
+respectively, and is described as follows:
+(1) charging start capacity (%) 𝐂𝑆;
+(2) charging complete capacity (%) 𝐂𝐶.
+For instance, 𝐂𝑆 = 20 means that the UAV can charge its energy
+from 20% of the full battery capacity, and 𝐂𝐶 = 70 means that the
+UAV charges up to 70% of the full battery capacity. Here, we define
+the relation between 𝐂𝑆 and 𝐂𝐶 as
+10 ≤ 𝐂𝑆 < 𝐂𝐶 ≤ 100, (1)
+where 𝐂𝐶 is always greater than 𝐂𝑆, and UAVs cannot charge their
+energy beyond 100% of the entire battery capacity.
+Each UAV is authorized to choose their action from action spaces,
+𝐀 = {𝑁𝑜𝑟𝑡ℎ, 𝐸𝑎𝑠𝑡, 𝑆𝑜𝑢𝑡ℎ, 𝑊 𝑒𝑠𝑡, 𝑁𝑜𝑟𝑡ℎ − 𝐸𝑎𝑠𝑡, 𝑆𝑜𝑢𝑡ℎ − 𝐸𝑎𝑠𝑡, 𝑁𝑜𝑟𝑡ℎ −
+𝐸𝑎𝑠𝑡, 𝑆𝑜𝑢𝑡ℎ − 𝑊 𝑒𝑠𝑡, 𝐻𝑜𝑣𝑒𝑟 }. While the UAV is charging, the required
+action of the UAV is 𝐻𝑜𝑣𝑒𝑟. In order to force the action to 𝐻𝑜𝑣𝑒𝑟
+regardless of which actions a UAV selects in the action space 𝐀, each
+UAV’s physical action 𝐚𝑖(𝑡) ∈ ̃𝐀(𝒔𝑖(𝑡)) can be limited to (2) if a charging
+condition 𝐂𝑖(𝑡) is satisfied,
+̃𝐀(𝒔𝑖(𝑡)) =
+{
+𝐻𝑜𝑣𝑒𝑟, 𝐂𝑖(𝑡) = 1 ∧ 𝒃𝑛
+𝑖 (𝑡) ≤ 𝐂𝐶
+𝐀, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(2)
+which means that once a UAV starts charging, it has to keep charging
+until 𝒃𝑛
+𝑖 (𝑡) = 𝐂𝐶.
+2
+
+===== PAGE 3 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+The charging determination 𝜄𝑖(𝑡) is required to start charging when
+𝒃𝑛
+𝑖 (𝑡) is lower than 𝐂𝑆 and to charge the battery until it reaches 𝐂𝐶.
+𝜄𝑖(𝑡) =
+{
+1, 𝒃𝑛
+𝑖 (𝑡𝑝) ≤ 𝐂𝑆
+0, 𝒃𝑛
+𝑖 (𝑡) > 𝐂𝐶 ,
+(3)
+where 𝑡𝑝 is a fixed prior time slot before 𝑡. Note that the default value
+of 𝜄𝑖(𝑡) at the beginning of an episode is 0.
+The charging condition 𝐂𝑖(𝑡) is defined as follows in which the 𝑖th
+UAV starts to charge its energy only when the following conditions are
+satisfied.
+𝐂𝑖(𝑡) =
+⎧
+⎪
+⎪
+⎨
+⎪
+⎪⎩
+1, 𝒑𝑖(𝑡) ∈ 𝐋
+∧ 𝜄𝑖(𝑡) = 1
+∧ 𝒂𝑖(𝑡) = 𝐻𝑜𝑣𝑒𝑟
+0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒.
+(4)
+The maximum displacement with which a UAV can move in one
+mission time slot is the grid cell size 𝑐. The speed of a UAV 𝐯𝑖(𝑡) is
+constant within a time slot by dividing enough communication time
+slots. 𝐯𝑖(𝑡) is upper bounded to moving at a horizontal velocity 𝑉 = 𝑐∕𝛿𝑡
+or hovering, i.e, 𝐯𝑖(𝑡) ∈ {0, 𝑉 } for all 𝑡 ∈ [0, 𝑇 ].
+The position of the UAV is updated by
+𝒑𝑖(𝑡 + 1) =
+{
+𝒑𝑖(𝑡) + 𝒂𝑖(𝑡), 𝜙 𝑖(𝑡) = 1
+𝒑𝑖(𝑡), 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(5)
+making the UAV update only if active.
+A communication quota of each UAV 𝐔𝑖(𝑡) ∈ {0, 1} indicates
+communication is either incomplete or complete, which can only be
+achieved through at least one charge. Note that the predefined goal of
+a communication quota of 𝐔𝐶 ∈ N satisfies the following relation,
+𝑚 × 𝒃𝑖(0) < 𝐔𝐶 , (6)
+where 𝑚 ∈ N is used to divide a mission time slot into𝑚 communication
+time slots (see Section 2.3). If a UAV takes off, 𝐔𝑖(𝑡) is incomplete, and
+𝐔𝑖(𝑡) is complete when the cumulative number of communications of
+the agent reaches 𝐔𝐶.
+The evolution of the operational status 𝝓𝑖(𝑡) of each UAV is given
+by
+𝝓𝑖(𝑡 + 1) =
+⎧
+⎪
+⎪
+⎨
+⎪
+⎪⎩
+0, 𝐔𝑖(𝑡 + 1) = 1
+∨ 𝝓𝑖(𝑡) = 0
+∨ 𝑏𝑖(𝑡 + 1) = 0
+1, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(7)
+where if the UAV takes off, 𝝓𝑖(𝑡) is always active, and the opera-
+tional status 𝝓𝑖(𝑡) is inactivated when the communication quota 𝐔𝑖(𝑡)
+is completed or the battery energy is depleted.
+The 𝑖th UAV’s battery energy level is updated according to
+𝒃𝑖(𝑡 + 1) =
+⎧
+⎪
+⎨
+⎪⎩
+𝒃𝑖(𝑡) − 1, 𝜙 𝑖(𝑡) = 1 ∧ 𝐂𝑖(𝑡) = 0
+𝒃𝑖(𝑡) + 10, 𝜙 𝑖(𝑡) = 1 ∧ 𝐂𝑖(𝑡) = 1
+𝒃𝑖(𝑡), 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(8)
+where the battery energy level of each UAV 𝒃𝑖(𝑡) is continuously de-
+creased by 1 at each time slot when the operational status is active.
+Since the battery continues to decrease by one according to the time
+slot, the remaining battery capacity equals the remaining flying time.
+UAVs can charge their battery energy level by ten at each time slot
+when charging.
+2.3. Communication channel model
+To describe the communications between the UAVs and the sensor
+nodes, we introduce the concept of a communication time slot 𝑛 ∈
+[0, 𝑵] with 𝑵 = 𝑚𝑻 , which is different from the mission time slot. Each
+mission time slot is divided into enough communication time slots so
+that the position and channel gain of the UAVs within one communica-
+tion time slot can be assumed to be constant. One communication time
+slot 𝑛 has length of 𝛿𝑛 = 𝛿𝑡∕𝑚 min.
+The 𝑘th sensor node is located with 𝐍𝑘 = [
+𝑥𝑘, 𝑦𝑘, 0
+]𝐓
+∈ R3 with
+𝑘 ∈ K where K is the total number of sensor nodes, which have
+stable locations during the entire mission time slot 𝑻 and the same
+distance between sensor nodes with fixed coordinates. At the start of
+the mission, a certain range of random data 𝐃𝑘,𝑖𝑛𝑖𝑡 is assigned to the
+𝑘th sensor node, and as information continues to generate data after
+the start of the mission, we define that the 𝑘th sensor node generates
+new data 𝐃𝑘,𝑛𝑒𝑤 ∼ 𝑃 𝑜𝑖𝑠𝑠𝑜𝑛(𝜆𝑝) according to the Poisson distribution.
+A UAV-to-ground channel model (Bayerlein et al., 2020) is em-
+ployed to analyze the communications between the UAVs and the
+sensor nodes. The maximum achievable data rate in communication
+time slot 𝑛 for the 𝑘th sensor node is defined as
+𝑅𝑖,𝑘(𝑛) = 𝛿𝑛 log2(1 + SNR𝑖,𝑘(𝑛)). (9)
+Note that the length of a communication time slot is multiplied so
+that the maximum achievable data rate within a mission time slot is
+constant regardless of the number of communications.
+We have
+SNR𝑖,𝑘(𝑛) =
+𝑃𝑖,𝑘
+𝜎2 ⋅ 𝑑−𝛼𝑒
+𝑖,𝑘 ⋅ 10𝜂𝑒∕10, (10)
+where 𝑃𝑘 is the transmit power of sensor node 𝑘, 𝜎2
+𝑒 is white Gaussian
+noise power at the receiver, 𝑑𝑖,𝑘 is the distance between UAV 𝑖 and
+sensor node 𝑘, 𝛼𝑒 is the path loss exponent and 𝜂𝑒 ∼ 𝑵(0, 𝜎2
+𝑒 ) is a Gaus-
+sian random variable. We assume Line of Sight (LOS) point-to-point
+communication, and propagation parameter 𝑒 ∈ {LoS} is defined.
+For communication between the sensor nodes and a UAV, we use
+the time-division multiple access (TDMA) model as a multiple access
+protocol. To utilize the models we defined earlier, three significant
+assumptions have been made, without loss of generality. First, it is as-
+sumed that the communication channel between a UAV and the sensor
+nodes works as an orthogonal resource block with the communication
+channel between the other UAVs and the sensor nodes. Hence, there
+is no inter-UAV interference. Also, assuming that sensor nodes are in
+multi-band mode, a sensor node can communicate with multiple UAVs
+simultaneously, which means that scheduling decisions can be ignored
+when determining the action space of the UAVs. Lastly, assuming UAVs
+always communicate according to the maximum rate, the sensor node
+only communicates with at most one UAV in a communication time
+slot. Based on the maximum rate constraint, the scheduling variable
+𝑞𝑖,𝑘(𝑛) ∈ {0,1} is chosen for all UAVs and all sensor nodes in commu-
+nication time slot 𝑛, in which 𝑞𝑖,𝑘(𝑛) is equal to 1 only for the highest
+SNR𝑖,𝑘(𝑛).
+Then, we can define the 𝑘th sensor node’s residual data within
+communication time slot 𝑛 by
+𝑑𝑘(𝑛 + 1) = 𝑑𝑘(𝑛) −
+I∑
+𝑖=1
+𝑞𝑖,𝑘(𝑛)𝑅𝑖,𝑘(𝑛)𝛿𝑛, (11)
+where I means the total number of agents. The residual data 𝐃𝑘(𝑡) of
+the 𝑘th sensor node at mission time slot 𝑡 is
+𝐃𝑘(𝑡) =
+{
+𝐃𝑘,𝑖𝑛𝑖𝑡, 𝑡 = 0
+𝑑𝑘(𝑛𝑡) + 𝐃𝑘,𝑛𝑒𝑤, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(12)
+where 𝑛𝑡 is the communication time slot at mission time slot 𝑡. We also
+assume that new data 𝐃𝑘,𝑛𝑒𝑤 is generated at each mission time slot not
+each communication time slot.
+3. Markov decision process (DEC-POMDP)
+The aforementioned operation for the UAV agents and sensor nodes
+is analyzed as a decentralized partially observable Markov decision
+process (Dec-POMDP) (Oliehoek and Amato, 2016), which is defined
+as a septuple (S, A, 𝑇, O, 𝑂, 𝑅, 𝛾) for practical application in RL. S
+3
+
+===== PAGE 4 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+stands for the state space, A is the joint action space, and 𝑇 contains
+the transition probability functions. O means the joint observation
+space, 𝑂 is the observation probability function that converts state
+information into unique observations for one agent. 𝑅 contains the
+reward functions. The discount factor 𝛾 determines whether to weigh
+long-term or short-term rewards.
+3.1. State space
+The state space of the multi-agent problem consists of environmen-
+tal information, the states of the agents, and the states of the sensor
+nodes. It is defined as
+𝐒 = 𝐋⏟ ⏟ ⏟
+𝑆𝑡𝑎𝑟𝑡 𝑎𝑛𝑑
+𝐶ℎ𝑎𝑟𝑔𝑖𝑛𝑔 𝑧𝑜𝑛𝑒
+} 𝐸𝑛𝑣𝑖𝑟𝑜𝑛𝑚𝑒𝑛𝑡
+× RI×3
+⏟ ⏟ ⏟
+𝑈 𝐴𝑉
+𝑃 𝑜𝑠𝑖𝑡𝑖𝑜𝑛𝑠
+× NI
+⏟ ⏟ ⏟
+𝐹 𝑙𝑦𝑖𝑛𝑔
+𝑇 𝑖𝑚𝑒𝑠
+× BI
+⏟ ⏟ ⏟
+𝑂𝑝𝑒𝑟𝑎𝑡𝑖𝑜𝑛𝑎𝑙
+𝑆𝑡𝑎𝑡𝑢𝑠
+} 𝑈 𝐴𝑉 𝐴𝑔𝑒𝑛𝑡𝑠
+× RK×3
+⏟ ⏟ ⏟
+𝑆𝑒𝑛𝑠𝑜𝑟 𝑁𝑜𝑑𝑒
+𝑃 𝑜𝑠𝑖𝑡𝑖𝑜𝑛𝑠
+× RK
+⏟ ⏟ ⏟
+𝑆𝑒𝑛𝑠𝑜𝑟 𝑁𝑜𝑑𝑒
+𝑅𝑒𝑠𝑖𝑑𝑢𝑎𝑙 𝐷𝑎𝑡𝑎
+. } 𝑆𝑒𝑛𝑠𝑜𝑟 𝑁𝑜𝑑𝑒𝑠
+The elements 𝑠𝑖(𝑡) ∈ 𝐒 are
+𝑠𝑖(𝑡) = ( 𝐇𝑙𝑎𝑦𝑒𝑟, {
+𝒑𝑖(𝑡)
+} , {
+𝒃𝑖(𝑡)
+} , {
+𝝓𝑖(𝑡)
+} ,
+{
+𝐍𝑘
+} , {
+𝐃𝑘(𝑡)
+} ), ∀𝑖 ∈ I, ∀𝑘 ∈ K.
+(13)
+𝐇𝑙𝑎𝑦𝑒𝑟 ∈ B𝐻×𝐻×1 is the tensor layer of the start and charging zone
+𝐋. The other parts of the septuple are positions, remaining flying times,
+the operational status of all agents, and positions and residual data that
+can be collected from all sensor nodes.
+3.2. Safety controller
+A safety controller is introduced to control the UAV agents so as to
+operate within the boundaries of the grid world and avoid collisions
+with each other (Bayerlein et al., 2021). The safety controller alerts
+agents to cancel a planned action and to hover in the prior position
+when the agent’s position in the next time slot reaches the boundaries
+of the grid world or is located at the same position as other agents.
+The actual action to be executed by the 𝑖th agent through the safety
+controller is called a safety action 𝒂𝑠
+𝑖 (𝑡).
+3.3. Reward function
+The operational order of the agents is as follows: advance each agent
+simultaneously, resolve their boundary counters or collisions with each
+agent, and consume their energy levels. As a result, the agents decide
+whether to charge their energy or communicate with the sensor node
+with the best data rate. Lastly, new data is generated for each sensor
+node. Each of these transitions will have a reward associated with each
+agent. The reward function is made up of the following elements:
+𝑟𝑖(𝑡) = 𝛼
+∑
+𝑘∈K
+(𝐃𝑘(𝑡 + 1) − 𝐃𝑘(𝑡))+ 𝛽𝑖(𝑡)
++ 𝜈𝑖(𝑡) + 𝑐𝑖(𝑡) + 𝜔𝑖(𝑡) + 𝜁 .
+(14)
+The first term of the sum is a collective reward for all agents’
+collected data from all sensor nodes within a mission time slot 𝑡. It is
+weighted through the data collection multiplier 𝛼. The second term is
+an individual penalty when agents collide with the boundaries of the
+grid world or other agents, and is
+𝛽𝑖(𝑡) =
+{
+𝛽, 𝒂𝑖(𝑡) ≠ 𝒂𝑠
+𝑖 (𝑡)
+0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(15)
+where the penalty is characterized through the safety penalty value 𝛽.
+The third term 𝜈𝑖(𝑡) is the individual penalty for not fully communicat-
+ing until it runs out of energy, and is given by
+𝜈𝑖(𝑡) =
+{
+𝜈, 𝒃𝑖(𝑡 + 1) = 0 ∧ 𝐔𝑖(𝑡 + 1) = 0
+0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(16)
+The fourth term is a small positive reward while charging:
+𝑐𝑖(𝑡) =
+{
+𝑐, 𝐂𝑖(𝑡 + 1) = 1 ∧ 𝜙𝑖(𝑡 + 1) = 1
+0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(17)
+where the reward 𝑐 is utilized to encourage charging. The fifth term is
+a positive reward given when the communication quota is fulfilled:
+𝜔𝑖(𝑡) =
+{
+𝜔, 𝐔𝑖(𝑡 + 1) = 1
+0, 𝑜𝑡ℎ𝑒𝑟𝑤𝑖𝑠𝑒,
+(18)
+parametrized through the reward 𝜔 to encourage charging. We found
+that simply imposing a large negative penalty 𝜈 when agents run out
+of their energy is not enough to balance the two main objectives, data
+collecting and charging. We were able to achieve two objectives in a
+balanced way with the small positive reward 𝑐 given while charging
+and the relatively large positive reward 𝜔 given when the communica-
+tion quota was fulfilled as well as transfer learning. The last term 𝜁 is
+a constant movement penalty, which induces the agents to find more
+efficient trajectories.
+3.4. Observation space
+We need to change the state space 𝐒 to the observation space for
+POMDP. As shown in Theile et al. (2021), we define an observation
+space for sensor node data, UAV flying times, and operational status
+through map processing algorithms that consist of map centering,
+which is the first step, and global-local map processing, which is the
+second step. Map centering is to place the agent in the center of the
+map to improve the agent’s learning performance. Although there is
+a disadvantage of increasing the size of the neural networks to be
+trained with several trainable parameters, there is an advantage that
+the agent’s action can be planned only based on the relative position
+to the features, e.g., the distances to the start and charging zones,
+according to the agent’s current position. After map centering, there
+are relatively distant features for which the agents should consider
+comprehensive path determination and relatively close features such
+as collision avoidance for path planning. The second step is to ignore
+some of the details of the distant features, significantly reducing the
+size of the neural network to be trained while maintaining the training
+performance, as shown in Theile et al. (2021).
+Mapping
+The map centering and global-local algorithms can be used after
+the state spaces are stacked in the form of a map layer that projects
+the relative features according to the agent’s position. According to the
+positions of the agents and sensor nodes, the mapping is performed in
+pairs as follows:
+({
+𝒑𝑖(𝑡)
+} , {
+𝒃𝑖(𝑡)
+} ), ({
+𝒑𝑖(𝑡)
+} , {
+𝝓𝑖(𝑡)
+} ), ({
+𝐍𝑘
+} , {
+𝐃𝑘(𝑡)
+} ),
+where the size of each mapped map layer is𝐀𝑙𝑎𝑦𝑒𝑟 ∈ R𝑀×𝑀 and the map
+layer 𝐀𝑙𝑎𝑦𝑒𝑟 can be stacked as a tensor of R𝑀×𝑀×𝑛 when each layer has
+the same type.
+Map centering and global-local map
+The map layer 𝐀𝑙𝑎𝑦𝑒𝑟 ∈ R𝑀×𝑀×𝑛 is converted into a centered tensor
+𝐁𝑙𝑎𝑦𝑒𝑟 ∈ R𝑀𝑐 ×𝑀𝑐 ×𝑛 with 𝑀𝑐 = 2𝑀 − 1. In the centered tensor 𝐁𝑙𝑎𝑦𝑒𝑟, the
+original tensor 𝐀𝑙𝑎𝑦𝑒𝑟 is moved so that position of the agent is centered,
+and the rest of the extended part of the centered tensor 𝐁𝑙𝑎𝑦𝑒𝑟 is filled
+with the padding value 𝐱𝐩𝐚𝐝 ∈ R.
+The tensor 𝐁𝑙𝑎𝑦𝑒𝑟 ∈ R𝑀𝑐 ×𝑀𝑐 ×𝑛 is used in two ways. In order to
+create a local map, the centered tensor 𝐁𝑙𝑎𝑦𝑒𝑟 is cropped with cropping
+parameter 𝑙. The local tensor 𝐂𝑙𝑎𝑦𝑒𝑟, which is the expression of the local
+map, appears as 𝐂𝑙𝑎𝑦𝑒𝑟 ∈ R𝑙×𝑙×𝑛. For the global tensor 𝐃𝑙𝑎𝑦𝑒𝑟, which is
+the expression of the global map, we use an average pooling algorithm
+with pooling cell size 𝑔 to ignore the detailed level of distant features.
+The global tensor 𝐃𝑙𝑎𝑦𝑒𝑟 is denoted by 𝐃𝑙𝑎𝑦𝑒𝑟 ∈ R
+⌊ 𝑀𝑐
+𝑔
+⌋
+×
+⌊ 𝑀𝑐
+𝑔
+⌋
+×𝑛
+. As 𝑙
+increases, the size of the local map increases, while as 𝑔 increases, the
+pooling cell size increases, reducing the size of the global map.
+4
+
+===== PAGE 5 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+Fig. 2. The basic framework of RL.
+Observation space 𝛺
+Through the map processing, the observation space 𝜴, which is the
+input space for the agent, is defined as
+𝜴 = 𝜴𝑙
+⏟ ⏟ ⏟
+Local Map
+× 𝜴𝑔
+⏟ ⏟ ⏟
+Global Map
+× N⏟ ⏟ ⏟
+Flying Time
+, (19)
+where the local map is
+𝜴𝑙 = B𝑙×𝑙×1
+⏟ ⏟ ⏟
+𝐿𝑜𝑐𝑎𝑙
+𝐸𝑛𝑣𝑖𝑟𝑜𝑛𝑚𝑒𝑛𝑡
+× R𝑙×𝑙
+⏟ ⏟ ⏟
+𝐿𝑜𝑐𝑎𝑙
+𝐷𝑎𝑡𝑎
+× N𝑙×𝑙
+⏟ ⏟ ⏟
+𝐿𝑜𝑐𝑎𝑙
+𝐹 𝑙𝑦𝑖𝑛𝑔 𝑡𝑖𝑚𝑒
+× B𝑙×𝑙
+⏟ ⏟ ⏟
+𝐿𝑜𝑐𝑎𝑙
+𝑂𝑝𝑒𝑟𝑎𝑡′ 𝑙 𝑠𝑡𝑎𝑡𝑢𝑠
+, (20)
+and the global map is
+𝜴𝑔 = R ̃ 𝑔× ̃ 𝑔×1
+⏟ ⏟ ⏟
+𝐺𝑙𝑜𝑏𝑎𝑙
+𝐸𝑛𝑣𝑖𝑟𝑜𝑛𝑚𝑒𝑛𝑡
+× R ̃ 𝑔× ̃ 𝑔
+⏟ ⏟ ⏟
+𝐺𝑙𝑜𝑏𝑎𝑙
+𝐷𝑎𝑡𝑎
+× R ̃ 𝑔× ̃ 𝑔
+⏟ ⏟ ⏟
+𝐺𝑙𝑜𝑏𝑎𝑙
+𝐹 𝑙𝑦𝑖𝑛𝑔 𝑡𝑖𝑚𝑒
+× R ̃ 𝑔× ̃ 𝑔
+⏟ ⏟ ⏟
+𝐺𝑙𝑜𝑏𝑎𝑙
+𝑂𝑝𝑒𝑟𝑎𝑡′ 𝑙 𝑠𝑡𝑎𝑡𝑢𝑠
+, (21)
+with ̃ 𝑔=
+⌊ 𝑀𝑐
+𝑔
+⌋
+. Observation space 𝑜𝑖(𝑡) ∈ 𝜴 is defined as a tuple
+𝑜𝑖(𝑡) = ( 𝐌𝑙,𝑖(𝑡), 𝐃𝑙,𝑖(𝑡), 𝐁𝑙,𝑖(𝑡), Φ𝑙,𝑖(𝑡),
+𝐌𝑔,𝑖(𝑡), 𝐃𝑔,𝑖(𝑡), 𝐁𝑔,𝑖(𝑡), Φ𝑔,𝑖(𝑡), 𝑏𝑖(𝑡)).
+(22)
+In an observation space tuple, 𝐌𝑙,𝑖(𝑡) is the local observation of
+agent 𝑖 of the environment, 𝐃𝑙,𝑖(𝑡) is the local observation of the
+residual data, 𝐁𝑙,𝑖(𝑡) is the local observation of the remaining flying
+time, and Φ𝑙,𝑖(𝑡) is the local observation of the operational status.
+𝐌𝑔,𝑖(𝑡), 𝐃𝑔,𝑖(𝑡), 𝐁𝑔,𝑖(𝑡), and Φ𝑔,𝑖(𝑡) are the respective global observations.
+Note that surplus elements of the remaining flying time allow the agents
+to understand their remaining flying time better.
+As a result, we artificially transformed the POMDP to solve the
+operational system problem we defined, which significantly reduces
+the neural network’s size as proved in Theile et al. (2021), making the
+training procedure feasible and reducing the training time.
+4. Multi-Agent Reinforcement Learning (MARL) and transfer learn-
+ing
+Now we can formulate the RL as Dec-POMDP is depicted (see
+Section 3.4). RL is a policy optimization process that selects an action𝑎𝑖
+based on a policy 𝜋 in the current state 𝑠𝑖 and receives feedback called a
+reward 𝑟𝑖 through interaction with the environment. At the same time,
+it changes to the next state 𝑠′
+𝑖. The basic framework for RL is shown in
+Fig. 2. Note that, because of the way we defined Dec-POMDP, the state
+that becomes the input space for the agent is an observation state 𝑜𝑖
+observed by the agent, not the actual state 𝑠𝑖.
+4.1. Double deep Q-learning
+One of the promising algorithms in RL is Q-learning (Sutton and
+Barto, 2018), which maximizes the cumulative discounted reward by
+repeatedly carrying out the action 𝑎𝑖 in state 𝑠𝑖 until the end of the
+episode. It is given by
+𝑄(𝑠𝑖, 𝑎𝑖) = 𝑟(𝑠𝑖, 𝑎𝑖) + 𝛾𝑞
+∑
+𝑠′
+𝑖 ∈𝑆
+𝑝(𝑠𝑖, 𝑎𝑖, 𝑠′
+𝑖)𝑄∗(𝑠′
+𝑖, 𝑎′
+𝑖). (23)
+Note that 𝑠𝑖, 𝑎 𝑖 is the same as 𝑠𝑖(𝑡), 𝑎 𝑖(𝑡) as well as 𝑠′
+𝑖, 𝑎 ′
+𝑖 is the same
+as 𝑠𝑖(𝑡 + 1), 𝑎 𝑖(𝑡 + 1) for ease of exposition. In (23), 𝑟(𝑠𝑖, 𝑎𝑖) represents
+the immediate reward given to action 𝑎𝑖 in state 𝑠𝑖, 𝛾𝑞 ∈ [0 , 1] is the
+discount factor, 𝑝(𝑠𝑖, 𝑎𝑖, 𝑠′
+𝑖) is the transition probability to 𝑠′
+𝑖 after action
+𝑎𝑖 in the present state 𝑠𝑖, and 𝑄∗(𝑠′
+𝑖, 𝑎′
+𝑖) = max𝑄(𝑠′
+𝑖, 𝑎′
+𝑖) represents the
+optimal Q-value of action 𝑎′
+𝑖 in next state 𝑠′
+𝑖. The Q-value, which is the
+expected value of the sum of future rewards given the state 𝑠𝑖 and the
+action 𝑎𝑖, is updated by the following formula:
+𝑄(𝑠𝑖, 𝑎𝑖) ← (1 − 𝛼𝑞)𝑄(𝑠𝑖, 𝑎𝑖) + 𝛼𝑞×
+⎡
+⎢
+⎢⎣
+𝑟(𝑠𝑖, 𝑎𝑖) + 𝛾𝑞
+∑
+𝑠′
+𝑖 ∈𝑆
+𝑝(𝑠𝑖, 𝑎𝑖, 𝑠′
+𝑖)𝑄∗(𝑠′
+𝑖, 𝑎′
+𝑖)
+⎤
+⎥
+⎥⎦
+,
+(24)
+where 𝛼𝑞 ∈ (0, 1] is the learning rate. As such, the optimal policy 𝜋∗ is
+derived from
+𝜋∗(𝑠𝑖) = 𝑎𝑟𝑔𝑚𝑎𝑥
+𝑎𝑖∈𝐴
+𝑄(𝑠𝑖, 𝑎𝑖). (25)
+Q-learning is performed using a Q-table, where the rows and
+columns consist of the action and state to calculate the Q-value. Q-
+learning is computationally effective when the environment is simple.
+But when the environment becomes more complex with a highly
+extensible state space, it has difficulty converging because the Q-table
+grows exponentially.
+DQN was introduced to approximate the Q-table using deep neural
+networks with weights 𝜃 (Mnih et al., 2015). The advantage of using
+these approximations is that DQN will converge in complex environ-
+ments, wherein neural networks show significant data efficiency in
+generalization with experience replay and the target network. Expe-
+rience replay allows networks to store transitions (𝑠𝑖, 𝑎𝑖, 𝑟𝑖, 𝑠′
+𝑖) in the
+experience replay memory 𝐃. During training, instead of deploying
+only the current transition (𝑠𝑖, 𝑎𝑖, 𝑟𝑖, 𝑠′
+𝑖), mini-batches of transitions are
+chosen from the replay memory and used to train the network, which
+leads to reducing the correlations in the sequence of training transitions
+as well as preventing being driven to a local minimum. The target
+network is a separate network that duplicates the original network
+with weights 𝜃−. This network is updated at slower intervals than the
+original network to stabilize the overall convergence of the network
+during training. Then, the Q-network updates its weights to minimize
+a loss function represented by the mean square error as such.
+𝐿𝑖(𝜃) = E𝑠𝑖,𝑎𝑖,𝑟𝑖,𝑠′
+𝑖 ∼𝐃
+[
+‖𝑦𝐷𝑄𝑁
+𝑖 − 𝑄𝑖(𝑠𝑖, 𝑎𝑖; 𝜃)‖2
+]
+, (26)
+where the target value is
+𝑦𝐷𝑄𝑁
+𝑖 = 𝑟𝑖(𝑠𝑖, 𝑎𝑖) + 𝛾𝑞max
+𝑎′
+𝑖 ∈𝐴𝑖
+𝑄𝑖(𝑠′
+𝑖, 𝑎′
+𝑖; 𝜃−). (27)
+The parameters of the target network 𝜃− are updated either simply
+by means of a periodic copy of 𝜃 for each episode or a soft update for
+each state transition after each update of 𝜃. As a method to update the
+parameters of the target network 𝜃−, we used
+𝜃− ← 𝜃𝜏 + 𝜃−(1 − 𝜏), (28)
+where 𝜏 ∈ [0, 1] is an updating factor that adjusts the adaptation speed
+and we choose 𝜏 to be 0.005 (Bayerlein et al., 2021).
+The target value 𝑦𝐷𝑄𝑁
+𝑖 is inevitably different from the optimal
+value 𝑄∗ because the action of the next state 𝑎′
+𝑖 is selected with the
+target network parameter 𝜃− and then updated to the max value of
+5
+
+===== PAGE 6 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+𝑄𝑖(𝑠′
+𝑖, 𝑎′
+𝑖; 𝜃−) with the same target network parameter 𝜃−. The overesti-
+mation problem occurs because the max calculation is performed twice
+with the same parameter 𝜃−. Double-deep Q networks (DDQN), which
+separate the parameters of the Q network when calculating the target
+value 𝑦𝐷𝐷𝑄𝑁
+𝑖 , was introduced in Van Hasselt et al. (2016). Finally, the
+target value 𝑦𝐷𝐷𝑄𝑁
+𝑖 is defined as
+𝑦𝐷𝐷𝑄𝑁
+𝑖 = 𝑟𝑖(𝑠𝑖, 𝑎𝑖)
++ 𝛾𝑞𝑄𝑖
+(
+𝑠′
+𝑖, argmax
+𝑎′
+𝑖 ∈𝐴𝑖
+𝑄𝑖(𝑠′
+𝑖, 𝑎′
+𝑖; 𝜃); 𝜃−
+)
+.
+(29)
+4.2. Multi-agent deep RL (MADRL) and transfer learning
+There are a few approaches to address the challenge of optimizing
+each agent’s policy control while considering the other agents in a
+multi-agent environment. The best way to apply our learning approach
+is decentralized deployment with knowledge transfer (Chen, 2019).
+With this approach, agent execution occurs individually, which is the
+decentralized selection of the policy. We chose all agents to train and
+learn their policies on the same network and share parameters with the
+other agents. Each agent’s experience acquired through decentralized
+deployment is added to a common replay memory. During training, all
+the agent’s experiences are optimized as mini-batches are chosen from
+the replay memory, which leads to faster convergence.
+As defined in (14), our agents cannot be characterized as fully coop-
+erative because the central element of the reward function, which has
+the same structure for each agent and is calculated with decentralized
+execution, is based on charging and jointly collected data (Zhang et al.,
+2021). Our setting is a simple cooperative where all the agents learn the
+optimal cooperation policy.
+Balancing the multiple objectives of data collection and charg-
+ing can be much closer to having practical applications to the real
+world (Dulac-Arnold et al., 2019). We found that simply adding individ-
+ual components to the reward function was insufficient to achieve the
+two main objectives effectively. The advantage of transfer learning for
+agents is employed to learn how to balance multiple objectives effec-
+tively (Punma, Unpublished results, 0000). When there is no transfer
+learning in the first place, agents continue to collect data to receive
+positive rewards even if they run down their batteries, which will
+impose a sizeable negative reward in the near future. We use transfer
+learning to get the agent to learn their policy divided into two stages. In
+the first training, we set agents to not take into account running down
+their battery, by removing the continuous battery decrease according
+to the mission time slot. In the next training, we continuously decrease
+their battery according to the mission time slot, while keeping all other
+settings the same. Through transfer learning, agents could balance the
+two objectives by charging when needed.
+The detailed procedure for the transfer learning part of our algo-
+rithm is presented in Algorithm 1. The reason why we test episodes
+in lines 10–11 is that since various scenario parameters are included
+together in the training process of one control policy, making only
+a few evaluations may reduce the reliability of the evaluation due
+to the presence of extreme cases. Therefore, a moving average of
+periodic multiple evaluations and the model weight separately when
+this updated value shows the best performance are accumulated. The
+weights are loaded during the second training phase or evaluation
+phase.
+4.3. Complexity analysis
+During the first and second training phases, the DRL agent observes
+the environment where the states of POMDP are defined as input for the
+DRL algorithm in Section 3.4. The agent utilizes its trained network to
+carry out an action 𝒂𝑠
+𝑖 (𝑡) which represents an actual direction. The total
+computational complexity for the fully connected layers is computed
+as the number of multiplications (Liu et al., 2019): 𝑂(∑𝐹
+𝑓 =1 𝑛𝑓 ⋅ 𝑛𝑓 −1),
+where 𝑛𝑓 is the number of neurons in fully-connected layer 𝑓.
+Algorithm 1 Training and Evaluation process based on transfer
+learning for the multiple objectives problem.
+1: Initialize episode parameters.
+2: Initialize experience replay memory 𝐃.
+3: Initialize the weights of original network 𝜃 and that of target
+network 𝜃−.
+4: Fill replay memory with random action.
+5: Step-I: First training phase
+6: Set 𝜖 as 0.1.
+7: Set decrement of the energy level of agent per step as 0.
+8: for 𝑒𝑝𝑜𝑐ℎ 𝑒𝑝 = 0, 1, … do
+9: Train episode.
+10: if 𝑒𝑝%5 = 0 then
+11: Test episode.
+12: end if
+13: if the best performance is achieved then
+14: Save the model weights as 𝜃′.
+15: end if
+16: end for
+17: Step-II: Second training phase
+18: Set 𝜖 to ranging from 0.5 to 0.01.
+19: Set decrement of the energy level of agent per step as −1.
+20: Load the model weights as 𝜃′.
+21: Repeat 8 − 16.
+22: Step-III: Evaluation phase
+23: Load the model weights as 𝜃′.
+24: Hard update the target model weights as 𝜃′.
+25: for 𝑒𝑝𝑜𝑐ℎ 𝑒𝑝 = 0, 1, …, 1000 do
+26: Test episode.
+27: end for
+Table 2
+Value ranges of the scenario parameters.
+Scenario parameters Min Max
+Number of deployed UAVs 1 3
+Initial data volume to be collected 5.0 20.0
+Maximum flying time 70 80
+Charging start capacity 10% 50%
+Charging complete capacity 60% 100%
+Number of sensor nodes 5 25
+5. Simulations
+5.1. Settings
+The simulation was implemented in Tensorflow 2.4.0 with a NVIDIA
+Quadro RTX 4000 Graphics Processor and a 128 GB RAM. This UAV-
+oriented data collection system was evaluated on a map that is dis-
+cretized into 32 × 32 cells. At the beginning of each episode, scenario
+parameters that determine the scenario are sampled randomly within a
+predetermined range. The scenario parameters are as follows: number
+of deployed UAVs, the initial amount of data to be collected from sensor
+nodes, flying time available for UAVs at the start of each episode,
+charging start capacity, charging complete capacity, number of sensor
+nodes. The exact ranges of values from which the randomized scenario
+parameters can be taken in Table 2.
+The grid cell size 𝑐 is 800 m, and the constant altitude ℎ at which
+the UAVs fly is 10 m. Each mission time slot contains four scheduled
+communication time slots, that is, 𝑚 = 4 . Propagation parameters are
+chosen in line with European Telecommunications Standards Institute
+(ETSI) (2017), the rural macro scenario, with 𝛼𝐿𝑜𝑆 = 2.27 and 𝜎2
+𝐿𝑜𝑆 = 2.
+The network architecture of the proposed algorithm consists of
+convolution layers that accommodate 𝐂𝑙𝑎𝑦𝑒𝑟 and 𝐃𝑙𝑎𝑦𝑒𝑟 as inputs with
+ReLU activation that have a flattened layer that has three fully con-
+nected hidden layers containing 256 neurons respectively and a fully
+6
+
+===== PAGE 7 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+Fig. 3. Comparisons of the training processes among the proposed algorithm and baseline algorithms. These curves include the average and 99% confidence interval line shown
+through the exponential moving average. Note that the metrics are displayed with training steps equivalent to the number of epochs while training episode length is variable.
+Table 3
+Event reward structure.
+Symbol Event Reward
+𝛼 Data collection multiplier +1.3
+𝛽 Collisions with other agents or boundaries −1.0
+𝛾 Run out of energy −300.0
+𝛿 While charging +0.05
+𝜖 Communication quota is fulfilled +100.0
+𝜁 Standard movement −0.1
+connected layer of which the size of the output is 𝐀. The Q-values from
+the last fully connected layer are used as an input observation through
+the argument maximization policy while evaluating the agent and the
+softmax policy when training the agent.
+The environmental settings to implement the sensor nodes are as
+follows. Since it is a sustainable system using charging, one episode
+is set to end when the UAV energy level becomes empty or when a
+communication quota is fulfilled. We set the predefined communication
+quota 𝐔𝐶 as 440. The new data 𝐃𝑘,𝑛𝑒𝑤 allocated for each mission time
+slot to each sensor node follows a Poisson distribution, where𝜆𝑝 = 0.02.
+The sensor nodes are randomly scattered 5 to 25 different points for
+each episode from the combination of 𝑥-axis coordinates (3, 8, 13,
+18, 23) and y-coordinates (6, 11, 16, 21, 26). The values of the exact
+parameters, as they appeared in (14), are shown in Table 3.
+We use the following metrics to evaluate the agent’s performance
+under different scenario instances. First, 𝑐𝑜𝑚𝑚𝑢𝑛𝑖𝑐𝑎𝑡𝑖𝑜𝑛 𝑓 𝑢𝑙𝑓 𝑖𝑙𝑙𝑚𝑒𝑛𝑡 is
+the ratio of whether all agents have fulfilled their communication
+quotas at the end of an episode. Second, 𝑐𝑜𝑙𝑙𝑒𝑐𝑡𝑖𝑜𝑛 𝑟𝑎𝑡𝑖𝑜 is the ra-
+tio of data collected until the end of the episode to the total data,
+which contains the data given to the sensor nodes at the begin-
+ning of the episode and the continuously increasing data. Lastly,
+𝑐𝑜𝑙𝑙𝑒𝑐𝑡𝑖𝑜𝑛 𝑟𝑎𝑡𝑖𝑜 𝑎𝑛𝑑 𝑐𝑜𝑚𝑚𝑢𝑛𝑖𝑐𝑎𝑡𝑖𝑜𝑛 is the product of 𝑐𝑜𝑚𝑚𝑢𝑛𝑖𝑐𝑎𝑡𝑖𝑜𝑛
+𝑓 𝑢𝑙𝑓 𝑖𝑙𝑙𝑚𝑒𝑛𝑡 and 𝑐𝑜𝑙𝑙𝑒𝑐𝑡𝑖𝑜𝑛 𝑟𝑎𝑡𝑖𝑜 per episode.
+5.2. DRL path planning based on transfer learning
+To demonstrate that transfer learning and DDQN are essential to
+achieving higher training performance, we compare the proposed algo-
+rithm with two baseline algorithms. We first compare training processes
+with and without transfer learning. When applying transfer learning,
+𝜖 is tuned with e-greedy exploration starting at 0.5 and decaying to
+0.01 in the second stage, as shown in Algorithm 1. The reason for
+using decaying e-greedy exploration is that it was possible to meet
+the multiple objectives of charging and data collection experimentally.
+Furthermore, we compare the proposed algorithm with a conventional
+algorithm, the DQN algorithm. The DQN algorithm applies transfer
+learning in the same way as our proposed algorithm.
+Fig. 3 depicts the cumulative reward and the collection ratio with
+communication fulfillment metrics over the training step. These results
+show performance improvements when the proposed algorithm is used.
+In Fig. 3a, we can see that the proposed algorithm-based agent performs
+better in the entire training steps. In Fig. 3b, it can be observed that a
+curve to which the proposed algorithm is applied shows better perfor-
+mance in the latter training steps. We could observe that the curves to
+which the DQN baseline algorithm was applied already converge from
+training step 1.0e5, whereas the curve to which the proposed algorithm
+was applied outperforms in training step 2.0e5. This is because a pro-
+posed algorithm-based agent has already been trained to collect data, so
+the performance has risen more steeply while training communication
+fulfillment through charging. This is significant in that the performance
+when the proposed algorithm is applied to both metrics is better.
+5.3. Visualization of simulation results
+The scenario is presented based on the scenario parameter set
+in 𝑆𝑒𝑡𝑡𝑖𝑛𝑔𝑠 (see Section 5.1.). Performance in the scenario is eval-
+uated using Monte Carlo simulations over the defined full range of
+scenario parameters. The overall average performance is shown in
+Table 4. 5 𝑎𝑐𝑡𝑖𝑜𝑛𝑠 is the result of defining action space as the 𝐀 =
+{𝑁𝑜𝑟𝑡ℎ, 𝐸𝑎𝑠𝑡, 𝑆𝑜𝑢𝑡ℎ, 𝑊 𝑒𝑠𝑡, 𝐻𝑜𝑣𝑒𝑟 }. On the other hand, 9 𝑎𝑐𝑡𝑖𝑜𝑛𝑠 is
+the action space that we defined in Section 2.2. As the agents’ action
+space expanded, the performance of our proposed algorithm improved
+significantly. Given that successful communication can be achieved
+through at least one charge, the agents show good communication
+fulfillment performance. We believe that the collection ratio cannot be
+100%, because there are random scenario parameters that include fly-
+ing time, the number of deployed UAVs or sensor nodes, and charging
+parameters, and an extreme combination of these could be selected,
+e.g., the number of deployed UAVs could be one, or it could be set that
+charging starts when the remaining capacity is 10%, or new data could
+be incremented for each sensor node until the end of the episode.
+In Fig. 4, three example scenarios describe how the path planning
+was adapted as the number of deployed UAVs increased from 1 to 3. All
+other scenario parameters remain fixed at the values described in Fig. 4.
+The fixed scenario parameter values were set as the average value of
+the defined full range of the scenario parameters.
+7
+
+===== PAGE 8 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+Fig. 4. Example trajectories for 32 × 32 map with charging start capacity = 30%, charging complete capacity = 80%, all sensor node with initial data volume = 12.5 and a
+maximum flying time = 80 steps.
+Table 4
+Performance metrics averaged over 1000 random scenario Monte Carlo iterations.
+Metric 5 𝑎𝑐𝑡𝑖𝑜𝑛𝑠 9 𝑎𝑐𝑡𝑖𝑜𝑛𝑠
+Communication fulfillment 90.1% 90.0%
+Collection ratio 79.8% 90.8%
+Collection ratio and communication 71.9% 81.5%
+Fig. 4a shows a single agent trying to collect as much data as
+possible with one-time charging. The agent collects data while flying
+over the entire range of the sensor nodes. We can observe that a single
+agent has no choice but to ignore a few nodes because the sensor nodes
+are too widely deployed for all of them to be covered. Interesting points
+can be seen in Fig. 4b, where a second UAV is assigned. Unlike Fig. 4a,
+it can be seen that two agents adapt the path planning to divide the
+entire area covered by sensor nodes into two sectors, which can be
+confirmed by the dramatic increase in the data collection ratio from
+73.6% to 89.4% as well as the agents can reach each sensor node
+at least two times. It can be seen that communication fulfillment has
+declined from 96.6% to 93.3% as one more UAV is assigned. In Fig. 4c,
+with the addition of the third UAV, the data collection ratio increased
+to 93.1%. However, communication fulfillment decreased slightly due
+to the large number of agents.
+5.4. Effect of scenario parameters on performance and macro-level benefits
+What we want to emphasize is the effective reduction of the training
+time. As demonstrated in Bayerlein et al. (2021) and Theile et al.
+(2021), the global-local map approach has reduced the required size of
+the network enough for feasible learning. Also, training together with
+various scenario parameters helps find the sweet spot for each scenario.
+For example, in Fig. 4, it can be seen that Fig. 4c is the scenario closest
+to the sweet spot when deciding how many UAVs should be deployed
+with the other scenario parameters given. The performance for specific
+parameters can be derived using the advantage of our approach derived
+from learning the generalized path planning policy for various scenario
+parameters.
+Fig. 5 shows the effect on three metrics for each specific scenario
+parameter. As demonstrated for the example trajectories shown in
+Fig. 4, Fig. 5 shows that the performance is the best when the number of
+agents is three. As the number of agents increases further, we observed
+that the constantly generated data were collected well. In Fig. 5b, it
+can be seen that the communication fulfillment is not lower than other
+charging start capacities even when the charging start capacity, which
+can be evaluated as adventurous in data collection, is 10%–20%. This
+is because the agents have learned enough within the defined range
+of scenario parameters. Similarly, in Fig. 5c, it can be seen that the
+agents have learned well about all cases within the range of scenario
+parameters. As shown in Fig. 5d, it is beneficial to allocate a large
+amount of initial data per sensor node up to a range of [12.5, 15.0],
+but it is negative that the initial data is allocated over the range.
+Based on the reward structure (14), this is because there is less data
+to collect before [12.5, 15.0], and after the range, the collection ratio
+decreased because the data per sensor node becomes abundant. Fig. 5e
+indicates that increasing the initial energy level for UAVs has a positive
+relationship with the collection ratio and communication.
+However, we observed that when a large amount of communication
+quota was given in the multi-agent situation since the size of the
+charging area is small, 4 × 4 cells, the probability of achieving a
+communication fulfillment is reduced. In addition, the new data needs
+to be set larger in 𝜆𝑝 for the agents to collect data continuously. As a
+result, there is a complex relationship between the UAV flying time, the
+communication quota, and the amount of new data.
+After fixing the parameter value showing the best performance in
+each scenario parameter range, it was confirmed as a result of 300
+Monte Carlo iterations that the collection ratio and communication
+was 92%, the communication fulfillment was 97%, and the collection
+ratio was 95%. These values mean that the learning is carried out over
+the entire range of scenario parameters at once, so we can effectively
+check each parameter that performs optimally in the environment we
+defined and how much the best performance is at that time. In other
+words, sweet spots in the environment can be effectively found at the
+macro-level.
+5.5. Scaling to complicated environments
+We adopted two more extensive environments to test whether each
+agent performs effectively even in more general environments. The first
+map is a 100 × 100 grid in which the number or locations of sensor
+nodes vary for each episode. The sensor nodes are randomly scattered
+36 to 49 for each episode. The maximum flying time is from 200 to
+240, and 𝐔𝐶 is 1200. 𝛼 was changed from 1.3 to 0.2, considering that it
+became difficult to harvest data due to the increased distance between
+UAVs and sensor nodes in a 100 × 100 map. Other environmental
+settings are the same as in Section 5.1. The second map is also a
+100 × 100 where grid sensor nodes are randomly scattered 40 to 80 for
+each episode. The most distinguishable difference from the first map is
+that a start and charging zone is located in the center of the map. Other
+environmental settings are the same as the first map.
+In Figs. 6 and 7, example trajectories represent how the path
+planning was adapted as the number of deployed UAVs increased from
+1 to 3 in the extended maps. All other scenario parameters remain fixed
+8
+
+===== PAGE 9 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+Fig. 5. Effect on three metrics according to the scenario parameters. Each data point averages 300 Monte Carlo iterations for each scenario parameter space while maintaining
+the parameters to be investigated.
+Fig. 6. Example trajectories of the first extended map with charging start capacity = 30%, charging complete capacity = 80%, all sensor node with initial data volume = 12.5, a
+maximum flying time = 220 steps and the number of sensor nodes = 42.
+Fig. 7. Example trajectories of the second extended map with charging start capacity = 30%, charging complete capacity = 80%, all sensor node with initial data volume = 12.5,
+a maximum flying time = 220 steps and the number of sensor nodes = 60.
+at the values described in Figs. 6 and 7. The fixed scenario parameter
+values were set as the average value of the defined full range of the
+scenario parameters. Analogous to the trend of Fig. 4, Fig. 6 shows
+that as the number of agents increases, communication fulfillment
+decreases, and the data collection ratio increases. Also, Fig. 6c can be
+a scenario closest to the sweet spot when deciding how many UAVs
+should be deployed with the other scenario parameters given. However,
+the entire data collection ratio dropped compared to Fig. 4 as the size
+of the environment and the number of sensor nodes expanded. Fig. 7
+also shows a similar trend to Fig. 4, but it is noteworthy that when the
+number of agents was three, the communication fulfillment decreased
+significantly to 64.9%. In the fixed scenario parameters in Fig. 7, we
+could confirm that the sweet spot is when it is two agents.
+Figs. 8 and 9 show the collection ratio and communication perfor-
+mance with respect to the number of agents and sensor nodes in two
+extended maps. We found that our proposed algorithm outperforms
+the baseline algorithms in most cases. Even in expanded situations,
+there were substantial performance improvements. Fig. 8a shows that
+as the number of agents increases, the performance difference with
+the baseline algorithms increases. Regardless of the number of sensor
+nodes, the proposed scheme maintains outstanding performance above
+0.22 in Fig. 8b.
+In Fig. 9a, the proposed algorithm showed superior performance
+with a difference of about 0.05 in the three agents situation except
+when the number of agents was one. The trend in Fig. 7c, which showed
+performance degradation when the number of agents was three, was
+the same when the number of agents increased to three in Fig. 9a. In
+Fig. 9b, while all the algorithms exhibited performance degradation
+with the increasing number of sensor nodes, the proposed algorithm
+showed superior performance on the entire range of the number of sen-
+sor nodes. The proposed scheme confirmed performance improvements
+9
+
+===== PAGE 10 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+Fig. 8. Collection ratio and communication versus I and K in first extended map.
+Fig. 9. Collection ratio and communication versus I and K in second extended map.
+when extended to near-continuous environments for this multi-agent
+system.
+6. Conclusion and future work
+We proposed a multi-agent deep reinforcement learning approach to
+build a sustainable system that UAVs can achieve with data harvesting
+from sensor nodes and charging when necessary. Through DDQN used
+with various scenario parameters and global-local map processing, it
+was confirmed that efficient learning was possible for agents in data
+collection, charging, and path planning constraints. The results show
+that the agents achieve balanced multiple objectives using a reward
+function and transfer learning with a decaying e-greedy exploration
+technique. When a specific environment is defined, it can be seen from
+the results that it is possible to control the scenario parameters at a
+macro level to show the best performance.
+For future work, the learning objective needs to be extended to
+collecting data considering the age of information collected from the
+sensor node in non-grid 3D environments with policy-based algorithms
+for continuous actions. It could be necessary to learn by including
+even the altitude of the UAV in the action space using a deep de-
+terministic policy gradient (DDPG) algorithm to implement non-grid
+UAV movements. In non-grid environments with exponentially large
+states, effective learning can be carried out with an attention mecha-
+nism allowing each agent to learn the essential states by focusing on
+areas needed to train. It would be considerable to give each agent a
+unique network that makes an individual policy control operate in a
+decentralized deployment and decentralized training.
+CRediT authorship contribution statement
+Mincheol Seong: Writing – original draft, Conceptualization, In-
+vestigation. Ohyun Jo: Writing – review & editing, Conceptualization,
+10
+
+===== PAGE 11 =====
+M. Seong, O. Jo and K. Shin Engineering Applications of Artificial Intelligence 120 (2023) 105891
+Funding acquisition. Kyungseop Shin: Writing – review & editing,
+Conceptualization, Funding acquisition.
+Declaration of competing interest
+The authors declare the following financial interests/personal re-
+lationships which may be considered as potential competing inter-
+ests: MinCheol Seong reports financial support was provided by The
+National Research Foundation of Korea.
+Data availability
+The data that has been used is confidential.
+Acknowledgments
+This work was supported by the National Research Foundation of
+Korea [grant number 2021R1F1A1064059].
+References
+Alkandari, A., Alabduljader, Y., Moein, S.M., et al., 2012. Water monitoring system us-
+ing Wireless Sensor Network (WSN): Case study of Kuwait beaches. In: 2012 Second
+International Conference on Digital Information Processing and Communications
+(ICDIPC). IEEE, pp. 10–15. http://dx.doi.org/10.1109/ICDIPC.2012.6257270.
+Bayerlein, H., Theile, M., Caccamo, M., Gesbert, D., 2020. UAV path planning for
+wireless data harvesting: A deep reinforcement learning approach. In: GLOBECOM
+2020-2020 IEEE Global Communications Conference. IEEE, pp. 1–6. http://dx.doi.
+org/10.1109/GLOBECOM42002.2020.9322234.
+Bayerlein, H., Theile, M., Caccamo, M., Gesbert, D., 2021. Multi-UAV path planning for
+wireless data harvesting with deep reinforcement learning. IEEE Open J. Commun.
+Soc. 2, 1171–1187. http://dx.doi.org/10.1109/OJCOMS.2021.3081996.
+Bottarelli, L., Bicego, M., Blum, J., Farinelli, A., 2019. Orienteering-based informative
+path planning for environmental monitoring. Eng. Appl. Artif. Intell. 77, 46–58.
+http://dx.doi.org/10.1016/j.engappai.2018.09.015.
+Chen, G., 2019. A new framework for multi-agent reinforcement learning–centralized
+training and exploration with decentralized execution via policy distillation. http:
+//dx.doi.org/10.48550/arXiv.1910.09152, arXiv preprint arXiv:1910.09152.
+Dulac-Arnold, G., Mankowitz, D., Hester, T., 2019. Challenges of real-world rein-
+forcement learning. http://dx.doi.org/10.1007/s10994-021-05961-4, arXiv preprint
+arXiv:1904.12901.
+European Telecommunications Standards Institute (ETSI), 2017. Study on channel
+model for frequencies from 0.5 to 100GHz. (accessed May 2017) https://www.etsi.
+org/deliver/etsi_tr/138900_138999/138901/14.00.00_60/tr_138901v140000p.pdf.
+Fu, S., Tang, Y., Wu, Y., Zhang, N., Gu, H., Chen, C., Liu, M., 2021. Energy-efficient UAV
+enabled data collection via wireless charging: A reinforcement learning approach.
+IEEE Internet Things J. http://dx.doi.org/10.1109/JIOT.2021.3051370.
+Kishk, M., Bader, A., Alouini, M.-S., 2020. Aerial base station deployment in 6G cellular
+networks using tethered drones: The mobility and endurance tradeoff. IEEE Veh.
+Technol. Mag. 15 (4), 103–111. http://dx.doi.org/10.1109/MVT.2020.3017885.
+Lahmeri, M.-A., Kishk, M.A., Alouini, M.-S., 2021. Artificial intelligence for UAV-
+enabled wireless networks: A survey. IEEE Open J. Commun. Soc. 2, 1015–1040.
+http://dx.doi.org/10.1109/OJCOMS.2021.3075201.
+Liu, C.H., Ma, X., Gao, X., Tang, J., 2019. Distributed energy-efficient multi-UAV
+navigation for long-term communication coverage by deep reinforcement learning.
+IEEE Trans. Mob. Comput. 19 (6), 1274–1285. http://dx.doi.org/10.1109/TMC.
+2019.2908171.
+Liu, K., Yang, Z., Li, M., Guo, Z., Guo, Y., Hong, F., Yang, X., He, Y., Feng, Y.,
+Liu, Y., 2010. Oceansense: Monitoring the sea with wireless sensor networks. ACM
+SIGMOBILE Mob. Comput. Commun. Rev. 14 (2), 7–9. http://dx.doi.org/10.1145/
+1854219.1854223.
+Mnih, V., Kavukcuoglu, K., Silver, D., Rusu, A.A., Veness, J., Bellemare, M.G.,
+Graves, A., Riedmiller, M., Fidjeland, A.K., Ostrovski, G., et al., 2015. Human-
+level control through deep reinforcement learning. Nature 518 (7540), 529–533.
+http://dx.doi.org/10.1038/nature14236.
+Oliehoek, F.A., Amato, C., 2016. A Concise Introduction To Decentralized POMDPs.
+Springer-Verlag, Berlin.
+Pérez-Carabaza, S., Scherer, J., Rinner, B., López-Orozco, J.A., Besada-Portas, E.,
+2019. UAV trajectory optimization for Minimum Time Search with communication
+constraints and collision avoidance. Eng. Appl. Artif. Intell. 85, 357–371. http:
+//dx.doi.org/10.1016/j.engappai.2019.06.002.
+Punma, C., 0000. Autonomous Vehicle Fleet Coordination With Deep Reinforcement
+Learning, Unpublished results.
+Shen, S., Han, Y., Wang, X., Wang, Y., 2019. Computation offloading with multiple
+agents in edge-computing–supported IoT. ACM Trans. Sensor Netw. 16 (1), 1–27.
+http://dx.doi.org/10.1145/3372025.
+Skorobogatov, G., Barrado, C., Salamí, E., 2020. Multiple UAV systems: A survey.
+Unmanned Syst. 8 (02), 149–169. http://dx.doi.org/10.1142/S2301385020500090.
+Sutton, R.S., Barto, A.G., 2018. Reinforcement Learning: An Introduction. MIT Press,
+Cambridge, MA.
+Theile, M., Bayerlein, H., Nai, R., Gesbert, D., Caccamo, M., 2021. UAV path planning
+using global and local map information with deep reinforcement learning. In: 2021
+20th International Conference on Advanced Robotics (ICAR). IEEE, pp. 539–546.
+http://dx.doi.org/10.1109/ICAR53236.2021.9659413.
+Ullah, Z., Al-Turjman, F., Mostarda, L., 2020. Cognition in UAV-aided 5G and beyond
+communications: A survey. IEEE Trans. Cogn. Commun. Netw. 6 (3), 872–891.
+http://dx.doi.org/10.1109/TCCN.2020.2968311.
+Van Hasselt, H., Guez, A., Silver, D., 2016. Deep reinforcement learning with double
+q-learning. In: Proceedings of the AAAI Conference on Artificial Intelligence, Vol.
+30. http://dx.doi.org/10.1609/aaai.v30i1.10295.
+Zeng, Y., Wu, Q., Zhang, R., 2019. Accessing from the sky: A tutorial on UAV
+communications for 5G and beyond. Proc. IEEE 107 (12), 2327–2375. http://dx.
+doi.org/10.1109/JPROC.2019.2952892.
+Zhang, Y., Aliya, B., Zhou, Y., You, I., Zhang, X., Pau, G., Collotta, M., 2018. Shortest
+feasible paths with partial charging for battery-powered electric vehicles in smart
+cities. Pervasive Mob. Comput. 50, 82–93. http://dx.doi.org/10.1016/j.pmcj.2018.
+08.001.
+Zhang, K., Yang, Z., Başar, T., 2021. Multi-agent reinforcement learning: A selective
+overview of theories and algorithms. In: Handbook of Reinforcement Learning and
+Control. Springer, pp. 321–384. http://dx.doi.org/10.1007/978-3-030-60990-0_12.
+Zhang, S., Zhang, H., Di, B., Song, L., 2019. Cellular UAV-to-X communications: Design
+and optimization for multi-UAV networks. IEEE Trans. Wireless Commun. 18 (2),
+1346–1359. http://dx.doi.org/10.1109/TWC.2019.2892131.
+11

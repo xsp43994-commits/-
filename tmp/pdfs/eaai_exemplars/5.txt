@@ -1,0 +1,1814 @@
+
+
+===== PAGE 1 =====
+ 
+Contents lists available at ScienceDirect
+Engineering Applications of Artificial Intelligence
+journal homepage: www.elsevier.com/locate/engappai  
+Research paper
+Human-in-the-loop reinforcement learning for dynamic soaring: A trajectory 
+planning and control integrated system
+Yufeng Lu
+ , Fangfang Xie ∗, Tingwei Ji
+Center for Engineering and Scientific Computation, and School of Aeronautics and Astronautics, Zhejiang University, Zhejiang 310027, China
+A R T I C L E  I N F O
+Keywords:
+Human-in-the-loop
+Deep reinforcement learning
+Dynamic soaring
+Trajectory optimization
+ A B S T R A C T
+Increasing the endurance of fixed-wing unmanned aerial vehicles has long been a designer’s dream. Inspired 
+by the behavior of albatrosses, dynamic soaring holds significant potential for achieving perpetual unpowered 
+flight. However, traditional approaches face challenges in implementing dynamic soaring in real-world 
+scenarios. Prior studies simplified kinematics and control inputs, and separated design of the optimizer and 
+controller. To this end, we propose a human-in-the-loop framework based on deep reinforcement learning 
+to enable automated execution of dynamic soaring. First, pseudospectral method is utilized to generate the 
+optimal trajectory for learning. Then, deep the reinforcement learning algorithm interacts with a high-fidelity 
+environment, sending commands to the lower-level controller. Humans contribute domain expertise and design 
+reward functions and evaluation criteria to assist the agent in trajectory search. Our results demonstrate the 
+autonomous execution of dynamic soaring without human intervention, with enhanced energy collection in 
+thin-shear wind fields. Importantly, our findings are more congruent with practical applications of real-world 
+gliders compared to optimal control theory. The scope of this study also contains simple robustness tests 
+which indicate the agent’s resistance to wind disturbances and deviations in the initial state. This research 
+demonstrates the feasibility of integrating automatic planning and control, accelerating the transition of 
+dynamic soaring from simulation to real-world applications.
+1. Introduction
+1.1. Motivation
+In recent years, the rapid advancement and frequent updates of 
+onboard electronic devices in aviation have significantly broadened the 
+applications of drones (Pieczyński et al., 2024). Among the numerous 
+challenges developers face in the drone design process, one of the 
+most critical is enhancing the drone’s range and endurance. To address 
+this pivotal challenge, energy-saving measures have been pursued, 
+encompassing the optimization of aerodynamic shapes to enhance the 
+lift-to-drag ratio and the exploration of alternative energy sources, such 
+as hydrogen, as a viable substitute for conventional aviation fuel. In 
+contrast, researchers have adopted a novel approach, focusing on the 
+elongation of endurance by harnessing natural energy resources. Sachs 
+and Grüter (2020).
+The most common air currents commonly used for harvesting en-
+ergy are shear wind and updrafts (Bencatel et al., 2013). The lat-
+ter mimics birds in mountain valleys which harvest thermals, and 
+this flight pattern has given rise to ‘‘cross-country soaring’’ competi-
+tions (Edwards and Silverberg, 2010). Recent research has successfully 
+∗ Corresponding author.
+E-mail addresses: 22024035@zju.edu.cn (Y. Lu), fangfang_xie@zju.edu.cn (F. Xie), zjjtw@zju.edu.cn (T. Ji).
+presented and demonstrated a mature framework using hierarchical 
+reinforcement learning to solve the core problem in ascending thermal 
+plumes (Notter et al., 2023). In contrast to updrafts, wind shear in-
+creases with height in the form of airspeed. Its scenarios have provided 
+the impetus for non-powered glider researchers (Mir et al., 2018a; 
+Bousquet et al., 2017). The inspiration for this energy absorption 
+comes from birds that soar thousands of kilometers over the ocean, 
+including albatrosses, which are remarkable as they hardly need to flap 
+their wings or stop to feed (Nevitt et al., 2008). Therefore, mimicking 
+the maneuvering operations of albatrosses is deemed to be especially 
+beneficial for a fixed-wing aircraft to stay airborne for long with-
+out consuming energy. Such periodic maneuvers have further been 
+categorized by researchers as dynamic soaring.
+Extensive research has been conducted on dynamic soaring to 
+imitate albatrosses. As a result, a continuous flight mode has been 
+proposed for unpowered gliders in shear winds (Sachs, 2016). This 
+mode consists of four stages: upwind climb, high-altitude turn, down-
+wind dive, and low-altitude turn. Similarly, theoretical possibilities 
+for achieving permanent unpowered flight include the ‘8’ shape and 
+other traveling patterns proposed by Liu et al. (2017). However, it 
+https://doi.org/10.1016/j.engappai.2025.111219
+Received 12 March 2024; Received in revised form 27 February 2025; Accepted 17 May 2025
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+Available online 10 June 2025 
+0952-1976/© 2025 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies. 
+
+===== PAGE 2 =====
+Y. Lu et al.
+ Nomenclature
+ 𝐴𝑅 Aspect ratio  
+ 𝐶𝐷, 𝐶𝐿, 𝐶𝑌 Coefficient of drag , lift and lateral force  
+ 𝐶𝑙, 𝐶𝑚, 𝐶𝑛 Moment coefficient of roll, pitch and yaw  
+ 𝑒 Oswald factor  
+ 𝒇 Vector of aerodynamic forces  
+ ℎ Height  
+ 𝑔 Vector of gravity  
+ 𝑰 3 3-dimensional identity matrix  
+ 𝐽 (⋅) Objective function  
+ 𝐿 Lift force vector  
+ 𝑀 Pitch moment  
+ 𝑁 Number of interpolation points  
+ 𝑝, 𝑞, 𝑟 Angular velocity expressed in the body 
+coordinate system
+ 
+ 𝑆 Wing area  
+ 𝑉𝑎 Velocity relative to the wind  
+ 𝒗 Velocity vector  
+ 𝑥𝑁 , 𝑥𝐸 , 𝑥𝐷 Positions expressed in the North-East-Down 
+coordinate system
+ 
+ 𝛼 Angle of attack  
+ 𝛽 Angle of sideslip  
+ 𝜃 Pitch angle  
+ 𝛾 Flight-path angle  
+ 𝜌 Density  
+ 𝜓 Heading angle  
+ 𝝉 Vector of aerodynamic torques  
+ 𝜏 Dimensionless time variable  
+ 𝛿𝑎, 𝛿𝑒, 𝛿𝑓 , 𝛿𝑟 Deflection of aileron,elevator, flap and 
+rudder
+ 
+ Subscripts
+ 𝑐 Command output by the agent to the 
+controller
+ 
+ 𝑖, 𝑗 Index variable of the interpolation point.  
+ 𝑟𝑒𝑓 Reference wind speed at the specific altitude 
+ 𝑡 Time steps  
+is important to note that not all shear wind conditions allow for 
+the completion of the Rayleigh cycle. Bousquet (2018) pointed out 
+that there exists a minimum shear wind required for the successful 
+execution of the dynamic soaring maneuver. More specifically, the 
+maximum reference wind speed and the thickness of the shear layer 
+induce changes in the tilt angle and cruising radius of the Rayleigh 
+cycle. Drawing on the optimization findings of previous studies, the 
+glider’s maximum speed is continuously enhanced by blending air-
+flow with varying velocities. Sachs et al. (2021) observed that the 
+aerodynamic characteristics of a straight wing in the high subsonic 
+region significantly limit the attainment of maximum speed. Simulation 
+verification suggests that a swept wing mitigates the rise of drag in 
+compressibility regions and has the potential to enhance maximum 
+speed performance.
+1.2. Challenge
+Optimization theory has significantly advanced the understanding 
+of dynamic soaring mechanisms and provided a foundation for devel-
+oping effective control strategies. Most existing work faces challenges in 
+implementing trajectory optimization in natural environments. Consid-
+ering that energy collection is highly dependent on the attitude of glider 
+with respect to the wind, a compromise was made in our previous work 
+by adopting an unpowered strategy referred to as ‘‘upwind climbing 
+and downwind diving’’ (Wang et al., 2022). However, there are several 
+challenges to harvest energy. Firstly, for the sake of convergence of 
+solvers, the motion is simplified in previous optimization work through 
+the omission of pitch or angle of attack, with the input vector compris-
+ing the lift coefficient. Such a simplification leads to modeling errors, as 
+the mapping from actuator deflection to angle is missing, not to men-
+tion that the lift coefficient is determined not only by the angle but also 
+by the damping interference of the angular velocity. Secondly, treating 
+the roll angle and lift coefficient as actuators assumes that these values 
+can be promptly and accurately reached. In reality, as indicated by 
+the analysis based on the optimal control solution, the controller must 
+undergo rapid changes and persist in extreme actuator positions (Sachs 
+and Grüter, 2021). The quickness, overshoot, and steady-state error 
+of the trajectory tracking controller remain to be considered. Thirdly, 
+as mentioned above, dependence on the framework of optimal control 
+theory alone may result in unexpected trajectories if the glider deviates 
+from the equilibrium point under wind disturbances or sensor noise. 
+Currently, it is difficult to design a controller capable of simultaneously 
+maintaining unpowered flight and achieving perfect tracking of the 
+optimal trajectory in the shear wind.
+Wind conditions and the operational space within the environmen-
+tal range still pose a challenge for consistently imitating the maneuver 
+of dynamic soaring. Researchers have gained empirical understandings 
+of the dynamic soaring mechanism and harvested the energy from 
+shear winds on the windward side of ridges (Bronz et al., 2021). 
+From the perspective of unmanned aerial vehicles (UAVs) path plan-
+ning, this involves maximizing energy harvesting and decision mak-
+ing (Chakrabarty and Langelaan, 2011). For robust control, it involves 
+achieving more stable flight in unpredictable wind fields (Kim and 
+Perez, 2023). Additionally, the time spent executing on the Rayleigh 
+cycle is relatively limited, whether in a poor wind environment or 
+within the compressible region of high-speed flight. Preliminary ex-
+periments validating dynamic soaring problems in the real world have 
+been conducted in Silva and Frew (2016). Attempts by autopilots to 
+adjust position and airspeed require the controllers to apply thrust 
+to minimize the error between the actual and expected trajectory, 
+which consumes power from the propulsion system. Trajectory opti-
+mization and lower-level tracking controllers are designed separately, 
+leading to errors between the reference trajectory and the real-time 
+position during flight tests. Stringent wind field requirements and 
+rapid maneuvering conditions impose more precise demands on the 
+trajectory optimization and controls of the avionics system. To the 
+best of our knowledge, there has been few works done to integrate 
+trajectory planning and bottom-level tracking actuators into a system 
+for comprehensive consideration.
+1.3. Novelty and contributions
+To address these challenges, Fig.  1 illustrates a general scheme 
+of the proposed human-in-the-loop (HITL) method based on deep re-
+inforcement learning (DRL), and highlights the contribution of this 
+study. The prior methods solve optimal control problems based on 
+simplified dynamics models. They generate flight trajectories that sat-
+isfy the specified objectives and constraints. However, we do not want 
+to simplify the dynamics model and controller. Instead, we aim to 
+construct a high-fidelity environment. The environment is capable to 
+accommodate various aircrafts and application scenarios through the 
+adjustment of wind and aerodynamic parameters. DRL is utilized to 
+handle trajectory planning and control tasks simultaneously. Due to the 
+high dimensionality of the state and action spaces, HITL is introduced 
+to involve human participation in an active learning manner. Results 
+from optimal control theory are used to screen the optimized trajec-
+tories, design performance metrics and redefine evaluation criteria, 
+thereby enhancing the physical significance of the trajectory. Further-
+more, the incorporation of expert knowledge improves efficiency and 
+helps prevent trapping in locally optimal trajectories.
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+2 
+
+===== PAGE 3 =====
+Y. Lu et al.
+Fig. 1. General schema of the proposed human-in-the-loop method based on deep reinforcement learning and differences between the prior methods and the proposed system.
+Relying on human control for prolonged periods frequently exceeds 
+human endurance limits. Thus, our goal is to integrate the dynamic 
+soaring into the Actor-Critic framework to develop an autonomous 
+cruising system that replaces human operation. The trained agents can 
+perform tasks in scenarios with random wind fields and can handle 
+situations where the states of the aircraft deviate caused by estimation 
+errors or disturbances from the environment.
+In summary, this study makes the primary contributions as follows:
+∙ Developed a high-fidelity simulation environment that retains the 
+complex dynamics and controllers of gliders.
+∙ Propose a framework to implement HITL methods based on DRL 
+for dynamic soaring.
+∙ Incorporate domain expertise into the RL algorithm and allow 
+humans to participate in evaluating the quality of the agent’s decisions.
+∙ Achieve the integration of trajectory planning and control, guiding 
+the controller to complete the trajectory.
+∙ The agent automatically executes dynamic soaring, which requires 
+no human intervention and exhibits a degree of disturbance resistance.
+The rest of this paper is organized as follows. Previous work on 
+dynamic soaring is presented in Section 2, which also identifies the 
+limitations of optimization methods in implementing strategies during 
+actual flight processes. Section 3 formulates the traditional approach 
+to dynamic soaring and the mechanism of wind energy harvesting 
+serves as domain expertise for the subsequent DRL work. We construct 
+the high-fidelity environment in Section 4. Our iterative framework is 
+introduced in Section 5, focused on the details of the HITL method and 
+DRL algorithm. The experimental results are presented in Section 6, 
+followed by robustness tests, indicating the feasibility of applying this 
+approach. Finally, the contributions of this work are summarized, and 
+future prospects are discussed in Section 7.
+2. Related work
+2.1. Optimal control methods
+Numerous significant contributions have been made in trajectory 
+optimization to emulate the dynamic soaring of albatrosses. Essentially, 
+as an optimal control problem, these studies consider nonlinear opti-
+mizers to generate optimal trajectories for dynamic soaring. The mul-
+tiple shooting method was used to discretize the nonlinear differential 
+equations (Sachs et al., 1989), and software was employed to solve for 
+maximum altitude gain. Zhao and Qi (2004) discretized the continuous-
+time curve into a finite time sequence using the direct collocation 
+method to minimize cycle time or parameters such as wind gradient 
+slope. This approach transformed the trajectory planning problem into 
+a large-scale nonlinear programming problem, which was subsequently 
+solved by Sparse Nonlinear OPTimizer (SNOPT) (Gill et al., 2005). Gao 
+and Liu (2017) reduced the dimensionality by utilizing Dubins curves, 
+potentially compromising global optimality but significantly reduc-
+ing computation time. However, these studies only computed energy-
+gathering trajectories for reference. Whether the glider can accurately 
+enter the anticipative state space requires further investigation. Mir 
+et al. (2018b) mathematically proved the nonlinear controllability 
+characteristics along the optimal trajectory using geometric control 
+theory, addressing this concern. Moreover, the nonlinear controllability 
+and stability of the optimal trajectory are not mutually exclusive. The 
+contraction theory-based technique was then used to establish the 
+conclusion that dynamic soaring with reduced wind shear requirements 
+is inherently unstable (Mir et al., 2021). The authors propose utilizing 
+optimal control solutions as a reference to design controllers that 
+generate pitch and roll commands, thereby promoting stable glider 
+operation on the optimal trajectory.
+Recently, there have been several studies focusing on UAV control 
+in dynamic soaring or windy environments. Haghighi et al. (2024) 
+propose an efficient computational framework, which applies pseu-
+dospectral method to accurately solve optimal trajectory strategies in 
+a windy environment . A Type-2 Fuzzy Logic Controller is introduced 
+combined with PID for UAVs with wind disturbances (Moali et al., 
+2024). Similarly, A Gaussian Pseudospectral method and a cascade 
+dual loop scheme are adopted, achieving robust control and effective 
+trajectory generation (Pan et al., 2022). Additionally, a robust MPC 
+scheme in unknown scalar fields is proposed, where reference tra-
+jectories are generated by an RL algorithm (Li et al., 2024). These 
+works exhibit outstanding control effectiveness, even when modeling 
+errors arise from simplifications and disparities between assumed and 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+3 
+
+===== PAGE 4 =====
+Y. Lu et al.
+actual behavior exist. By combining trajectory optimization with other 
+controllers, researchers aim to enhance the UAV’s ability to harness 
+wind energy effectively.
+2.2. Reinforcement learning
+Significant progress has been made in utilizing reinforcement learn-
+ing (RL) to harness energy in wind fields. Montella and Spletzer (2014) 
+obtained a novel RL controller by imitating the sampling results from a 
+nonlinear optimizer, resulting in improved performance compared to 
+the baseline teacher controller. Impressive demonstrations by Reddy 
+et al. (2016, 2018) showcased the ability of energy-constrained glid-
+ers to learn how to exploit and explore energy solely through their 
+interaction with unknown thermal updraft environments.
+Nevertheless, reinforcement learning is not universally capable of 
+handling all tasks without conditions. Due to the challenges faced 
+by Q-learning in dealing with continuous glider states, deep neural 
+networks, which excel in approximating arbitrary nonlinear functions, 
+are employed to estimate the Q-value, an evaluation metric that guides 
+the aircrafts’ action in specific states (Novati et al., 2019). The concept 
+of updating the action strategy at each step based on the Q-value 
+has been categorized by researchers as a value-based learning method. 
+Similar to state processing, the optimal actions can be composed of 
+roll angles and pitch angles, which can be discretized into multiple 
+action groups (Montella and Spletzer, 2014). In practice, discretizing 
+the state and action spaces is a compromise to address the physical 
+problems. A more optimal approach is to adopt the sample mean esti-
+mation (Schulman et al., 2015), which avoids the exponential mapping 
+from the continuous space of glider angle inputs to the discrete space 
+and reduces the computational cost of fitting the neural network. The 
+approach of representing the input actions through a probability distri-
+bution function and subsequently optimizing the parameterized policy 
+using numerical algorithms is known as a policy-based reinforcement 
+learning method (Notter et al., 2023). In fact, the Actor-Critic frame-
+work has been proposed to encompass the benefits of each approach, 
+handling the limitations of discrete actions while being able to update 
+Q-values and policies in a single step (Wang et al., 2016b).
+Recent advancements in DRL have significantly improved the au-
+tonomy and adaptability of UAVs and other robotic systems in com-
+plex environments. Traditional model-based controllers face challenges 
+when dealing with nonlinear dynamics, environmental uncertainties, 
+and real-time adaptation requirements. To address these limitations,
+Ramezani et al. (2023) introduce an LSTM-based Model Predictive Con-
+trol (MPC) framework integrated with the Deep Deterministic Policy 
+Gradient (DDPG) algorithm for UAV path planning in complex environ-
+ments. This approach enhances convergence speed while reducing fail-
+ure rates. Similarly, Baek et al. (2022) propose a hybrid control strategy 
+that combines linear quadratic regulator (LQR) controllers with en-
+semble DRL methods. By leveraging prior knowledge, this method 
+improves sample efficiency and robustness. Meanwhile, SAC algorithms 
+have become a key method for continuous control. Variants such as 
+the Soft Actor Critic Gaussian Mixture Model (SAC-GMM) enable skill 
+refinement in trajectory space (Nematollahi et al., 2022), while SAC 
+achieves reactive collision avoidance in dynamic scenarios (Nakhleh 
+et al., 2023). Additionally, Garg incorporated vision-based DRL for UAV 
+path planning and focuses on assessing the generalization from simu-
+lation to real-world deployment (Garg et al., 2024). These approaches 
+demonstrate performance in real-world deployments. Such innovations 
+highlight DRL’s potential to overcome traditional bottlenecks in UAV 
+control.
+2.3. Human-in-the-loop-methods
+Artificial intelligence strives to integrate the advantages of hu-
+man intelligence, aiming for effective collaboration between humans 
+and machines (Mosqueira-Rey et al., 2023). Integrating expert in-
+sights into algorithms creates a HITL-augmented approach, enhancing 
+the reliability and rationale of outputs (Sadeghianasl et al., 2024). 
+This methodology has found application in diverse fields, including 
+medical diagnosis, visual recognition, classification, and recommen-
+dation systems (Wang et al., 2016a; Liu et al., 2023). Active human 
+feedback has been employed to refine the efficacy of semi-automatic 
+annotation (Bonet-Jover et al., 2023). Liu et al. (2019) demonstrated 
+the value of pre-selecting datasets for fine-tuning algorithm parame-
+ters, which expedites convergence. Expert-machine interaction reduces 
+search spaces, simplifying the process of obtaining clean training data, 
+making it more efficient (Holzinger, 2016).
+To the best of the authors’ knowledge, no existing studies have 
+employed DRL with HITL in dynamic soaring. The potential for the 
+automated execution of dynamic soaring is worthy of thorough ex-
+ploration. We believe that this work can reawaken interest in the 
+achievement of dynamic soaring in the real world.
+3. Trajectory optimization based on pseudospectral method
+This section presents the classical method of generating Rayleigh 
+cycle using pseudo-spectral methods. The theoretical basis obtained 
+will be utilized as domain expertise, which guides the DRL algorithm 
+to enable the search for energy-harvesting trajectories. The optimal 
+trajectories generated by optimal control principles will be further 
+compared in detail with the trajectories generated iteratively based on 
+the proposed framework in Section 5. 
+3.1. Mathematical model of dynamic soaring
+The point mass model is used to describe flight trajectories. Given 
+the representation of shear wind as 𝑊𝑥, the following partial differen-
+tial equations can be derived for flights in a wind field:
+𝑚 ̇𝑉 = −𝐷 − 𝑚𝑔 sin 𝛾 − 𝑚 ̇𝑊𝑥 cos 𝛾 sin 𝜓 (1)
+𝑚𝑉 cos 𝛾 ̇ 𝜓= 𝐿 sin 𝜇 − 𝑚 ̇𝑊𝑥 cos 𝜓 (2)
+𝑚𝑉 ̇ 𝛾= 𝐿 cos 𝜇 − 𝑚𝑔 cos 𝛾 + 𝑚 ̇𝑊𝑥 sin 𝛾 sin 𝜓 (3)
+̇ 𝑧= 𝑉 sin 𝛾 (4)
+̇ 𝑥= 𝑉 cos 𝛾 sin 𝜓 + 𝑊𝑥(ℎ) (5)
+̇ 𝑦= 𝑉 cos 𝛾 cos 𝜓 (6)
+Where 𝑉 , 𝛾, and 𝜓 denote airspeed, flight path angle and yaw, re-
+spectively. In order to control the nonlinear motions, control variables 
+need to be introduced. Angular velocity was employed in Mir et al. 
+(2018b) for controllability analysis to adjust the pitch and roll of the 
+glider. Generally, for the purpose of simplification, the coefficient of 
+lift (𝐶𝐿) and roll angle are commonly chosen in trajectory optimization 
+methods, although Control command at a lower level offers a more re-
+alistic reproduction of the physical processes in experimental flight. In 
+this context, the introduction of 𝒖 completes the form of the nonlinear 
+dynamics system as 𝒙 = ̇𝑓 (𝒙, 𝒖).
+𝐿 = − 1
+2 𝜌𝑉 2𝑆𝐶𝐿 (7)
+𝐷 = − 1
+2 𝜌𝑉 2𝑆𝐶𝐷 (8)
+Where 𝐶𝐷 is the drag coefficient. In Deittert et al. (2009), the drag 
+coefficient is the quadratic relation of the lift coefficient and is inversely 
+proportional to the maximum lift-drag ratio. In our experiment, we 
+determined the drag coefficient as the inverse proportional function of 
+aspect ratio, which was formulated as follows: 
+𝐶𝐷 = 𝐶𝐷0 +
+(𝐶𝐿 − 𝐶𝐿0
+)2
+𝜋𝑒𝐴𝑅 (9)
+Where 𝐶𝐿0 represents the lift coefficient at zero angle of attack, while 
+𝐶𝐷0 is the minimum of the lift-drag curve. In fact, both approaches 
+illustrate the reduction of lift-induced drag with an increase in aspect 
+ratio, essentially conveying the same concept.
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+4 
+
+===== PAGE 5 =====
+Y. Lu et al.
+Fig. 2. The iterative framework which details two subsystems. Subsystem I represents the established environmental subsystem, whereas Subsystem II represents the combination of 
+reinforcement learning and human involvement. The environment subsystem comprises various sub-modules, including the wind field module, dynamics system module, controller 
+module, and reverse engineering module. Dashed lines indicate data transmission between different modules and subsystems. In II, the left side depicts the structure of DRL, while 
+the bottom right corner represents the knowledge acquired by humans from the optimal trajectory, which is subsequently transferred to DRL through the HITL method as expert 
+domain knowledge.
+3.2. Formula for optimal control problem
+Determining the optimal objective is not restricted to a single crite-
+rion and depends on the purpose of our investigation. In order to find 
+the critical conditions for an extended-duration cruise, the minimum 
+reference wind speed was computed by Bonnin et al. (2015). Silva and 
+Frew (2016) explored the minimum thrust necessary to conserve fuel 
+during flight. Gao and Liu (2017) prioritized maximizing airspeed gain 
+as a criterion to maximize energy collection. In this paper, to obtain 
+the altitude gain as much as possible under poor wind conditions is of 
+great significance. The formulation is presented as follows:
+𝐽 = min
+[
+−ℎ𝑡𝑓
+]
+(10)
+𝒙(𝑡)𝑡𝑓 = 𝒙(𝑡)𝑡0 (11)
+Eq. (10) represents the objective function of dynamic soaring. It 
+indicates that the goal is to minimize the negative of the final height 
+ℎ𝑡𝑓 , meaning the optimization aims to maximize the final altitude at the 
+terminal time. When the wind is sufficiently strong, the endpoint of the 
+flight will be higher than the starting point. Conversely, when the wind 
+is not strong enough to complete the entire Rayleigh cycle, the endpoint 
+of the flight will be lower than the starting point. While 𝑡𝑓 and 𝑡0
+represent the starting and ending time of the optimization, respectively. 
+For the case of finding the maximum height gain, we maintain other 
+constraints but remove the restriction on the height. For state and input 
+variables, the following path constraints are given: 
+𝑉min < 𝑉 < 𝑉 max, 𝜓 min < 𝜓 < 𝜓 max (12)
+𝛾min < 𝛾 < 𝛾 max, 𝑥 min < 𝑥 < 𝑥 max (13)
+𝑦min < 𝑦 < 𝑦 max, 𝜙 min < 𝜙 < 𝜙 max, 𝑧 ⩾ 0 (14)
+ where 𝜙 denotes the roll and 𝑧 is the altitude of the aircraft. The 
+inequalities impose various limits on the variables over the trajectory, 
+such as prohibiting attitude angles and airspeed from exceeding spec-
+ified ranges, with the aim of keeping the flight vehicle in a stable 
+flight condition. In our article, the spectral method is applied with 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+5 
+
+===== PAGE 6 =====
+Y. Lu et al.
+high-order global basis functions over the entire computational domain 
+to discretize the state and control variables, transforming the optimal 
+control problem of solving 𝑥 = ̇𝑓 (𝑥, 𝑢) into a nonlinear programming 
+problem (NLP). The equations involve solving for the state variable 𝑥
+and control input 𝑢 over time, denoted as 𝑥(𝜏) and 𝑢(𝜏), where 𝜏 is a 
+normalized time variable. 
+𝑥(𝜏) ≈ 𝑋(𝜏) =
+𝑁∑
+𝑖=0
+𝐿𝑖(𝜏)𝑋 (𝜏𝑖
+) (15)
+𝑢(𝜏) ≈ 𝑈 (𝜏) =
+𝑁∑
+𝑘=1
+𝐿𝑘(𝜏)𝑈 (𝜏𝑘
+) (16)
+ Where lagrange polynomials are used to approximate the state vari-
+ables and control inputs. This approximation helps transform the con-
+tinuous problem into a discrete one. The polynomials are mathemati-
+cally described as: 
+𝐿𝑖(𝜏) =
+𝑁∏
+𝑗=0,𝑗≠𝑖
+𝜏 − 𝜏𝑗
+𝜏𝑖 − 𝜏𝑗
+, 𝑖 = 1, 2, … , 𝑁 (17)
+Each polynomial 𝐿𝑖(𝜏) is associated with a specific time node 𝜏𝑖 and 
+they satisfy the property in Eq.  (17). This allows us to approximate 
+the values of 𝑥(𝜏) and 𝑢(𝜏) smoothly between discrete points. To ensure 
+higher accuracy, discrete points 𝜏𝑖 in Eq. (15) and (16) no longer follow 
+the equidistant distribution. Instead, the roots of the linear combina-
+tion of high-order Legendre polynomials, 𝑃𝑛−1(𝜏) + 𝑃𝑛(𝜏), are chosen 
+as collocation points. In this research, the optimal control software 
+GPOPS-II (Patterson and Rao, 2014) and the nonlinear programming 
+solver (SNOPT) are employed to solve the optimal control problem for 
+dynamic soaring.
+4. Construction of the high-fidelity environment
+In this section, a detailed introduction to the full-scale environment 
+that interacts with DRL, encompassing the wind field, dynamics and 
+control system, is provided. Similar to an automated control system, the 
+agent is characterized as a parameterized guider, while the glider acts 
+as an actuator to execute commands. The environment is comprised of 
+everything outside the agent. The agent is a machine to be educated, 
+and its final decisions are intensely influenced by its interactions with 
+the environment. Consequently, the effectiveness of applying the agent 
+to actual flight is largely determined by the realism of the environment.
+Thus, the high-fidelity environment is constructed, as depicted in 
+Fig.  2I. The glider is firstly reverse-engineered and parameterized. 
+Slight modifications are made to the size to satisfy the requirements 
+of dynamic soaring. Then, the dynamic system with the controller, is 
+modeled based on the measurement. This system receives information 
+from the wind field module and provides the necessary state informa-
+tion of the glider for DRL. In part D, XFlr and Athena Vortex Lattice 
+(AVL) are adopted to estimate viscous-related parameters and aerody-
+namic coefficients. The static derivatives and rotation-rate-dependent 
+coefficients are calculated using the vortex lattice method and the 
+embedded software Xfoil. State information is collected by this module, 
+and feedback on the six-dimensional forces and moments is offered. 
+An exponential wind field is utilized to generate the required wind 
+for dynamic soaring, with the option of adding the von Kármán wind 
+turbulence in part C. A PID controller with tuned parameters is created 
+in part B to control the glider’s motion.
+It is noted that compared to the real-world environment, the simula-
+tion environment depicted in Fig.  2I still has minor limitations. In Part 
+C, the wind field is approximated by superimposing an empirical model 
+with a stochastic process. However, in real-world scenarios, wind fields 
+are typically generated by complex interactions, such as the collision of 
+incoming flow with hills or the friction of airflow over the sea surface. 
+While numerical simulation results can help minimize the gap between 
+simulated and real wind fields (Lu et al., 2025), the computational 
+speed of Computational Fluid Dynamics (CFD) remains relatively slow. 
+On the other hand, in Part D, vortex lattice theory is used to calculate 
+aerodynamic coefficients to accelerate the solution process. The nu-
+merical discrepancies between the calculated aerodynamic forces and 
+real-world values can be attributed to the inherent limitations of the 
+vortex lattice method.
+4.1. Flight dynamic system model
+The state information of a rigid body moving in space is described 
+by its position and attitude. Here the orientation of the vehicle with 
+respect to the inertial system is expressed in quaternions. 
+𝒒 =
+[ 𝑞𝑤
+𝒒𝑣
+]
+=
+⎡
+⎢
+⎢
+⎢
+⎢⎣
+𝑞𝑤
+𝑞𝑥
+𝑞𝑦
+𝑞𝑧
+⎤
+⎥
+⎥
+⎥
+⎥⎦
+(18)
+where 𝑞𝑤 denotes the real part of the quaternion, while 𝑞𝑣 = [𝑞𝑥 𝑞𝑦 𝑞𝑧
+]𝑇
+represents the imaginary part. The dynamic system using vector nota-
+tion is presented to make the mathematical equations more condensed: 
+[ 𝑚𝑰 3 0
+0 𝑱
+] [
+𝐵 ̇𝒗
+𝐵 ̇𝝎
+]
+=
+[ −𝑚[𝝎]× 0
+0 [ 𝑱 𝝎]×
+] [
+𝐵𝒗
+𝐵𝝎
+]
++
+[ 𝑚𝐵𝒈
+0
+]
++
+[
+𝐵𝛥𝒇
+𝐵𝛥𝝉
+]
++
+[
+𝐵𝒇
+𝐵𝝉
+]
+(19)
+where 𝑱 represents the inertia matrix. The symbol 𝐵 denotes the 
+projection of physical quantities in the body frame and 𝝎 is the vec-
+tor representation of the Euler angles. Unlike the simplified set of 
+differential equations in Section 3.1, the lateral force is now exerted 
+on the glider. Furthermore, in Eq. (19), the solution for the Euler 
+angles is no longer skillfully circumvented as in Eq. (1)∼(6), which 
+bypasses the rotational motion equations. Most importantly, the com-
+plex calculations of aerodynamic forces and torques are determined by 
+the following formulas, rather than directly as input quantities simply 
+disregarding the positive and negative gains brought by angles and 
+angular velocities. 
+𝐶𝐿 = 𝐶𝐿0 + 𝐶 𝛼
+𝐿 ⋅ 𝛼 + 𝐶
+𝛿𝑓
+𝐿 ⋅ 𝛿𝑓 + 𝐶 𝛿𝑒
+𝐿 ⋅ 𝛿𝑒 + 𝑐
+2𝑉𝑎
+(𝐶 ̇ 𝛼
+𝐿 ⋅ ̇ 𝛼+ 𝐶 𝑞
+𝐿 ⋅ 𝑞)+ 𝐶 𝑀
+𝐿 ⋅ 𝑀
+𝐶𝑌 = 𝐶 𝛽
+𝑌 ⋅ 𝛽 + 𝐶 𝛿𝑎
+𝑌 ⋅ 𝛿𝑎 + 𝐶 𝛿𝑟
+𝑌 ⋅ 𝛿𝑟 + 𝑏
+2𝑉𝑎
+(𝐶 𝑝
+𝑌 ⋅ 𝑝 + 𝐶 𝑟
+𝑌 ⋅ 𝑟)
+𝐶𝑙 = 𝐶 𝛽
+𝑙 ⋅ 𝛽 + 𝐶 𝛿𝑎
+𝑙 ⋅ 𝛿𝑎 + 𝐶 𝛿𝑟
+𝑙 ⋅ 𝛿𝑟 + 𝑏
+2𝑉𝑎
+(𝐶 𝑝
+𝑙 ⋅ 𝑝 + 𝐶 𝑟
+𝑙 ⋅ 𝑟)
+𝐶𝐷 = 𝐶𝐷0 +
+(𝐶𝐿 − 𝐶𝐿0
+)2
+𝜋𝑒𝐴𝑅 + 𝐶
+𝛿𝑓
+𝐷 ⋅ 𝛿𝑓 + 𝐶 𝛿𝑒
+𝐷 ⋅ 𝛿𝑒 + 𝐶 𝛿𝑎
+𝐷 ⋅ 𝛿𝑎 + 𝐶 𝛿𝑟
+𝐷 ⋅ 𝛿𝑟 + 𝐶 𝑀
+𝐿 ⋅ 𝑀
+𝐶𝑚 = 𝐶𝑚0 + 𝐶 𝛼
+𝑚 ⋅ 𝛼 + 𝐶
+𝛿𝑓
+𝑚 ⋅ 𝛿𝑓 + 𝐶 𝛿𝑒
+𝑚 ⋅ 𝛿𝑒 + 𝑐
+2𝑉𝑎
+(𝐶 ̇ 𝛼
+𝑚 ⋅ ̇ 𝛼+ 𝐶 𝑞
+𝑚 ⋅ 𝑞)+ 𝐶 𝑀
+𝑚 ⋅ 𝑀
+𝐶𝑛 = 𝐶 𝛽
+𝑛 ⋅ 𝛽 + 𝐶 𝛿𝑎
+𝑛 ⋅ 𝛿𝑎 + 𝐶 𝛿𝑟
+𝑛 ⋅ 𝛿𝑟 + + 𝑏
+2𝑉𝑎
+(𝐶 𝑝
+𝑛 ⋅ 𝑝 + 𝐶 𝑟
+𝑛 ⋅ 𝑟)
+(20)
+The formulas assume that aerodynamic forces are generated due 
+to positive and negative changes in control inputs or angles, such as 
+actuator deflections and angle of attack. The torques are also influenced 
+by the control surface deflections and flight conditions. In addition, the 
+forces and moments take into account the effects of angular veloci-
+ties 𝑝, 𝑞 and 𝑟. The lateral coefficients are retained. These factors are 
+typically neglected in traditional trajectory optimization.
+4.2. Flight control
+The aircraft’s motion in the wind field operates without a control 
+loop, making it an open-loop system. The PID controller, renowned 
+for its maturity, efficiency and ease of deployment in real aircraft, 
+is also extensively used in various machine devices beyond aviation. 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+6 
+
+===== PAGE 7 =====
+Y. Lu et al.
+As our work progresses towards aircraft applications, we adopt a PID 
+controller as the underlying controller to serve the upper-level guidance 
+system: 
+𝑃 (𝑡) = 𝐾𝑃
+[
+𝑒(𝑡) + 1
+𝑇𝐼 ∫ 𝑒(𝑡)𝑑𝑡 + 𝑇𝐷
+𝑑𝑒(𝑡)
+𝑑𝑡
+]
+(21)
+Where 𝐾𝑃 , 𝑇𝐼 , and 𝑇𝐷 are the proportional, integral, and derivative 
+coefficients respectively, which play crucial roles in determining the 
+tracking speed of the reference signal, steady-state error, and response 
+lag. The tracking performance of the controller is of utmost importance 
+for the upper-level guidance system. In this experiment, we evaluate the 
+performance of the PID controller using a ±10◦ step signal.
+DRL does not integrate the environment into the optimization pro-
+cess directly. The distinct advantage allows us to tailor the complexity 
+and flexibility of environment modeling. This aspect is evident in our 
+ability to introduce more challenging conditions, including random 
+wind fields, sensor noise, and other factors. These uncertain conditions 
+are hard to be formulated through a series of differential equations 
+in optimal control methods. Unlike the flight dynamics previously 
+presented, our interactive environment avoids simplifying assumptions 
+in regard to the wind, motion, and controller.
+5. Proposed HITL method based on deep reinforcement learning
+5.1. The HITL iterative framework
+Dynamic soaring can be tricky when relying on humans or AI 
+systems alone. Thus, an iterative framework is proposed detailed in Fig. 
+2 which combines humans, DRL algorithm and environment integrating 
+wind field, dynamics and control system. The algorithm starts with 
+arbitrary initialized states which should be aligned with the attitude 
+obtained from the optimal control theory. The reward function is 
+designed to maximize energy gain and promote energy accumulation 
+and retention throughout dynamic soaring. Simultaneously, it is es-
+sential to guide the glider through turns in the high altitude region. 
+Simultaneously, it is essential to direct the glider to execute turns 
+within the high altitude region. In reality, during the initial stages, 
+the algorithm often converges towards an acceptable yet suboptimal 
+trajectory. Towards the trajectory’s end, the state frequently reaches 
+the maximum or minimum angle of attack or roll angle, potentially 
+resulting in stalling or rolling. This outcome arises from the changes 
+of the angle of attack during the upwind or tailwind phase, which aids 
+in energy collection. Furthermore, swift turns during the downwind 
+descent augment energy acquisition and curtail energy consumption 
+during the turning process.
+In the subsequent step, we introduce the concept of the HITL 
+approach as shown in the red dotted box of Fig.  3. Through comparing 
+the state approaching the termination time, the trajectory that closely 
+aligns with the pseudospectral method is manually selected as the 
+initial state for the subsequent iteration. Based on the four phases of 
+dynamic soaring, reward functions and assessment criteria are carefully 
+designed. These interventions, guided by human expertise, integrate 
+model training and testing outcomes into the algorithm, creating new 
+enhanced intelligence through human participation. This process of 
+training and iteration is disclosed in Algorithm 1, which continues until 
+the algorithm converges and the agent successfully fulfills the Rayleigh 
+criterion task.
+5.2. Stochastic strategy
+In reinforcement learning, there is no need to explicitly establish an 
+accurate mathematical model of the system dynamics because it is an 
+indirect policy optimization method. In the initial stage, it uses a policy 
+to collect a series of state(𝑠)-action(𝑎) pairs and rewards (𝑅). Then 
+it maximizes the cumulative return at current and future discounted 
+Fig. 3. The flow chart of the proposed iterative framework where domain expertise is 
+embedded through interaction with the DRL algorithm.
+Algorithm 1: The proposed HITL method.
+Input: The environment and configuration of a glider
+1 if not finish dynamic soaring then
+2 while not converge do
+3 Execute Algorithm 2
+4 end 
+5 Human: design { 𝑟𝐸 , 𝑟𝑀 , 𝑟𝑃 , 𝑟𝑇
+}
+6  setting evaluation criteria
+7  reinitialize { 𝑷 , 𝑣𝑎, 𝒆, 𝛼, 𝛽}
+8 end 
+Output: Agent
+moments, based on a specially designed reward function. Reinforce-
+ment learning iteratively optimizes a new strategy by evaluating the 
+next observed state (𝑠′) and 𝑅, improving the return. This strategy 
+can provide the optimal action based on the current state. Among 
+these concepts, the Markov process serves as a general framework for 
+describing the interaction between the agent and the environment, 
+defined by a tuple (, , 𝑃 (⋅), 𝑅(⋅), 𝛾). Here,  is the set of action spaces, 
+representing actions that the agent takes to change its state. The state 
+transition probability (𝑃 (⋅)) describes the probability of reaching the 
+next state (𝑠′) after executing an action in the current state. The state 
+transition probability distribution of the motion system is indepen-
+dent of the previous state trajectory and depends only on the current
+(𝑠-𝑎). 
+In cases of poor exploration and generalization, maximum entropy 
+is incorporated into the reward to address this limitation. The en-
+tropy regularization term in entropy-augmented rewards is utilized 
+to incentivize the agent to adopt diverse strategies. Additionally, in 
+noisy environments, agents trained with entropy-augmented functions 
+demonstrate a certain level of robustness against interference. The 
+coefficient 𝛼 is employed to achieve a balance between the weights 
+assigned to the two terms: 
+𝑟(𝑠, 𝑎) = 𝑅(𝑠, 𝑎) + 𝛼(𝜋(⋅ ∣ 𝑠)) (22)
+ Where (𝜋(⋅ ∣ 𝑠)) is introduced as entropy regularization at state 𝑠, and 
+𝛼 is a hyperparameter that controls the trade-off between exploration 
+and exploitation. Higher entropy encourages more exploration. Eq. (22) 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+7 
+
+===== PAGE 8 =====
+Y. Lu et al.
+leads to a stochastic strategy, which is then transformed to maximize 
+the entropy objective function:
+𝐽 (𝜋) = 𝐸𝜋
+[ 𝑇∑
+𝑡=0
+𝛾 𝑡𝑟 (𝑡 + 1)
+]
+(23)
+= 𝐸(𝑠𝑡,𝑎𝑡
+)∼𝜌𝜋
+𝑇∑
+𝑡=0
+[𝑟 (𝑠𝑡, 𝑎𝑡
+)+ 𝛼 (𝜋 (⋅ ∣ 𝑠𝑡
+))] (24)
+=
+𝑇∑
+𝑡=0
+𝐸(𝑠𝑡,𝑎𝑡
+)∼𝜌𝜋
+[𝑟 (𝑠𝑡, 𝑎𝑡
+)+ 𝛼 (𝜋 (⋅ ∣ 𝑠𝑡
+))] (25)
+𝐽 (𝜋) represents the expected return obtained by following the policy. 
+𝜌𝜋 is the distribution of the policy. The discount factor 𝛾 allows for 
+adjusting the weight given to immediate and future rewards. In extreme 
+cases where 𝛾 approaches 1, our agents adopt a long-term perspective, 
+disregarding the risks associated with immediate actions. Such agents 
+are more courageous, exhibiting increased exploration of future scenar-
+ios, as they can tolerate negative rewards from current actions and vice 
+versa.
+In fact, using a stochastic policy is necessary for the dynamic soaring 
+problem. Ensuring the generality and convergence of the algorithm is 
+essential for efficiently deploying our algorithm framework. However, 
+these two requirements are often contradictory. For instance, certain 
+spatial information crucial for the agent to understand the glider may 
+not be used to characterize the dynamics due to the variations in flight 
+regions during soaring.
+For MDPs, there exists a deterministic greedy optimal policy that 
+satisfies the Bellman optimality equation (BOE) and maximizes the state 
+value. The deterministic policy exhibits outstanding performance due 
+to the accurate characterization of dynamics (Barth-Maron et al., 2018). 
+If state information perceived by agents is insufficient to describe the 
+dynamics, the environmental information is only partially observable 
+and the agent may encounter state aliasing. Due to the absence of the 
+Markov property, the optimal policy ceases to be deterministic. In such 
+a situation, a stochastic policy outperforms a deterministic policy as it 
+alleviates the challenges of convergence when facing state aliasing and 
+local optima.
+5.3. Maximize entropy soft policy iteration
+Soft policy iteration is proposed as a general algorithm for maxi-
+mizing entropy reward. The optimal policy is obtained by alternating 
+between policy evaluation and improvement. Soft policy evaluation 
+guarantees the convergence of the true Soft Q-function (Sutton and 
+Barto, 1998) defined as follows:
+𝑄𝑠𝑜𝑓 𝑡(𝑠, 𝑎) = 𝑟𝑡 + 𝛾𝐸 𝑠𝑡+1∼𝑝𝑠+1
+[𝑉𝑠𝑜𝑓 𝑡
+(𝑠𝑡+1
+)] (26)
+𝑉𝑠𝑜𝑓 𝑡(𝑠) = 𝐸𝑎𝑡∼𝜋(𝑠𝑡
+)[𝑄𝑠𝑜𝑓 𝑡
+(𝑠𝑡, 𝑎𝑡
+)]+  (𝜋 (𝑠𝑡
+)) (27)
+= 𝐸𝑎𝑡∼𝜋(𝑠𝑡
+)[𝑄𝑠𝑜𝑓 𝑡
+(𝑠𝑡, 𝑎𝑡
+)− log 𝜋 (𝑠𝑡
+)] (28)
+The soft Q-function, 𝑄𝑠𝑜𝑓 𝑡, combines the immediate reward and the 
+future return, discounted by 𝛾. The state value 𝑉  is the average of these 
+return values taking into account future scenarios. The returns can vary 
+among different trajectories. The entropy term  (𝜋 (𝑠𝑡
+)) ensures that 
+the policy 𝜋 remains stochastic. This is particularly useful to try out 
+different actions to find better strategies.
+To exploit the characteristics of the distribution of Q-function, we 
+define the action-value function as the negative energy function  =
+− 1
+𝛼 𝑄(𝑠, 𝑎). Minimizing the Kullback–Leibler (KL) divergence between 
+the distribution and the previous energy-based policy distribution gen-
+erates a new policy. 
+𝜋new = arg min
+𝜋′∈∏ 𝐷𝐾𝐿
+(
+𝜋′ (⋅ ∣ 𝑠𝑡
+)∥
+exp (𝑄𝜋old (𝑠𝑡, ⋅))
+𝑍𝜋old (𝑠𝑡
+)
+)
+(29)
+Where 𝑍𝜋old  is used for normalizing the distribution. The pol-
+icy is further improved based on the probability distribution derived 
+from the updated value function. Through iterative processes of for-
+mulas Eqs.  (28) and (29), it converges mathematically to 𝜋o𝑝𝑡𝑖𝑚𝑎𝑙. 
+This policy maximizes the entropy-based state value, promoting more 
+balanced probabilities among the output actions and enhancing the 
+exploratory nature of the algorithm. When faced with a large num-
+ber of state–action spaces in the environment of dynamic soaring 
+that are difficult to collect, the presence of entropy disperses the ac-
+tion probability distribution, accelerating action search and enhancing 
+algorithmic convergence.
+Enhancing agent exploration is critical in dynamic soaring. Opti-
+mal control results demonstrate that the Rayleigh ring requires action 
+reversal, characterized by alternating actions in opposite directions. 
+The exploratory capability of stochastic policies with entropy objectives 
+has been highlighted (Haarnoja et al., 2018b). While incorporating a 
+Gaussian distribution into DDPG (Lillicrap et al., 2015) also encourages 
+random exploration, this approach does not fully address the problem 
+of multiple peaks in the Q function. When the reward function encom-
+passes more than a goal, it indicates a multimodal task. The benefit 
+of the stochastic strategy is that the output is determined according 
+to multiple extreme values of the probability distribution. Therefore, 
+these advantages of maximizing entropy soft policy iteration make it 
+applicable to training agents to perform dynamic soaring.
+5.4. Dynamic soaring in soft A-C algorithm
+When applying RL methods to high-fidelity dynamic soaring en-
+vironments, we need to consider not only continuous states but also 
+continuous actions. The policy iteration method in Section 5.3 has been 
+mathematically proven to converge for solving the discrete maximum 
+entropy optimal policy (Haarnoja et al., 2018a). However, the actions 
+were discretized and value-based RL was used (Reddy et al., 2016). 
+Adopting this scheme is impractical, as the Q-function for state–action 
+pairs has excessively high dimensionality. In the context of the dynamic 
+soaring studied in this paper, function approximators are employed 
+to extend the solution from discrete problems to continuous ones. 
+Similar to value-based RL, deep neural networks(DNNs) are utilized to 
+approximate the 𝑉  and soft 𝑄 in Eqs.  (27) and (28), addressing the 
+storage and computational challenges associated with high-dimensional 
+discrete data:
+𝐽𝑉 (𝜓) = E𝐬𝑡∼
+[1
+2
+(
+𝑉𝜓
+(𝐬𝑡
+)− E𝐚𝑡∼𝜋𝜙
+[𝑄𝜃
+(𝐬𝑡, 𝐚𝑡
+)− log 𝜋𝜙
+(𝐚𝑡 ∣ 𝐬𝑡
+)])2]
+(30)
+𝐽𝑄(𝜃) = E(𝐬𝑡,𝐚𝑡
+)∼
+[1
+2
+(𝑄𝜃
+(𝐬𝑡, 𝐚𝑡
+)− ̂𝑄 (𝐬𝑡, 𝐚𝑡
+))2]
+(31)
+̂𝑄 (𝐬𝑡, 𝐚𝑡
+)= 𝑟 (𝐬𝑡, 𝐚𝑡
+)+ 𝛾E𝐬𝑡+1∼𝑝
+[𝑉 ̄ 𝜓
+(𝐬𝑡+1
+)] (32)
+Eq.  (32) describes the method for calculating the target Q-value, 
+̂𝑄 (𝐬𝑡, 𝐚𝑡
+). It consists of two parts: the immediate reward 𝑟 (𝐬𝑡, 𝐚𝑡
+) and the 
+discounted expected value of the next state 𝑉 ̄ 𝜓
+(𝐬𝑡+1
+). Then we minimize 
+the difference between the current 𝑄𝜃
+(𝐬𝑡, 𝐚𝑡
+) and the target ̂𝑄 (𝐬𝑡, 𝐚𝑡
+)
+as shown in Eq. (31). The Q-function is used to compute the expected 
+return under the current policy to train the value network 𝑉𝜓
+(𝐬𝑡
+). The 
+experience replay buffer, denoted as , stores memories of interactions 
+with the environment. The soft Bellman residual is minimized in the 
+form of the squared error. Stochastic gradient descent is employed to 
+optimize both Eq. (30) and (31). A target value network 𝑉 ̄ 𝜓 is fixed 
+during training and updated every time step.
+In policy-based reinforcement learning, the optimal policy is it-
+eratively enhanced by parameterizing it to maximize the expected 
+cumulative reward. In fact, the A-C framework introduced in this 
+paper combines value-based and policy-based iteration to solve for 
+the optimal policy. To be embedded in high-fidelity dynamic soaring 
+environments, the SAC algorithm is prioritized, which approximates the 
+energy-based model(EBM) policy distribution:
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+8 
+
+===== PAGE 9 =====
+Y. Lu et al.
+Table 1
+Coefficients of the reward function designed for different phases.
+ Coefficients Phase 1 Phase 2 Phase 3 Phase4 
+ 𝑐1 0.16 0.2 2.5 3.9  
+ 𝑐2 −5.3 −16.8 −19.5 26.0  
+ 𝑐3 −1.6 −2.6 −10.6 −16.4  
+ 𝑐4 0.0 −3.8 0.0 153.0  
+ 𝑐5 0.0 7.30 15.8 0.0  
+ 𝑐6 −10.75 12.70 23.0 −25.4  
+ 𝑐7 0.0 −30.4 −104.0 −217.0 
+ 𝑐8 31.0 38.3 57 94  
+ 𝑐9 968.0 90.3 172.0 312.0  
+𝐽𝜋 (𝜙) = E𝑠𝑡∼
+[
+𝐷𝐾𝐿
+(
+𝜋𝜙
+(⋅ ∣ 𝑠𝑡
+)∥
+exp (𝑄𝜃
+(𝑠𝑡, ⋅))
+𝑍𝜃
+(𝑠𝑡
+)
+)]
+= E𝐬𝑡∼
+[
+E𝐚𝑡∼𝜋𝜙
+[𝛼 log (𝜋𝜙
+(𝐚𝑡 ∣ 𝐬𝑡
+))− 𝑄𝜃
+(𝐬𝑡, 𝐬𝑡
+)]] (33)
+Where 𝜙 is the parameter set of the policy network. 𝐽𝜋(𝜙) is used to 
+optimize the policy such that it maximizes the expected return while 
+maintaining a certain level of entropy. Eq. (33) uses the Kullback–
+Leibler (𝐷𝐾𝐿 ) divergence to measure the difference between the current 
+policy 𝜋𝜙
+(⋅ ∣ 𝑠𝑡
+) and a target distribution 
+exp(𝑄𝜃
+(𝑠𝑡,⋅))
+𝑍𝜃
+(𝑠𝑡
+)  derived from the 
+Q-function, where 𝑍𝜃
+(𝑠𝑡
+) is a normalization factor.
+Optimizing these equations is equivalent to maximizing the state 
+value function. However, directly sampling 𝐚𝑡 can lead to difficulties 
+in gradient computation. To address this, we employ DNNs to update 
+policy parameters and enable independent action sampling from noise, 
+leveraging their gradient accessibility. By applying the reparameteriza-
+tion to compute the expectation with respect to noise, the complications 
+are alleviated arising from the distribution dependence on policy pa-
+rameters. The pseudocode of the soft A-C(SAC) for dynamic soaring is 
+provided in Algorithm 2.
+Algorithm 2: The SAC algorithm.
+Input: { 𝑟𝐸 , 𝑟𝑀 , 𝑟𝑃 , 𝑟𝑇
+} , evaluation criteria
+1 Reinitialize state of the glider,{𝜓, ̄ 𝜓, 𝜃, 𝜙}
+2 while not converge do
+3 for each environment step do
+4
+{ 𝜃𝑐 , 𝜙𝑐
+}
+𝑡 ∼ 𝜋𝜙
+(𝐚𝑡 ∣ 𝐬𝑡
+)
+5
+{ 𝑷 , 𝑣𝑎, 𝒆, 𝛼, 𝛽}
+𝑡+1 ∼ 𝑝 (𝐬𝑡+1 ∣ 𝐬𝑡, 𝐚𝑡
+)
+6  ←  ∪ {( 𝐬𝑡, 𝐚𝑡, 𝑟 (𝐬𝑡, 𝐚𝑡
+), 𝐬𝑡+1
+)}
+7 end 
+8 for each gradient step do
+9 𝜓 ← 𝜓 − 𝜆𝑉 ̂∇𝜓 𝐽𝑉 (𝜓)
+10 𝜃𝑖 ← 𝜃𝑖 − 𝜆𝑄 ̂∇𝜃𝑖 𝐽𝑄
+(𝜃𝑖
+) for 𝑖 ∈ {1, 2}
+11 𝜙 ← 𝜙 − 𝜆𝜋 ̂∇𝜙𝐽𝜋 (𝜙)
+12 ̄ 𝜓← 𝜏𝜓 + (1 − 𝜏) ̄ 𝜓
+13 end 
+14 end 
+Output: 𝜃1,𝜃2,𝜙
+One crucial factor that enables the broad application of model-free 
+RL across diverse tasks and scenarios is the sensitivity of algorithms to 
+hyperparameters. In certain cases, with similar hyperparameters, the 
+resulting policy can be locally optimal or even divergent. To mitigate 
+this issue, D3QN is proposed with fewer hyperparameters (Wang et al., 
+2016c), which expands its applicability to a broader range of scenarios. 
+In the context of such challenges, the SAC is adopted, which focuses on 
+only a few parameters and enhances algorithm stability.
+It should be noted that algorithms capable of continuous action 
+have emerged rapidly, such as PPO (Schulman et al., 2017), but they 
+also come with the inherent drawback of low sample utilization in on-
+policy RL. Since there is no need to take the complex environment 
+of dynamic soaring into account, the sample is highly sensitive for 
+model-free algorithms. Therefore, off-policy algorithms are introduced 
+to establish an experience replay buffer for reuse. SAC combines the 
+characteristics of off-policy and random policy, making it particularly 
+well-suited for aircraft applications. Unlike ground-based robots, the 
+high cost associated with aircraft machinery leaves no room for failure 
+or crashing. These events result in significant economic and time costs 
+that must be avoided. Even in simulated flight, on-policy is avoided 
+as much as possible because it requires experiences far beyond what 
+humans need by several orders of magnitude. Thus, improving the 
+efficiency of the sampling process is of utmost importance.
+5.5. Reward design
+When the task requirements are straightforward, the physical state 
+and action spaces can be extensively explored without exceptions, and 
+a simple reward function is adequate to derive effective strategies 
+iteratively. In the case of complex tasks, designing a reward function is 
+challenging as it often necessitates a profound understanding of the ap-
+plication context. The iterative process will quickly terminate without 
+appropriate reward guidance. Our task is to explore the value function 
+space as quickly as possible. However, in reality, the environment 
+contains an immense number of state–action pairs, making it unfeasible 
+to collect them all. A suitable reward function leads the agent into 
+the correct state–action-reward chain, reducing the necessity to explore 
+excessive state–action spaces and expediting the convergence of the 
+algorithm. Therefore, in our article, the reward function is thoughtfully 
+constructed, which comprises the energy gain term 𝑟𝐸 , penalty term 𝑟𝑃 , 
+mechanism-guiding term 𝑟𝑀 , and terminal term 𝑟𝑇 . 
+𝑟 = 𝑟𝐸 + 𝑟𝑀 + 𝑟𝑃 + 𝑟𝑇 (34)
+The energy gain term involves the aspiration of the glider to max-
+imize energy collection or minimize energy consumption in increased 
+or decreased energy phases. 
+𝑟𝐸 = 𝑐1𝛥𝐸 (35)
+In the pseudospectral method, the principles that climbing during 
+the upwind phase and diving during the downwind phase are essential 
+for energy collection are recognized. Based on the principle of belly-
+to-wind, we divide the state space into five parts: upwind climb, 
+high-altitude turn, downwind dive, low-altitude turn, and the area 
+outside these four parts. The dynamic soaring task significantly depends 
+on a physical background. Therefore, within each region, the agent is 
+guided by the principles of the Rayleigh cycle. 
+𝑟𝑀 = 𝑐2𝛥𝜃 + 𝑐3𝛥𝜙 + 𝑐4𝛥𝑥𝑁 + 𝑐5𝛥𝑥𝐸 + 𝑐6𝛥𝑥𝐷 (36)
+Where, 𝛥 represents the change of states between the current moment 
+and the previous moment, for example, 𝛥𝜃 = 𝜃𝑡 − 𝜃𝑡−1, and similarly for 
+𝛥𝜃, 𝛥𝜙, 𝛥𝑥𝑁 , 𝛥𝑥𝐸 , 𝛥𝑥𝐷. Note that these coefficients appear contradictory 
+to the penalty term shown in the next paragraph or may conflict at 
+different phases. For instance, persisting with a downward attitude in 
+the downwind phase can frequently exceed the state boundary. In such 
+a situation, short-term rewards might be negative, but accumulated 
+rewards can be positive. Which action to take should be determined by 
+the overall return rather than immediate rewards to avoid shortsighted 
+decisions.
+The penalty terms consist of state anomalies and exceeding the 
+boundaries of the four stages. The action penalty for state anomalies 
+is a variation of the constraint in the optimal control theory, serving as 
+a warning to the agent to avoid approaching the limits of safe flight: 
+𝑟𝑃 =
+{
+𝑝1 = 0  if in Phase 1 ∼ 4
+𝑝1 = −𝑐7  else +
+{
+𝑝2 = 0  if in normal flight 
+𝑝2 = −𝑐8  in danger 
+(37)
+If the glider fails to meet the state criteria, it is deemed to be 
+in an unsafe state, i.e.10 < ℎ < 40, 𝑣𝑎 > 3, |𝜃| < 50 or |𝜙| <
+80. Besides, following physics principles, the agent likely possesses 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+9 
+
+===== PAGE 10 =====
+Y. Lu et al.
+explicit objectives at destinations. The terminal term 𝑟𝑇 for each stage 
+is determined as follows: 
+𝑟𝑇 = 𝑐9 −
+{ ‖‖‖ ⃗𝑃 − ⃗𝑃𝑖𝑛𝑖
+‖‖‖ + ||𝜃𝑐 − 𝜃|| + ||𝜙𝑐 − 𝜙|| if at terminal
+0 else 
+(38)
+Coefficients of the reward function are listed in Table  1. In the head-
+wind climb phase, we encourage the glider to climb, collect energy, 
+and perform appropriate turns to transition into phase 2. The tunning 
+𝑐2 and 𝑐3 are intended to maintain the aircraft’s headwind climb and 
+a slight roll attitude. 𝑐4 and 𝑐5 are temporarily inactive. 𝑐6 is set to a 
+negative value because, at this stage, we do not want the UAV to turn 
+too sharply.
+During the high-altitude turn, the glider is expected to change its 
+direction while consuming an appropriate amount of energy. At this 
+point, coefficients related to position become influential. 𝑐4 and 𝑐5
+are activated to guide the aircraft to move eastward and towards the 
+ground, indirectly completing the turn. Upon reaching this stage, we 
+must reward the algorithm to signal that reaching phase 2 is crucial, 
+so 𝑐7 begins to take a non-zero value.
+As the aircraft enters phase 3, it has completed the turn and is 
+preparing for the descent phase. The main objective is to maximize 
+wind energy for consumption in the low-altitude stage. We amplify 
+the coefficient of the energy component, so 𝑐1 increases by an order 
+of magnitude, while 𝑐6 is doubled. Due to the previous maneuvering 
+operations, the glider is prone to crashing into the sea or experiencing 
+excessive roll angles. We set 𝑐8 to constrain these dangerous maneuvers.
+During the low-altitude turn, 𝑐2 and 𝑐4 become the primary compo-
+nents controlling the growth of the reward function. They significantly 
+outweigh other coefficients related to attitude and position. This is 
+because UAV is required to climb steeply while altering its flight 
+direction, making a sharp turn from south to north.
+It is important to note that the absolute values of 𝑐7 and 𝑐8 contin-
+uously increase. This encourages the algorithm to prioritize long-term 
+rewards over immediate gains, as future rewards become appealing. 
+Guided by this principle, the absolute values of all coefficients from 
+phase 1 to phase 4 increase, ensuring the reward function exhibits a 
+consistent growth trend. In addition, C9 is the largest in phase 1. This 
+is to guide the aircraft back to the starting point, ensuring that the 
+Rayleigh cycle forms a complete cycle.
+5.6. Evaluation criteria
+Although we have partitioned the reward function into four stages, 
+the algorithm lacks knowledge of the glider’s state. Therefore, we must 
+analyze the results from optimal trajectories and manually establish 
+evaluation criteria based on position and attitude. These criteria fall 
+into two categories: range-based criteria, which inform the algorithm 
+about the current stage, and endpoint-based criteria, which determine 
+if the glider has reached the departure or entry points of phases.
+Through the setting of evaluation criteria, the motion information 
+is divided into five parts, which correspond to the four phases of 
+dynamic soaring and the crash case. We believe that subdividing the 
+state spaces significantly reduces the search space for the algorithm. 
+Useless samples no longer need to be mindlessly collected. The agent 
+collects state–action pairs within a limited information range , which 
+leads to fast convergence to the optimal value and policy.
+5.7. Parameter configuration
+Within the framework of this paper,  represents the characteristic 
+information of the glider with respect to the wind field and inertial 
+frame. The state is of paramount importance, which should not only 
+capture the characteristics but also be easily measurable in real-world 
+environments. The horizontal position 𝑷 ∈ R2, airspeed 𝑣𝑎, Euler angles 
+𝒆 ∈ R3, angle of attack, and sideslip angle are selected: 
+ ∈ { 𝑷 , 𝑣𝑎, 𝒆, 𝛼, 𝛽} (39)
+Including 𝛼 and 𝛽 in  is motivated by gliders encountering variable 
+wind. In conjunction with the airspeed, these two angles indirectly 
+capture the forces, moments, and attitudes relative to the wind.
+The output of RL built upon the autopilot is an instruction that 
+indirectly controls gliders, as the agent illustrated in the top right 
+corner of Fig.  2II. Hence: 
+ ∈ { 𝜃𝑐 , 𝜙𝑐
+} (40)
+Where, 𝜃𝑐 and 𝜙𝑐 are the pitch angle and roll angle command output 
+by the agent to the controller, respectively. Overestimation of the Q-
+function is a common issue in neural network-based approaches. To 
+mitigate estimation errors, two Q-networks and two target networks 
+are trained independently, as illustrated by the shaded portion of DNNs 
+in Fig.  2 II. An exponentially moving average is adopted to update 
+the target network weights with a smoothing coefficient 𝜏. It is crucial 
+to carefully consider the architecture and parameters of the networks 
+as they are related to the stability of training. Including redundant 
+features and sparse states leads to gradient explosion and vanishing 
+in Q-function approximation. In our framework, the resulting artificial 
+neural network for estimating the Q network has 4 hidden layers, with 
+256 neurons in every layer. The policy network features 3 hidden 
+layers with 768 neurons in total, mapping state to the expectation and 
+variance of each action.
+6. Experimental results and analysis
+In this section, we first present the Rayleigh cycle generated by 
+the pseudo-spectral method and briefly analyze the necessary attitude 
+conditions for energy harvesting in dynamic soaring. Then, a compar-
+ative experiment is conducted using HITL-based DRL versus non-HITL 
+DRL to demonstrate that the agent struggles to guide the aircraft to 
+complete dynamic soaring without human in the loop. The trajectories 
+generated by the proposed method are illustrated and further compared 
+with the optimal trajectories generated by the pseudo-spectral method. 
+Finally, robustness tests related to random winds and simulated sensor 
+deviations are performed.
+6.1. Results from trajectory optimization
+The flight region in Fig.  4 is divided into left and right parts, 
+distinguishing the Rayleigh cycle flights in strong-wind and poor-wind 
+conditions. Their trajectories are represented in black and red respec-
+tively. Triangular points in the figure represent the starting position, 
+while circular points indicate the end of the flight. When the reference 
+speed reaches 12 m/s, the endpoints in the left half lie above the 
+starting point, indicating that the glider retains excess energy after 
+completing one cycle of flight. This surplus energy can serve as a 
+reserve for flying to other areas or for continuing subsequent rounds of 
+Rayleigh cycle flight. Conversely, the right half shows energy depletion 
+under 10 m/s conditions. To fulfill the requirements of Eq. (11), the 
+glider must consume additional energy. The distinctive characteristic 
+of soaring in the figure is flying below the starting point.
+In fact, the complete closed-loop flight is explicitly considered and 
+the objective function is minimized as follows: 
+𝐽 = min [𝑉w,ref 
+] (41)
+Adding the constraint 𝑧0 = 𝑧𝑡𝑓 , we obtain the minimum reference 
+wind speed required to close the Rayleigh cycle as 10.78 m/s. This 
+result further validates the energy conservation analysis at wind speeds 
+of 10 m/s and 12 m/s shown in Fig.  4.
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+10 
+
+===== PAGE 11 =====
+Y. Lu et al.
+Fig. 4. Two flight perspectives with characteristics of the Rayleigh cycle. The triangles represent the starting points while the circles indicate the end points. The wind speed is 
+stronger on the left with 12 m/s and is poor with 10 m/s on the right.
+Fig. 5. The state and specific energy of the glider under different wind conditions. The red line represents strong wind conditions, while the black line denotes poor wind 
+conditions. In d, the glider lacks sufficient energy to return to the starting point shown in the black line.
+Flight state results are shown in Fig.  5. As expected, the specific 
+energy at the endpoint is lower than at the starting point to satisfy the 
+equality of initial and final states for the poor wind case. Conversely, 
+for the 12 m/s case, the specific energy at the endpoint is higher. The 
+pitch angle experiences rapid increases and decreases, corresponding to 
+the low-altitude and high-altitude turning phases. Owing to the higher 
+wind speed, the airspeed at the starting and ending moments is also 
+greater than that at 10 m/s. A more comprehensive understanding of 
+the state and trajectory for optimal dynamic soaring can be found in 
+our previous work (Wang et al., 2022).
+The optimal control inputs are shown in Fig.  5c and Fig.  5e. As dis-
+cussed in the introduction, the roll undergoes rapid and drastic changes 
+to meet the requirements of high-altitude and low-altitude turning. 
+However, few attempts were made to design controllers to achieve 
+accurate and fast performance. Another weakness is that, during the 
+turning process, the lift coefficient and roll angle typically approach the 
+aircraft’s aerodynamic and state limits, posing challenges to structural 
+load and safety margins. Furthermore, these optimizations prioritize 
+simplified assumptions of control inputs. For instance, only the roll 
+angle remains in lateral motion. Deflections of the control face and 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+11 
+
+===== PAGE 12 =====
+Y. Lu et al.
+Fig. 6. Three-dimensional trajectory generated through HITL-based DRL versus non-
+HITL DRL. The triangle indicates the starting point of the flight, while the circle denotes 
+the endpoint.
+aerodynamic damping are not sufficiently considered leading to the loss 
+of aerodynamic force.
+Perspective view with characteristics of the Rayleigh cycle is di-
+vided into two altitude layers: one corresponds to the area above 
+the middle layer, characterized by high wind speeds, while the other 
+pertains to the region below the middle layer, exhibiting lower wind 
+speeds. This characteristic flight aligns with the phenomenon men-
+tioned by Bousquet (2018), where different momenta are mixed within 
+the medium. More specifically, the Rayleigh cycle comprises four char-
+acteristic flight phases: upwind climb, high-altitude turn, downwind 
+descent, and low-altitude turn. In the respective flight phases, gliders 
+exhibit distinct attitudes that enable them to harness wind energy 
+and minimize energy consumption. These flight attitudes and physical 
+mechanisms are mastered by humans. Through the HITL approach, 
+humans actively engage with the algorithm to refine the training 
+process.
+6.2.  comparison experiments of HITL versus non-HITL approaches
+Fig.  6 illustrates the flight trajectories guided by the agent after 
+training with DRL and HITL-based DRL, respectively. The results of 
+the HITL-based DRL training serve as the baseline for comparison. It 
+is clear that generating Rayleigh cycle applying DRL alone, without 
+expert knowledge, is a formidable challenge. Case 2 represents one of 
+the results of training using non-HITL DRL, indicated by the orange 
+line. Without human-in-the-loop, the agent is unable to guide the UAV 
+to harness wind energy. In the first stage of flight, the aircraft is 
+directed to descend too early without reaching a sufficient altitude. 
+Furthermore, because of the lack of expert knowledge, the agent fails 
+to lead the aircraft back to the starting point. The blue curve in the 
+figure represents the results of HITL-DRL. It shows that with human 
+evaluation of the agent’s behavior, the UAV climbs to an enough 
+altitude and then consumes energy. The agent chooses to give up 
+immediate rewards to direct the glider to conduct a 180-degree turn. 
+Then it continues to guide the aircraft to dive to harvest energy, and 
+finally brings the aircraft back near the starting point.
+We attempt to initialize an alternative attitude, as shown in Case 3, 
+indicated by the yellow line in Fig.  7. After climbing to a certain height, 
+the glider begins to descend while not making a complete U-turn. The 
+agent believes that diving to gain airspeed and increase energy is the 
+best option. These actions lead to airspeed exceeding the set boundaries 
+and a dangerously low altitude, which ultimately results in a crash 
+as represented by the yellow curve in Fig.  6. If there is no timely 
+intervention from a human operator, the agent would not direct the 
+aircraft to climb up. 
+6.3. Performance of HITL-based SAC algorithm
+Fig.  8a shows the trajectory of the Rayleigh cycle generated by 
+the proposed HITL method. In the top view, the trajectory remains 
+circular, while in the side view and the front view, it appears as two 
+irregular ellipses. These results resemble those obtained through the 
+pseudospectral method. The energy color map reveals that the glider 
+predominantly gathers energy during the downwind gliding phase. The 
+energy acquired during the upwind climb and high-altitude turns is 
+counterbalanced by energy consumption, leading to a nearly constant 
+total energy level. The energy curves in Fig.  9f provide additional 
+verification of this observation. The relatively minor energy variation 
+during the upwind climb phase can be attributed to the arbitrary initial 
+state of the glider, with energy being utilized to adjust its attitude. The 
+airspeed and altitude curves indicate the glider’s near-identical state at 
+the task’s beginning and end. Therefore, the starting and ending points 
+depicted in Fig.  8a almost coincide. Analysis of the roll and yaw angles 
+still allows for the division of the glider’s actions and states into four 
+parts, aligning with the four phases in Rayleigh cycle.
+The states during the flight process are illustrated in Fig.  9. The 
+yellow line represents the actions generated by the policy, guiding the 
+aircraft within the environment and producing the blue signals. The 
+pitch angle curve in Fig.  9a demonstrates the ability of the controller 
+to promptly and accurately track the commands from the agent. While 
+this may not be prominently evident roll in Fig.  9c, as previously 
+mentioned, reinforcement learning algorithms exhibit adaptability to 
+imperfect environments. The agent keenly detects the errors of the roll 
+controller and adjusts accordingly in response to the tracking error, 
+ensuring the return to the starting point.
+Additionally, we observed the algorithm’s tolerance towards devi-
+ations in the initial state. It is evident in Fig.  9a, where the initial 
+pitch angle decreases instead of increasing directly. This is because a 
+deviation exists between the initialized and the optimal state, making 
+a direct climb inadequate in approaching the optimal trajectory. When 
+the agent adheres to the suboptimal strategy of direct climbing, result-
+ing in reaching the boundaries of safe flight or crashing due to limited 
+remaining energy, penalties are incurred. The agent, burdened with 
+the maximum entropy task, opts to daringly explore alternative actions 
+until it approaches the optimal trajectory rather than sticking to direct 
+climbing, even though the exact form of the optimal trajectory in the 
+high-fidelity environment encompassing all sub-modules is unknown 
+to us. The agent progressively steers the glider towards the optimal 
+trajectory, thereby ensuring the reproducibility of the Rayleigh cycle. 
+While this is achieved in the pseudospectral method by imposing 
+constraints on the initial and final states.
+The comparison is conducted in Fig.  10 between the trajectories 
+generated by the HITL method and obtained from the pseudospectral 
+method. The DRL-generated trajectory exhibits smooth state transitions 
+indicated by red arrows. In terms of area and perimeter, the optimal 
+trajectory appears smaller in the frontal and top views, and in the three-
+dimensional plot, it is encompassed by the DRL-generated trajectory. 
+The fundamental reason for this is that DRL operates in a high-fidelity 
+environment, running on a complete aircraft model with controllers. In 
+contrast, the pseudospectral method does not consider these aspects, as 
+the roll angle and lift serve as input actions 𝑢 that directly achieve the 
+specified state without error. As a result, the climbs and descents in the 
+side view appear steeper. In Fig.  10, the side view shows an inclination 
+of 41.7◦ between the connecting line and the ground, whereas the 
+pseudospectral method exhibits an angle of 64.5◦ as indicated by black 
+arrows. The pseudospectral method is expected to exhibit more drastic 
+action changes, which can be verified in Fig.  11. The glider completes 
+the Rayleigh cycle in 6.4 s, while the system with the control module 
+takes approximately 8 s. We also noticed that the extreme actions 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+12 
+
+===== PAGE 13 =====
+Y. Lu et al.
+Fig. 7. Partial flight states generated through HITL-based DRL versus non-HITL DRL.
+Fig. 8. The three-dimensional trajectory obtained from the HITL method. The dashed lines represent the projection on the three coordinate planes.
+in the pseudospectral method are noticeably larger than those in the 
+DRL approach. Although this is necessary for rapidly completing the 
+Rayleigh cycle, it also places the glider in a region of high-risk flight.
+The framework used for training the agent is generic. We modify 
+the thickness of the shear layer to make the wind field more severe. By 
+reducing the thickness from 12 to 4, we transform the wind field from 
+linear to nonlinear. In the challenging environment, the agent decisions 
+continued to steer the glider along the Rayleigh cycle trajectory, as 
+depicted in Fig.  8b. In a linear wind field, the climbing altitude range 
+is about 13 m, while in a nonlinear wind field, the climbing altitude 
+range increases to 15 m. Due to the extreme environment, the glider 
+took more time to complete the Rayleigh cycle.
+We initialize similar state in both wind fields, but the non-linear 
+wind field inevitably leads to differences in the trajectory. The glider 
+again is successfully guided back onto the correct trajectory. As the 
+thickness of the shear layer decreases, the net energy gain of the UAV 
+after completing dynamic soaring increases, which is consistent with 
+the findings in Bousquet (2018). In fact, the applicability of Algorithm 1 
+to diverse wind field types is crucial as the nature of the wind is beyond 
+human control. For the deployment of the SAC algorithm on dissimilar 
+terrains, it is necessary to determine wind parameters manually, and 
+selecting a pre-trained agent is essential.
+6.4. Robustness tests
+Before integrating reinforcement learning algorithms into onboard 
+computers, it is essential to conduct a series of robustness tests. Apply-
+ing modern control theory for stability tests or controllability analysis 
+becomes challenging when dealing with a multi-module integrated 
+environment and strategies. Hence, it is more practical to conduct 
+disturbance-resistant tests of the strategies to ensure the completion of 
+the Rayleigh trajectory, despite the uncertainty. The performance of 
+the well-trained intelligent agent is evaluated under scenarios encom-
+passing random wind fields. For situations involving angle and position 
+deviations caused by operations, we apply bias to the initialization 
+state.
+Random wind introduces uncertainty that may cause deviations 
+from the desired control performance and may lead to significant 
+accidents in gliders. Therefore, the test to evaluate the robustness of 
+the trained strategy in the wind fields is conducted. The von Karman 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+13 
+
+===== PAGE 14 =====
+Y. Lu et al.
+Fig. 9. The data transmitted between the agent and the environment and the state of the glider.
+Fig. 10. The comparison between trajectories obtained by DRL and optimal control theory. The solid black line, drawn manually, represents the degree of inclination between the 
+trajectory and the ground.
+wind is adopted to introduce stochastic characteristics, as depicted in 
+the three-dimensional wind speed in Fig.  12b. The black and green 
+curves represent the lateral and vertical wind speeds, respectively. 
+The vertical wind speed hovers around zero, while the lateral wind 
+gradually increases up to 1 m/s. Fig.  12a and Fig.  12c display the 
+action commands generated by the agent for PID controllers, repre-
+sented by the yellow lines. At approximately 2s and 5s, the roll angle 
+controller experiences slight deviations from the agent’s actions due 
+to the influence of increased lateral wind. However, it still exhibits 
+a consistent tracking trend. Fig.  12e presents the side view, revealing 
+that the perturbation caused by random wind results in a less precise 
+overlap between the starting and ending points compared to Fig.  8a. 
+Nevertheless, Fig.  12d demonstrates that the altitude and airspeed still 
+exhibit an overlap between the initial and final states, with only a 
+slight positional deviation. The energy plot illustrates that the total 
+energy of the complete Rayleigh cycle is almost preserved, with a slight 
+decrease of 2.95 J/kg compared to the initial state, which matches our 
+calculation of 2.68 J/kg for the vertical wind in the random wind field. 
+It is evident that the decrease in energy is due to the negative work 
+done by the vertical wind field on the glider.
+The takeoff position will vary with the terrain, leading to deviations. 
+Thus, we deliberately introduce a 5% bias in the initial position in the 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+14 
+
+===== PAGE 15 =====
+Y. Lu et al.
+Fig. 11. The state of the glider generated through various methods and wind conditions.
+Fig. 12. The state of the glider and output of the low-level controller in the presence of random wind.
+respective direction to perturb the strategy. The standard trajectory is 
+shown as a solid blue line for comparison in Fig.  13a. Our findings 
+indicate that deviations to the north have minimal impact on the 
+strategy. Conversely, deviations to the east and south result in the 
+endpoint deviating eastward from the starting point. The simulation 
+results remind us that positional errors in the southeast direction 
+may cause a non-overlapping endpoint, highlighting the importance 
+of minimizing such errors in real-world scenarios. The heading angles 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+15 
+
+===== PAGE 16 =====
+Y. Lu et al.
+Fig. 13. Top view of trajectories with initially set bias generated by DRL.
+remain in close proximity to the initial values, as depicted in Fig. 
+13a. The agent can complete the Rayleigh trajectory while conserving 
+energy plot in Fig.  14a. As previously mentioned, strategies derived 
+from DRL with maximum entropy rewards demonstrate a certain level 
+of generalization ability, capturing multiple patterns that approximate 
+optimal behavior.
+Achieving a precise attitude corresponding to the optimal trajectory 
+at the takeoff position is challenging. Consequently, considering the 
+angle deviation when the glider enters the initial trajectory is needed. 
+Modifying the initial roll and pitch angles of the glider, we evaluate 
+the intelligent agent’s ability to complete the dynamic soaring. Fig.  13b 
+demonstrates the remarkable adaptability of the DRL method. In com-
+parison to the reference trajectory, attitude changes do not impede the 
+intelligent agent’s ability to make correct action decisions. The angle 
+variations are detailed in Fig.  14b, showing initial deviation from the 
+standard takeoff angles followed by rapid convergence to the desired 
+trajectory. The agent displays a greater tolerance for angle deviations 
+when compared to positional deviations. Of utmost significance, it 
+accomplishes the task with almost no energy consumption.
+6.5. Limitation and discussion
+These results provide support for the deployment of DRL on the 
+onboard computer. However, due to the inherent intricacy involved 
+in deciphering the decision-making process of reinforcement learning, 
+proving the mathematical convergence of the iterative framework and 
+controllers poses a formidable challenge. A constraint of the proposed 
+algorithm is its limited transferability. An agent trained under specific 
+wind conditions may not be readily adaptable to arbitrary wind fields. 
+The current scope of our work is confined to examining a single 
+Rayleigh cycle, leaving unanswered questions regarding the agent’s 
+ability to sustain the glider in flight for extended durations.
+While a real-world flight experiment represents the ultimate test of 
+our approach, experiments are strictly restricted due to extremely de-
+manding flight scenarios. The wind fields required for dynamic soaring 
+are more commonly found in specific sea surfaces. Another potential 
+site for such flights is the leeward side of mountains. This scenario also 
+requires a ridge with a certain slope and winds over an extended period. 
+In the future, we will find a suitable site for dynamic soaring to conduct 
+deployment experiments of the algorithm.
+Recent studies have demonstrated the computational feasibility of 
+using reinforcement learning for real-time UAV control. Chowdhury 
+and Keshmiri (2024) equipped a fixed-wing UAV with an NVIDIA 
+Jetson Nano, featuring a 1.42 GHz Quad-core CPU and 4 GB memory, 
+which is capable of running a PPO-based RL algorithm efficiently. 
+Similarly, multicopters have been successfully trained to perform tasks 
+under disturbances using an RL framework. In real-world experiments, 
+the onboard computer executes the RL algorithm while the attitude 
+is controlled by a cascaded PID controller (Yu et al., 2023). This 
+architecture, which combines RL with the lower-level controller, is 
+conceptually aligned with the approach proposed in this paper. Another 
+study (Wang et al., 2023) has shown that the computational load of SAC 
+can be reduced by distributing tasks between local hardware and re-
+mote workstations. For example, action computation can be performed 
+locally, while policy updates can be offloaded to a remote server. A 
+similar distributed architecture could be adopted in our framework to 
+balance latency and computational load, ensuring compatibility with 
+onboard hardware constraints and real-time performance.
+7. Conclusion
+Dynamic soaring has showcased the promising vision of perpetual 
+flight for unmanned aerial vehicles. However, in order to investi-
+gate the energy harvesting mechanisms, the dynamics models and 
+controllers have often been simplified. This exclusion of the track-
+ing controller in the process of designing optimizers has presented 
+challenges when attempting to implement dynamic soaring scenarios 
+in real-world applications. Therefore, this study proposes an iterative 
+framework that utilizes HITL based on DRL to autonomously exe-
+cute the Rayleigh cycle. We revisit previous methodology and expand 
+upon prior work. To closely simulate real-world conditions, the flight 
+dynamics, lower-level control system, wind field, and aerodynamic 
+calculations were integrated into a high-fidelity environment. The HITL 
+method combined with DRL in the iterative framework is utilized to 
+solve the dynamic soaring problem. Experimental results indicate that 
+the trained agent acts as a higher-level guider, steering the lower-level 
+controller to execute the Rayleigh cycle without energy consumption, 
+bringing the glider back close to its initial state. Our findings support 
+the notion that the glider accumulates more energy in the presence 
+of nonlinear wind characteristics compared to a linear wind field. A 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+16 
+
+===== PAGE 17 =====
+Y. Lu et al.
+Fig. 14. State of trajectories with intentionally set deviations before the start. The blue color represents the reference trajectory, while the points represent the others.
+key novelty of this study is the simultaneous search for the optimal 
+trajectory and control of the glider. We argue that the proposed frame-
+work is well-suited for deployment in real-world applications, which 
+provides smooth action variations, accommodates small action limits, 
+and integrates well with the lower-level controller.
+Robustness tests are conducted as wind conditions are uncontrol-
+lable in real-world environments. Random wind fields are introduced 
+to investigate the resilience of the agent against disturbances. Our 
+analysis reveals that the entropy objective function in DRL exhibits 
+a certain level of resilience to random variations in the wind field. 
+Furthermore, tests are conducted to simulate deviations in the takeoff 
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+17 
+
+===== PAGE 18 =====
+Y. Lu et al.
+state, representing drift and bias in the onboard sensors. Our findings 
+confirm that deviations in attitude have minimal impact on the agent. 
+Regarding the tests on initial position bias, it is observed that drift in 
+the south and east direction leads to deviations from the initial position. 
+Overall, results are promising and support the conclusion that agents 
+complete the trajectory of the Rayleigh cycle. Considering the satisfac-
+tory performance of DRL algorithms even in weak wind environments, 
+our future focus will be on the deployment of onboard computers on 
+gliders. It can be a further effective scheme for applications of dynamic 
+soaring in the real world.
+The potential scope of the proposed framework extends beyond 
+the scope considered in our work. The modular design of the frame-
+work allows for customization and modification, making it suitable 
+for diverse aircrafts that implement DRL algorithms. Considering the 
+expenditure of time associated with training, future research could pri-
+oritize optimizing the algorithms to ensure compatibility with various 
+aircrafts, thereby improving the efficiency of algorithm deployment. To 
+enhance adaptability and versatility in addressing the diverse demands 
+of dynamic soaring in different scenarios, a comprehensive automatic 
+system can be envisioned, incorporating multiple agents.
+CRediT authorship contribution statement
+Yufeng Lu: Writing – review & editing, Writing – original draft, 
+Validation, Project administration, Methodology, Investigation, Formal 
+analysis, Data curation, Conceptualization. Fangfang Xie: Writing – 
+review & editing, Validation, Supervision, Resources, Methodology, 
+Investigation, Funding acquisition. Tingwei Ji: Writing – review & 
+editing, Validation, Supervision, Resources, Project administration.
+Acknowledgments
+This work is supported in part by the National Natural Science 
+Foundation of China (Grant No. 92271107).
+Declaration of competing interest
+The authors declare that they have no known competing finan-
+cial interests or personal relationships that could have appeared to 
+influence the work reported in this paper.
+Data availability
+Data will be made available on request.
+References
+Baek, D., Purushottam, A., Ramos, J., 2022. Hybrid lmc: Hybrid learning and model-
+based control for wheeled humanoid robot via ensemble deep reinforcement 
+learning. In: 2022 IEEE/RSJ International Conference on Intelligent Robots and 
+Systems. IROS, IEEE, pp. 9347–9354.
+Barth-Maron, G., Hoffman, M.W., Budden, D., Dabney, W., Horgan, D., Tb, D., 
+Muldal, A., Heess, N., Lillicrap, T., 2018. Distributed distributional deterministic 
+policy gradients. arXiv preprint arXiv:1804.08617.
+Bencatel, R., de Sousa, J.T., Girard, A., 2013. Atmospheric flow field models applicable 
+for aircraft endurance extension. Prog. Aerosp. Sci. 61, 1–25.
+Bonet-Jover, A., Sepúlveda-Torres, R., Saquete, E., Martínez-Barco, P., Piad-Morffis, A., 
+Estevez-Velarde, S., 2023. Applying human-in-the-loop to construct a dataset for 
+determining content reliability to combat fake news. Eng. Appl. Artif. Intell. 126, 
+107152.
+Bonnin, V., Bénard, E., Moschetta, J.M., Toomer, C., 2015. Energy-harvesting 
+mechanisms for uav flight by dynamic soaring. Int. J. Micro Air Veh. 7, 213–229.
+Bousquet, G.D., 2018. Dynamic Soaring beyond Biomimetics: Control of an 
+Albatross-Inspired Wind-Powered System. (Ph.D. thesis). Massachusetts Institute of 
+Technology.
+Bousquet, G.D., Triantafyllou, M.S., Slotine, J.J.E., 2017. Optimal dynamic soaring 
+consists of successive shallow arcs. J. R. Soc. Interface 14, 20170496.
+Bronz, M., Gavrilovic, N., Drouin, A., Hattenberger, G., Moschetta, J.M., 2021. Flight 
+testing of dynamic soaring part-1: Leeward inclined circle trajectory. In: AIAA 
+Scitech 2021 Forum. p. 1527.
+Chakrabarty, A., Langelaan, J.W., 2011. Energy-based long-range path planning for 
+soaring-capable unmanned aerial vehicles. J. Guid. Control Dyn. 34, 1002–1015.
+Chowdhury, M., Keshmiri, S., 2024. A unified inner-outer loop reinforcement learning 
+flight controller for fixed-wing aircraft. In: 2024 International Conference on 
+Unmanned Aircraft Systems. ICUAS, IEEE, pp. 556–563.
+Deittert, M., Richards, A., Toomer, C.A., Pipe, A., 2009. Engineless unmanned aerial 
+vehicle propulsion by dynamic soaring. J. Guid. Control Dyn. 32, 1446–1457.
+Edwards, D.J., Silverberg, L.M., 2010. Autonomous soaring: The montague cross-country 
+challenge. J. Aircr. 47, 1763–1769.
+Gao, C., Liu, H.H., 2017. Dubins path-based dynamic soaring trajectory planning and 
+tracking control in a gradient wind field. Optim. Control. Appl. Methods 38, 
+147–166.
+Garg, S., Masnavi, H., Fidan, B., Janabi-Sharifi, F., Mantegh, I., 2024. Benchmarking 
+off-policy deep reinforcement learning algorithms for uav path planning. In: 
+2024 International Conference on Unmanned Aircraft Systems. ICUAS, IEEE, pp. 
+317–323.
+Gill, P.E., Murray, W., Saunders, M.A., 2005. Snopt: An sqp algorithm for large-scale 
+constrained optimization. SIAM Rev. 47, 99–131.
+Haarnoja, T., Zhou, A., Abbeel, P., Levine, S., 2018a. Soft actor-critic: Off-policy maxi-
+mum entropy deep reinforcement learning with a stochastic actor. In: International 
+Conference on Machine Learning. PMLR, pp. 1861–1870.
+Haarnoja, T., Zhou, A., Hartikainen, K., Tucker, G., Ha, S., Tan, J., Kumar, V., Zhu, H., 
+Gupta, A., Abbeel, P., et al., 2018b. Soft actor-critic algorithms and applications. 
+arXiv preprint arXiv:1812.05905.
+Haghighi, H., Delahaye, D., Moschetta, J.M., Asadi, D., 2024. Uav trajectory 
+optimization for maximum soaring in windy environment. Unmanned Syst. 1–14.
+Holzinger, A., 2016. Interactive machine learning for health informatics: when do we 
+need the human-in-the-loop? Brain Informatics 3, 119–131.
+Kim, E.J., Perez, R.E., 2023. Robust neurocontrol for autonomous dynamic soaring. J. 
+Guid. Control Dyn. 46, 924–939.
+Li, Z., Guo, Y., Wang, G., Chen, W., 2024. Level curve tracking via robust rl-guided 
+model predictive control. IEEE/CAA J. Autom. Sin. 11, 2512–2514.
+Lillicrap, T.P., Hunt, J.J., Pritzel, A., Heess, N., Erez, T., Tassa, Y., Silver, D., 
+Wierstra, D., 2015. Continuous control with deep reinforcement learning. arXiv 
+preprint arXiv:1509.02971.
+Liu, D.N., Hou, Z.X., Guo, Z., Yang, X.X., Gao, X.Z., 2017. Bio-inspired energy-
+harvesting mechanisms and patterns of dynamic soaring. Bioinspiration Biomimetics 
+12, 016014.
+Liu, J., Li, D., Shan, W., Liu, S., 2023. Continual learning classification method with 
+human-in-the-loop based on the artificial immune system. Eng. Appl. Artif. Intell. 
+126, 106803.
+Liu, Z., Wang, J., Gong, S., Lu, H., Tao, D., 2019. Deep reinforcement active learning 
+for human-in-the-loop person re-identification. In: Proceedings of the IEEE/CVF 
+International Conference on Computer Vision. pp. 6122–6131.
+Lu, Y., Xie, F., Ji, T., Wang, D., Zhang, X., Du, C., Zheng, Y., 2025. Energy-harvest for 
+orographic soaring in the monsoon climate. Aerosp. Sci. Technol. 158, 109896.
+Mir, I., Eisa, S.A., Taha, H., Maqsood, A., Akhtar, S., Islam, T.U., 2021. A stability 
+perspective of bioinspired unmanned aerial vehicles performing optimal dynamic 
+soaring. Bioinspiration Biomimetics 16, 066010.
+Mir, I., Maqsood, A., Eisa, S.A., Taha, H., Akhtar, S., 2018a. Optimal morphing–
+augmented dynamic soaring maneuvers for unmanned air vehicle capable of span 
+and sweep morphologies. Aerosp. Sci. Technol. 79, 17–36.
+Mir, I., Taha, H., Eisa, S.A., Maqsood, A., 2018b. A controllability perspective of 
+dynamic soaring. Nonlinear Dynam. 94, 2347–2362.
+Moali, O., Mezghani, D., Mami, A., Oussar, A., Nemra, A., 2024. Uav trajectory 
+tracking using proportional-integral-derivative-type-2 fuzzy logic controller with 
+genetic algorithm parameter tuning. Sensors 24 (6678).
+Montella, C., Spletzer, J.R., 2014. Reinforcement learning for autonomous dynamic 
+soaring in shear winds. In: 2014 IEEE/RSJ International Conference on Intelligent 
+Robots and Systems. IEEE, pp. 3423–3428.
+Mosqueira-Rey, E., Hernández-Pereira, E., Alonso-Ríos, D., Bobes-Bascarán, J., 
+Fernández-Leal, Á., 2023. Human-in-the-loop machine learning: A state of the art. 
+Artif. Intell. Rev. 56, 3005–3054.
+Nakhleh, K., Raza, M., Tang, M., Andrews, M., Boney, R., Hadžić, I., Lee, J., 
+Mohajeri, A., Palyutina, K., 2023. Sacplanner: Real-world collision avoidance with 
+a soft actor critic local planner and polar state representations. In: 2023 IEEE 
+International Conference on Robotics and Automation. ICRA, IEEE, pp. 9464–9470.
+Nematollahi, I., Rosete-Beas, E., Röfer, A., Welschehold, T., Valada, A., Burgard, W., 
+2022. Robot skill adaptation via soft actor-critic gaussian mixture models. In: 2022 
+International Conference on Robotics and Automation. ICRA, IEEE, pp. 8651–8657.
+Nevitt, G.A., Losekoot, M., Weimerskirch, H., 2008. Evidence for olfactory search in 
+wandering albatross, diomedea exulans. In: Proceedings of the National Academy 
+of Sciences, vol. 105, pp. 4576–4581.
+Notter, S., Schimpf, F., Müller, G., Fichter, W., 2023. Hierarchical reinforcement 
+learning approach for autonomous cross-country soaring. J. Guid. Control Dyn. 
+46, 114–126.
+Novati, G., Mahadevan, L., Koumoutsakos, P., 2019. Controlled gliding and perching 
+through deep-reinforcement-learning. Phys. Rev. Fluids 4, 093902.
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+18 
+
+===== PAGE 19 =====
+Y. Lu et al.
+Pan, Y., Wang, K., Zou, W., Bu, S., Zhou, M., Li, N., 2022. Dynamic soaring trajectory 
+optimization and tracking with adaptive non-singular fast terminal sliding mode 
+control. In: International Conference on Autonomous Unmanned Systems. Springer, 
+pp. 3114–3127.
+Patterson, M.A., Rao, A.V., 2014. Gpops-ii: A matlab software for solving multiple-
+phase optimal control problems using hp-adaptive gaussian quadrature collocation 
+methods and sparse nonlinear programming. ACM Trans. Math. Softw. (TOMS) 41, 
+1–37.
+Pieczyński, D., Ptak, B., Kraft, M., Piechocki, M., Aszkowski, P., 2024. A fast, 
+lightweight deep learning vision pipeline for autonomous uav landing support with 
+added robustness. Eng. Appl. Artif. Intell. 131, 107864.
+Ramezani, M., Habibi, H., Sanchez-Lopez, J.L., Voos, H., 2023. Uav path planning 
+employing mpc-reinforcement learning method considering collision avoidance. In: 
+2023 International Conference on Unmanned Aircraft Systems. ICUAS, IEEE, pp. 
+507–514.
+Reddy, G., Celani, A., Sejnowski, T.J., Vergassola, M., 2016. Learning to soar in 
+turbulent environments. Proc. Natl. Acad. Sci. 113, E4877–E4884.
+Reddy, G., Wong-Ng, J., Celani, A., Sejnowski, T.J., Vergassola, M., 2018. Glider soaring 
+via reinforcement learning in the field. Nature 562, 236–239.
+Sachs, G., 2016. In-flight measurement of upwind dynamic soaring in albatrosses. Prog. 
+Oceanogr. 142, 47–57.
+Sachs, G., Grüter, B., 2020. Trajectory optimization and analytic solutions for 
+high-speed dynamic soaring. Aerospace 7, 47.
+Sachs, G., Grüter, B., 2021. High-speed flight without an engine: A unique performance 
+capability enabled by dynamic soaring. J. Guid. Control Dyn. 44, 812–824.
+Sachs, G., Grüter, B., Hong, H., 2021. Performance enhancement by wing sweep for 
+high-speed dynamic soaring. Aerospace 8 (229).
+Sachs, G., Lesch, K., Knoll, A., 1989. Optimal control for maximum energy extraction 
+from wind shear. In: Guidance, Navigation and Control Conference. p. 3490.
+Sadeghianasl, S., ter Hofstede, A.H., Wynn, M.T., Türkay, S., 2024. Humans-in-the-loop: 
+Gamifying activity label repair in process event logs. Eng. Appl. Artif. Intell. 132, 
+107875.
+Schulman, J., Levine, S., Abbeel, P., Jordan, M., Moritz, P., 2015. Trust region 
+policy optimization. In: International Conference on Machine Learning. PMLR, pp. 
+1889–1897.
+Schulman, J., Wolski, F., Dhariwal, P., Radford, A., Klimov, O., 2017. Proximal policy 
+optimization algorithms. arXiv preprint arXiv:1707.06347.
+Silva, W., Frew, E.W., 2016. Experimental assessment of online dynamic soaring 
+optimization for small unmanned aircraft. In: AIAA Infotech@ Aerospace. p. 0252.
+Sutton, R., Barto, A., 1998. Reinforcement learning: An introduction, vol. 1, MIT Press, 
+Cambridge, [Google Scholar].
+Wang, Z., Bapst, V., Heess, N., Mnih, V., Munos, R., Kavukcuoglu, K., de Freitas, N., 
+2016b. Sample efficient actor-critic with experience replay. arXiv preprint arXiv:
+1611.01224.
+Wang, H., Gong, S., Zhu, X., Xiang, T., 2016a. Human-in-the-loop person re-
+identification. In: Computer Vision–ECCV 2016: 14th European Conference, 
+Amsterdam, the Netherlands, October 11–14, 2016, Proceedings, Part IV 14. 
+Springer, pp. 405–422.
+Wang, Z., Schaul, T., Hessel, M., Hasselt, H., Lanctot, M., Freitas, N., 2016c. Dueling 
+network architectures for deep reinforcement learning. In: International Conference 
+on Machine Learning. PMLR.
+Wang, Y., Vasan, G., Mahmood, A.R., 2023. Real-time reinforcement learning for vision-
+based robotics utilizing local and remote computers. In: 2023 IEEE International 
+Conference on Robotics and Automation. ICRA, IEEE, pp. 9435–9441.
+Wang, D., Xie, F., Lu, Y., Ji, T., Du, C., Zheng, Y., 2022. Bioinspired dynamic soaring 
+simulation system with distributed pressure sensors. Bioinspiration Biomimetics 17, 
+036010.
+Yu, D., Xu, M., Liu, Z., Wang, H., 2023. Lyapunov constrained safe reinforcement learn-
+ing for multicopter visual servoing. In: 2023 IEEE/RSJ International Conference on 
+Intelligent Robots and Systems. IROS, IEEE, pp. 6419–6424.
+Zhao, Y.J., Qi, Y.C., 2004. Minimum fuel powered dynamic soaring of unmanned aerial 
+vehicles utilizing wind gradients. Optim. Control. Appl. Methods 25, 211–233.
+Engineering Applications of Artiϧcial Intelligence 157 (2025) 111219 
+19 

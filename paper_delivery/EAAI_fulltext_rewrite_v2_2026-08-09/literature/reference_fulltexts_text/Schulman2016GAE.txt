@@ -1,0 +1,922 @@
+
+
+===== PAGE 1 =====
+
+Published as a conference paper at ICLR 2016
+HIGH -D IMENSIONAL CONTINUOUS CONTROL USING
+GENERALIZED ADVANTAGE ESTIMATION
+John Schulman, Philipp Moritz, Sergey Levine, Michael I. Jordan and Pieter Abbeel
+Department of Electrical Engineering and Computer Science
+University of California, Berkeley
+{joschu,pcmoritz,levine,jordan,pabbeel}@eecs.berkeley.edu
+ABSTRACT
+Policy gradient methods are an appealing approach in reinforcement learning be-
+cause they directly optimize the cumulative reward and can straightforwardly be
+used with nonlinear function approximators such as neural networks. The two
+main challenges are the large number of samples typically required, and the difﬁ-
+culty of obtaining stable and steady improvement despite the nonstationarity of the
+incoming data. We address the ﬁrst challenge by using value functions to substan-
+tially reduce the variance of policy gradient estimates at the cost of some bias, with
+an exponentially-weighted estimator of the advantage function that is analogous
+to TD(λ). We address the second challenge by using trust region optimization
+procedure for both the policy and the value function, which are represented by
+neural networks.
+Our approach yields strong empirical results on highly challenging 3D locomo-
+tion tasks, learning running gaits for bipedal and quadrupedal simulated robots,
+and learning a policy for getting the biped to stand up from starting out lying on
+the ground. In contrast to a body of prior work that uses hand-crafted policy repre-
+sentations, our neural network policies map directly from raw kinematics to joint
+torques. Our algorithm is fully model-free, and the amount of simulated experi-
+ence required for the learning tasks on 3D bipeds corresponds to 1-2 weeks of real
+time.
+1 I NTRODUCTION
+The typical problem formulation in reinforcement learning is to maximize the expected total reward
+of a policy. A key source of difﬁculty is the long time delay between actions and their positive or
+negative effect on rewards; this issue is called the credit assignment problem in the reinforcement
+learning literature (Minsky, 1961; Sutton & Barto, 1998), and the distal reward problem in the
+behavioral literature (Hull, 1943). Value functions offer an elegant solution to the credit assignment
+problem—they allow us to estimate the goodness of an action before the delayed reward arrives.
+Reinforcement learning algorithms make use of value functions in a variety of different ways; this
+paper considers algorithms that optimize a parameterized policy and use value functions to help
+estimate how the policy should be improved.
+When using a parameterized stochastic policy, it is possible to obtain an unbiased estimate of the
+gradient of the expected total returns (Williams, 1992; Sutton et al., 1999; Baxter & Bartlett, 2000);
+these noisy gradient estimates can be used in a stochastic gradient ascent algorithm. Unfortunately,
+the variance of the gradient estimator scales unfavorably with the time horizon, since the effect of
+an action is confounded with the effects of past and future actions. Another class of policy gradient
+algorithms, called actor-critic methods, use a value function rather than the empirical returns, ob-
+taining an estimator with lower variance at the cost of introducing bias (Konda & Tsitsiklis, 2003;
+Hafner & Riedmiller, 2011). But while high variance necessitates using more samples, bias is more
+pernicious—even with an unlimited number of samples, bias can cause the algorithm to fail to con-
+verge, or to converge to a poor solution that is not even a local optimum.
+We propose a family of policy gradient estimators that signiﬁcantly reduce variance while main-
+taining a tolerable level of bias. We call this estimation scheme, parameterized by γ∈ [0, 1] and
+1
+arXiv:1506.02438v6  [cs.LG]  20 Oct 2018
+
+===== PAGE 2 =====
+
+Published as a conference paper at ICLR 2016
+λ∈ [0, 1], the generalized advantage estimator (GAE). Related methods have been proposed in the
+context of online actor-critic methods (Kimura & Kobayashi, 1998; Wawrzy´nski, 2009). We provide
+a more general analysis, which is applicable in both the online and batch settings, and discuss an in-
+terpretation of our method as an instance of reward shaping (Ng et al., 1999), where the approximate
+value function is used to shape the reward.
+We present experimental results on a number of highly challenging 3D locomotion tasks, where
+we show that our approach can learn complex gaits using high-dimensional, general purpose neural
+network function approximators for both the policy and the value function, each with over 104
+parameters. The policies perform torque-level control of simulated 3D robots with up to 33 state
+dimensions and 10 actuators.
+The contributions of this paper are summarized as follows:
+1. We provide justiﬁcation and intuition for an effective variance reduction scheme for policy gra-
+dients, which we call generalized advantage estimation (GAE). While the formula has been pro-
+posed in prior work (Kimura & Kobayashi, 1998; Wawrzy´nski, 2009), our analysis is novel and
+enables GAE to be applied with a more general set of algorithms, including the batch trust-region
+algorithm we use for our experiments.
+2. We propose the use of a trust region optimization method for the value function, which we ﬁnd is
+a robust and efﬁcient way to train neural network value functions with thousands of parameters.
+3. By combining (1) and (2) above, we obtain an algorithm that empirically is effective at learning
+neural network policies for challenging control tasks. The results extend the state of the art in
+using reinforcement learning for high-dimensional continuous control. Videos are available at
+https://sites.google.com/site/gaepapersupp.
+2 P RELIMINARIES
+We consider an undiscounted formulation of the policy optimization problem. The initial state
+s0 is sampled from distribution ρ0. A trajectory (s0,a 0,s 1,a 1,... ) is generated by sampling ac-
+tions according to the policy at ∼ π(at|st) and sampling the states according to the dynamics
+st+1∼P (st+1|st,at), until a terminal (absorbing) state is reached. A reward rt =r(st,at,st+1)
+is received at each timestep. The goal is to maximize the expected total reward ∑∞
+t=0rt, which is
+assumed to be ﬁnite for all policies. Note that we are not using a discount as part of the problem spec-
+iﬁcation; it will appear below as an algorithm parameter that adjusts a bias-variance tradeoff. But
+the discounted problem (maximizing∑∞
+t=0γtrt) can be handled as an instance of the undiscounted
+problem in which we absorb the discount factor into the reward function, making it time-dependent.
+Policy gradient methods maximize the expected total reward by repeatedly estimating the gradient
+g :=∇θE [∑∞
+t=0rt]. There are several different related expressions for the policy gradient, which
+have the form
+g = E
+[ ∞∑
+t=0
+Ψt∇θ logπθ(at|st)
+]
+, (1)
+where Ψt may be one of the following:
+1. ∑∞
+t=0rt: total reward of the trajectory.
+2. ∑∞
+t′=trt′: reward following actionat.
+3. ∑∞
+t′=trt′−b(st): baselined version of
+previous formula.
+4. Qπ(st,at): state-action value function.
+5. Aπ(st,at): advantage function.
+6. rt +Vπ(st+1)−Vπ(st): TD residual.
+The latter formulas use the deﬁnitions
+Vπ(st) := Est+1:∞,
+at:∞
+[ ∞∑
+l=0
+rt+l
+]
+Qπ(st,at) := Est+1:∞,
+at+1:∞
+[ ∞∑
+l=0
+rt+l
+]
+(2)
+Aπ(st,at) :=Qπ(st,at)−Vπ(st), (Advantage function). (3)
+2
+
+===== PAGE 3 =====
+
+Published as a conference paper at ICLR 2016
+Here, the subscript of E enumerates the variables being integrated over, where states and actions are
+sampled sequentially from the dynamics model P (st+1|st,at) and policyπ(at|st), respectively.
+The colon notation a : b refers to the inclusive range (a,a + 1,...,b ). These formulas are well
+known and straightforward to obtain; they follow directly from Proposition 1, which will be stated
+shortly.
+The choice Ψt = Aπ(st,at) yields almost the lowest possible variance, though in practice, the
+advantage function is not known and must be estimated. This statement can be intuitively justiﬁed by
+the following interpretation of the policy gradient: that a step in the policy gradient direction should
+increase the probability of better-than-average actions and decrease the probability of worse-than-
+average actions. The advantage function, by it’s deﬁnitionAπ(s,a ) =Qπ(s,a )−Vπ(s), measures
+whether or not the action is better or worse than the policy’s default behavior. Hence, we should
+choose Ψt to be the advantage function Aπ(st,at), so that the gradient term Ψt∇θ logπθ(at|st)
+points in the direction of increased πθ(at|st) if and only if Aπ(st,at)> 0. See Greensmith et al.
+(2004) for a more rigorous analysis of the variance of policy gradient estimators and the effect of
+using a baseline.
+We will introduce a parameter γ that allows us to reduce variance by downweighting rewards cor-
+responding to delayed effects, at the cost of introducing bias. This parameter corresponds to the
+discount factor used in discounted formulations of MDPs, but we treat it as a variance reduction
+parameter in an undiscounted problem; this technique was analyzed theoretically by Marbach &
+Tsitsiklis (2003); Kakade (2001b); Thomas (2014). The discounted value functions are given by:
+Vπ,γ(st) := Est+1:∞,
+at:∞
+[ ∞∑
+l=0
+γlrt+l
+]
+Qπ,γ(st,at) := Est+1:∞,
+at+1:∞
+[ ∞∑
+l=0
+γlrt+l
+]
+(4)
+Aπ,γ(st,at) :=Qπ,γ(st,at)−Vπ,γ(st). (5)
+The discounted approximation to the policy gradient is deﬁned as follows:
+gγ := Es0:∞
+a0:∞
+[ ∞∑
+t=0
+Aπ,γ(st,at)∇θ logπθ(at|st)
+]
+. (6)
+The following section discusses how to obtain biased (but not too biased) estimators forAπ,γ, giving
+us noisy estimates of the discounted policy gradient in Equation (6).
+Before proceeding, we will introduce the notion of a γ-just estimator of the advantage function,
+which is an estimator that does not introduce bias when we use it in place of Aπ,γ (which is not
+known and must be estimated) in Equation (6) to estimate gγ.1 Consider an advantage estimator
+ˆAt(s0:∞,a 0:∞), which may in general be a function of the entire trajectory.
+Deﬁnition 1. The estimator ˆAt isγ-just if
+Es0:∞
+a0:∞
+[
+ˆAt(s0:∞,a 0:∞)∇θ logπθ(at|st)
+]
+= Es0:∞
+a0:∞
+[Aπ,γ(st,at)∇θ logπθ(at|st)]. (7)
+It follows immediately that if ˆAt isγ-just for allt, then
+Es0:∞
+a0:∞
+[ ∞∑
+t=0
+ˆAt(s0:∞,a 0:∞)∇θ logπθ(at|st)
+]
+=gγ (8)
+One sufﬁcient condition for ˆAt to be γ-just is that ˆAt decomposes as the difference between two
+functionsQt andbt, whereQt can depend on any trajectory variables but gives an unbiased estimator
+of the γ-discounted Q-function, and bt is an arbitrary function of the states and actions sampled
+beforeat.
+Proposition 1. Suppose that ˆAt can be written in the form ˆAt(s0:∞,a 0:∞) = Qt(st:∞,at:∞)−
+bt(s0:t,a 0:t−1) such that for all (st,at), Est+1:∞,at+1:∞|st,at [Qt(st:∞,at:∞)] = Qπ,γ(st,at).
+Then ˆA isγ-just.
+1Note, that we have already introduced bias by using Aπ,γ in place of Aπ; here we are concerned with
+obtaining an unbiased estimate of gγ, which is a biased estimate of the policy gradient of the undiscounted
+MDP.
+3
+
+===== PAGE 4 =====
+
+Published as a conference paper at ICLR 2016
+The proof is provided in Appendix B. It is easy to verify that the following expressions are γ-just
+advantage estimators for ˆAt:
+• ∑∞
+l=0γlrt+l
+• Qπ,γ(st,at)
+• Aπ,γ(st,at)
+• rt +γV π,γ(st+1)−Vπ,γ(st).
+3 A DVANTAGE FUNCTION ESTIMATION
+This section will be concerned with producing an accurate estimate ˆAt of the discounted advan-
+tage function Aπ,γ(st,at), which will then be used to construct a policy gradient estimator of the
+following form:
+ˆg = 1
+N
+N∑
+n=1
+∞∑
+t=0
+ˆAn
+t∇θ logπθ(an
+t|sn
+t ) (9)
+wheren indexes over a batch of episodes.
+LetV be an approximate value function. DeﬁneδV
+t =rt +γV (st+1)−V (st), i.e., the TD residual
+ofV with discountγ (Sutton & Barto, 1998). Note that δV
+t can be considered as an estimate of the
+advantage of the actionat. In fact, if we have the correct value functionV =Vπ,γ, then it is aγ-just
+advantage estimator, and in fact, an unbiased estimator ofAπ,γ:
+Est+1
+[
+δVπ,γ
+t
+]
+= Est+1 [rt +γV π,γ(st+1)−Vπ,γ(st)]
+= Est+1 [Qπ,γ(st,at)−Vπ,γ(st)] =Aπ,γ(st,at). (10)
+However, this estimator is onlyγ-just forV = Vπ,γ, otherwise it will yield biased policy gradient
+estimates.
+Next, let us consider taking the sum ofk of theseδ terms, which we will denote by ˆA(k)
+t
+ˆA(1)
+t :=δV
+t =−V (st) +rt +γV (st+1) (11)
+ˆA(2)
+t :=δV
+t +γδV
+t+1 =−V (st) +rt +γrt+1 +γ2V (st+2) (12)
+ˆA(3)
+t :=δV
+t +γδV
+t+1 +γ2δV
+t+2 =−V (st) +rt +γrt+1 +γ2rt+2 +γ3V (st+3) (13)
+ˆA(k)
+t :=
+k−1∑
+l=0
+γlδV
+t+l =−V (st) +rt +γrt+1 +··· +γk−1rt+k−1 +γkV (st+k) (14)
+These equations result from a telescoping sum, and we see that ˆA(k)
+t involves ak-step estimate of
+the returns, minus a baseline term−V (st). Analogously to the case of δV
+t = ˆA(1)
+t , we can consider
+ˆA(k)
+t to be an estimator of the advantage function, which is only γ-just whenV =Vπ,γ. However,
+note that the bias generally becomes smaller as k→∞ , since the term γkV (st+k) becomes more
+heavily discounted, and the term−V (st) does not affect the bias. Takingk→∞ , we get
+ˆA(∞)
+t =
+∞∑
+l=0
+γlδV
+t+l =−V (st) +
+∞∑
+l=0
+γlrt+l, (15)
+which is simply the empirical returns minus the value function baseline.
+4
+
+===== PAGE 5 =====
+
+Published as a conference paper at ICLR 2016
+The generalized advantage estimator GAE(γ,λ ) is deﬁned as the exponentially-weighted average
+of thesek-step estimators:
+ˆAGAE(γ,λ)
+t := (1−λ)
+(
+ˆA(1)
+t +λ ˆA(2)
+t +λ2 ˆA(3)
+t +...
+)
+= (1−λ)
+(
+δV
+t +λ(δV
+t +γδV
+t+1) +λ2(δV
+t +γδV
+t+1 +γ2δV
+t+2) +...
+)
+= (1−λ)(δV
+t (1 +λ +λ2 +... ) +γδV
+t+1(λ +λ2 +λ3 +... )
++γ2δV
+t+2(λ2 +λ3 +λ4 +... ) +... )
+= (1−λ)
+(
+δV
+t
+( 1
+1−λ
+)
++γδV
+t+1
+( λ
+1−λ
+)
++γ2δV
+t+2
+( λ2
+1−λ
+)
++...
+)
+=
+∞∑
+l=0
+(γλ)lδV
+t+l (16)
+From Equation (16), we see that the advantage estimator has a remarkably simple formula involving
+a discounted sum of Bellman residual terms. Section 4 discusses an interpretation of this formula as
+the returns in an MDP with a modiﬁed reward function. The construction we used above is closely
+analogous to the one used to deﬁne TD(λ) (Sutton & Barto, 1998), however TD(λ) is an estimator
+of the value function, whereas here we are estimating the advantage function.
+There are two notable special cases of this formula, obtained by settingλ = 0 andλ = 1.
+GAE(γ, 0) : ˆAt :=δt =rt +γV (st+1)−V (st) (17)
+GAE(γ, 1) : ˆAt :=
+∞∑
+l=0
+γlδt+l =
+∞∑
+l=0
+γlrt+l−V (st) (18)
+GAE(γ, 1) is γ-just regardless of the accuracy of V , but it has high variance due to the sum of
+terms. GAE(γ, 0) is γ-just for V = Vπ,γ and otherwise induces bias, but it typically has much
+lower variance. The generalized advantage estimator for 0< λ <1 makes a compromise between
+bias and variance, controlled by parameterλ.
+We’ve described an advantage estimator with two separate parametersγ andλ, both of which con-
+tribute to the bias-variance tradeoff when using an approximate value function. However, they serve
+different purposes and work best with different ranges of values.γ most importantly determines the
+scale of the value function Vπ,γ, which does not depend on λ. Taking γ < 1 introduces bias into
+the policy gradient estimate, regardless of the value function’s accuracy. On the other hand, λ <1
+introduces bias only when the value function is inaccurate. Empirically, we ﬁnd that the best value
+ofλ is much lower than the best value of γ, likely because λ introduces far less bias than γ for a
+reasonably accurate value function.
+Using the generalized advantage estimator, we can construct a biased estimator ofgγ, the discounted
+policy gradient from Equation (6):
+gγ≈ E
+[ ∞∑
+t=0
+∇θ logπθ(at|st) ˆAGAE(γ,λ)
+t
+]
+= E
+[ ∞∑
+t=0
+∇θ logπθ(at|st)
+∞∑
+l=0
+(γλ)lδV
+t+l
+]
+, (19)
+where equality holds whenλ = 1.
+4 I NTERPRETATION AS REWARD SHAPING
+In this section, we discuss how one can interpret λ as an extra discount factor applied after per-
+forming a reward shaping transformation on the MDP. We also introduce the notion of a response
+function to help understand the bias introduced byγ andλ.
+Reward shaping (Ng et al., 1999) refers to the following transformation of the reward function of
+an MDP: let Φ : S → R be an arbitrary scalar-valued function on state space, and deﬁne the
+transformed reward function ˜r by
+˜r(s,a,s′) =r(s,a,s′) +γΦ(s′)− Φ(s), (20)
+5
+
+===== PAGE 6 =====
+
+Published as a conference paper at ICLR 2016
+which in turn deﬁnes a transformed MDP. This transformation leaves the discounted advantage
+functionAπ,γ unchanged for any policyπ. To see this, consider the discounted sum of rewards of a
+trajectory starting with statest:
+∞∑
+l=0
+γl˜r(st+l,at,st+l+1) =
+∞∑
+l=0
+γlr(st+l,at+l,st+l+1)− Φ(st). (21)
+Letting ˜Qπ,γ, ˜Vπ,γ, ˜Aπ,γ be the value and advantage functions of the transformed MDP, one obtains
+from the deﬁnitions of these quantities that
+˜Qπ,γ(s,a ) =Qπ,γ(s,a )− Φ(s) (22)
+˜Vπ,γ(s,a ) =Vπ,γ(s)− Φ(s) (23)
+˜Aπ,γ(s,a ) = (Qπ,γ(s,a )− Φ(s))− (Vπ,γ(s)− Φ(s)) =Aπ,γ(s,a ). (24)
+Note that if Φ happens to be the state-value function Vπ,γ from the original MDP, then the trans-
+formed MDP has the interesting property that ˜Vπ,γ(s) is zero at every state.
+Note that (Ng et al., 1999) showed that the reward shaping transformation leaves the policy gradient
+and optimal policy unchanged when our objective is to maximize the discounted sum of rewards∑∞
+t=0γtr(st,at,st+1). In contrast, this paper is concerned with maximizing the undiscounted sum
+of rewards, where the discountγ is used as a variance-reduction parameter.
+Having reviewed the idea of reward shaping, let us consider how we could use it to get a policy
+gradient estimate. The most natural approach is to construct policy gradient estimators that use
+discounted sums of shaped rewards ˜r. However, Equation (21) shows that we obtain the discounted
+sum of the original MDP’s rewards r minus a baseline term. Next, let’s consider using a “steeper”
+discountγλ, where 0≤λ≤ 1. It’s easy to see that the shaped reward ˜r equals the Bellman residual
+termδV , introduced in Section 3, where we set Φ =V . Letting Φ =V , we see that
+∞∑
+l=0
+(γλ)l˜r(st+l,at,st+l+1) =
+∞∑
+l=0
+(γλ)lδV
+t+l = ˆAGAE(γ,λ)
+t . (25)
+Hence, by considering theγλ-discounted sum of shaped rewards, we exactly obtain the generalized
+advantage estimators from Section 3. As shown previously,λ = 1 gives an unbiased estimate ofgγ,
+whereasλ< 1 gives a biased estimate.
+To further analyze the effect of this shaping transformation and parametersγ andλ, it will be useful
+to introduce the notion of a response functionχ, which we deﬁne as follows:
+χ(l;st,at) = E [rt+l|st,at]− E [rt+l|st]. (26)
+Note that Aπ,γ(s,a ) = ∑∞
+l=0γlχ(l;s,a ), hence the response function decomposes the advantage
+function across timesteps. The response function lets us quantify the temporal credit assignment
+problem: long range dependencies between actions and rewards correspond to nonzero values of the
+response function forl≫ 0.
+Next, let us revisit the discount factorγ and the approximation we are making by usingAπ,γ rather
+thanAπ,1. The discounted policy gradient estimator from Equation (6) has a sum of terms of the
+form
+∇θ logπθ(at|st)Aπ,γ(st,at) =∇θ logπθ(at|st)
+∞∑
+l=0
+γlχ(l;st,at). (27)
+Using a discount γ < 1 corresponds to dropping the terms with l≫ 1/(1−γ). Thus, the error
+introduced by this approximation will be small ifχ rapidly decays asl increases, i.e., if the effect of
+an action on rewards is “forgotten” after≈ 1/(1−γ) timesteps.
+If the reward function ˜r were obtained using Φ = Vπ,γ, we would have E [˜rt+l|st,at] =
+E [˜rt+l|st] = 0 forl >0, i.e., the response function would only be nonzero at l = 0. Therefore,
+this shaping transformation would turn temporally extended response into an immediate response.
+Given thatVπ,γ completely reduces the temporal spread of the response function, we can hope that
+a good approximationV ≈Vπ,γ partially reduces it. This observation suggests an interpretation of
+Equation (16): reshape the rewards using V to shrink the temporal extent of the response function,
+and then introduce a “steeper” discount γλ to cut off the noise arising from long delays, i.e., ignore
+terms∇θ logπθ(at|st)δV
+t+l wherel≫ 1/(1−γλ).
+6
+
+===== PAGE 7 =====
+
+Published as a conference paper at ICLR 2016
+5 V ALUE FUNCTION ESTIMATION
+A variety of different methods can be used to estimate the value function (see, e.g., Bertsekas
+(2012)). When using a nonlinear function approximator to represent the value function, the sim-
+plest approach is to solve a nonlinear regression problem:
+minimize
+φ
+N∑
+n=1
+∥Vφ(sn)− ˆVn∥2, (28)
+where ˆVt = ∑∞
+l=0γlrt+l is the discounted sum of rewards, and n indexes over all timesteps in a
+batch of trajectories. This is sometimes called the Monte Carlo or TD( 1) approach for estimating
+the value function (Sutton & Barto, 1998).2
+For the experiments in this work, we used a trust region method to optimize the value function
+in each iteration of a batch optimization procedure. The trust region helps us to avoid overﬁtting
+to the most recent batch of data. To formulate the trust region problem, we ﬁrst compute σ2 =
+1
+N
+∑N
+n=1∥Vφold(sn)− ˆVn∥2, whereφold is the parameter vector before optimization. Then we solve
+the following constrained optimization problem:
+minimize
+φ
+N∑
+n=1
+∥Vφ(sn)− ˆVn∥2
+subject to 1
+N
+N∑
+n=1
+∥Vφ(sn)−Vφold(sn)∥2
+2σ2 ≤ϵ. (29)
+This constraint is equivalent to constraining the average KL divergence between the previous value
+function and the new value function to be smaller than ϵ, where the value function is taken to pa-
+rameterize a conditional Gaussian distribution with meanVφ(s) and varianceσ2.
+We compute an approximate solution to the trust region problem using the conjugate gradient algo-
+rithm (Wright & Nocedal, 1999). Speciﬁcally, we are solving the quadratic program
+minimize
+φ
+gT (φ−φold)
+subject to 1
+N
+N∑
+n=1
+(φ−φold)TH(φ−φold)≤ϵ. (30)
+whereg is the gradient of the objective, and H = 1
+N
+∑
+njnjT
+n , where jn =∇φVφ(sn). Note that
+H is the “Gauss-Newton” approximation of the Hessian of the objective, and it is (up to aσ2 factor)
+the Fisher information matrix when interpreting the value function as a conditional probability dis-
+tribution. Using matrix-vector productsv→Hv to implement the conjugate gradient algorithm, we
+compute a step direction s≈− H−1g. Then we rescale s→ αs such that 1
+2(αs)TH(αs) = ϵ and
+takeφ = φold +αs. This procedure is analogous to the procedure we use for updating the policy,
+which is described further in Section 6 and based on Schulman et al. (2015).
+6 E XPERIMENTS
+We designed a set of experiments to investigate the following questions:
+1. What is the empirical effect of varying λ∈ [0, 1] andγ∈ [0, 1] when optimizing episodic total
+reward using generalized advantage estimation?
+2. Can generalized advantage estimation, along with trust region algorithms for policy and value
+function optimization, be used to optimize large neural network policies for challenging control
+problems?
+2Another natural choice is to compute target values with an estimator based on the TD(λ) backup (Bertsekas,
+2012; Sutton & Barto, 1998), mirroring the expression we use for policy gradient estimation:ˆVλ
+t =Vφold (sn)+∑∞
+l=0(γλ)lδt+l. While we experimented with this choice, we did not notice a difference in performance from
+theλ = 1 estimator in Equation (28).
+7
+
+===== PAGE 8 =====
+
+Published as a conference paper at ICLR 2016
+6.1 P OLICY OPTIMIZATION ALGORITHM
+While generalized advantage estimation can be used along with a variety of different policy gra-
+dient methods, for these experiments, we performed the policy updates using trust region policy
+optimization (TRPO) (Schulman et al., 2015). TRPO updates the policy by approximately solving
+the following constrained optimization problem each iteration:
+minimize
+θ
+Lθold(θ)
+subject to D
+θold
+KL (πθold,πθ)≤ϵ
+whereLθold(θ) = 1
+N
+N∑
+n=1
+πθ(an|sn)
+πθold(an|sn)
+ˆAn
+D
+θold
+KL (πθold,πθ) = 1
+N
+N∑
+n=1
+DKL(πθold(·| sn)∥πθ(·| sn)) (31)
+As described in (Schulman et al., 2015), we approximately solve this problem by linearizing the
+objective and quadraticizing the constraint, which yields a step in the directionθ−θold∝−F−1g,
+whereF is the average Fisher information matrix, and g is a policy gradient estimate. This policy
+update yields the same step direction as the natural policy gradient (Kakade, 2001a) and natural
+actor-critic (Peters & Schaal, 2008), however it uses a different stepsize determination scheme and
+numerical procedure for computing the step.
+Since prior work (Schulman et al., 2015) compared TRPO to a variety of different policy optimiza-
+tion algorithms, we will not repeat these comparisons; rather, we will focus on varying the γ,λ
+parameters of policy gradient estimator while keeping the underlying algorithm ﬁxed.
+For completeness, the whole algorithm for iteratively updating policy and value function is given
+below:
+Initialize policy parameterθ0 and value function parameterφ0.
+fori = 0, 1, 2, . . . do
+Simulate current policyπθi untilN timesteps are obtained.
+ComputeδV
+t at all timestepst∈{ 1, 2,...,N }, usingV =Vφi.
+Compute ˆAt =∑∞
+l=0(γλ)lδV
+t+l at all timesteps.
+Computeθi+1 with TRPO update, Equation (31).
+Computeφi+1 with Equation (30).
+end for
+Note that the policy update θi → θi+1 is performed using the value function Vφi for advantage
+estimation, notVφi+1. Additional bias would have been introduced if we updated the value function
+ﬁrst. To see this, consider the extreme case where we overﬁt the value function, and the Bellman
+residualrt +γV (st+1)−V (st) becomes zero at all timesteps—the policy gradient estimate would
+be zero.
+6.2 E XPERIMENTAL SETUP
+We evaluated our approach on the classic cart-pole balancing problem, as well as several challenging
+3D locomotion tasks: (1) bipedal locomotion; (2) quadrupedal locomotion; (3) dynamically standing
+up, for the biped, which starts off laying on its back. The models are shown in Figure 1.
+6.2.1 A RCHITECTURE
+We used the same neural network architecture for all of the 3D robot tasks, which was a feedforward
+network with three hidden layers, with100, 50 and 25 tanh units respectively. The same architecture
+was used for the policy and value function. The ﬁnal output layer had linear activation. The value
+function estimator used the same architecture, but with only one scalar output. For the simpler cart-
+pole task, we used a linear policy, and a neural network with one 20-unit hidden layer as the value
+function.
+8
+
+===== PAGE 9 =====
+
+Published as a conference paper at ICLR 2016
+Figure 1: Top ﬁgures: robot models used for 3D locomotion. Bottom ﬁgures: a sequence of
+frames from the learned gaits. Videos are available at https://sites.google.com/site/
+gaepapersupp.
+6.2.2 T ASK DETAILS
+For the cart-pole balancing task, we collected 20 trajectories per batch, with a maximum length of
+1000 timesteps, using the physical parameters from Barto et al. (1983).
+The simulated robot tasks were simulated using the MuJoCo physics engine (Todorov et al., 2012).
+The humanoid model has 33 state dimensions and 10 actuated degrees of freedom, while the
+quadruped model has 29 state dimensions and 8 actuated degrees of freedom. The initial state
+for these tasks consisted of a uniform distribution centered on a reference conﬁguration. We used
+50000 timesteps per batch for bipedal locomotion, and 200000 timesteps per batch for quadrupedal
+locomotion and bipedal standing. Each episode was terminated after2000 timesteps if the robot had
+not reached a terminal state beforehand. The timestep was 0.01 seconds.
+The reward functions are provided in the table below.
+Task Reward
+3D biped locomotion vfwd− 10−5∥u∥2− 10−5∥fimpact∥2 + 0.2
+Quadruped locomotion vfwd− 10−6∥u∥2− 10−3∥fimpact∥2 + 0.05
+Biped getting up −(hhead− 1.5)2− 10−5∥u∥2
+Here, vfwd := forward velocity,u := vector of joint torques,fimpact := impact forces, hhead :=
+height of the head.
+In the locomotion tasks, the episode is terminated if the center of mass of the actor falls below a
+predeﬁned height:.8 m for the biped, and.2 m for the quadruped. The constant offset in the reward
+function encourages longer episodes; otherwise the quadratic reward terms might lead lead to a
+policy that ends the episodes as quickly as possible.
+6.3 E XPERIMENTAL RESULTS
+All results are presented in terms of the cost, which is deﬁned as negative reward and is mini-
+mized. Videos of the learned policies are available at https://sites.google.com/site/
+gaepapersupp. In plots, “No VF” means that we used a time-dependent baseline that did not
+depend on the state, rather than an estimate of the state value function. The time-dependent baseline
+was computed by averaging the return at each timestep over the trajectories in the batch.
+6.3.1 C ART-POLE
+The results are averaged across 21 experiments with different random seeds. Results are shown in
+Figure 2, and indicate that the best results are obtained at intermediate values of the parameters:
+γ∈ [0.96, 0.99] andλ∈ [0.92, 0.99].
+9
+
+===== PAGE 10 =====
+
+Published as a conference paper at ICLR 2016
+0 10 20 30 40 50
+number of policy iterations
+10
+8
+6
+4
+2
+0
+cost
+Cart-pole learning curves (at γ =0.99)
+No VF
+λ =1.0
+λ =0.99
+λ =0.98
+λ =0.96
+λ =0.92
+λ =0.84
+λ =0.68
+λ =0.36
+λ =0
+Figure 2: Left: learning curves for cart-pole task, using generalized advantage estimation with
+varying values ofλ atγ = 0.99. The fastest policy improvement is obtain by intermediate values of
+λ in the range [0.92, 0.98]. Right: performance after 20 iterations of policy optimization, asγ andλ
+are varied. White means higher reward. The best results are obtained at intermediate values of both.
+0 100 200 300 400 500
+number of policy iterations
+2.5
+2.0
+1.5
+1.0
+0.5
+0.0
+cost
+3D Biped
+γ =0.96,λ =0.96
+γ =0.98,λ =0.96
+γ =0.99,λ =0.96
+γ =0.995,λ =0.92
+γ =0.995,λ =0.96
+γ =0.995,λ =0.98
+γ =0.995,λ =0.99
+γ =0.995,λ =1.0
+γ =1,λ =0.96
+γ =1, No value fn
+0 200 400 600 800 1000
+number of policy iterations
+12
+10
+8
+6
+4
+2
+0
+2
+cost
+3D Quadruped
+γ =0.995, No value fn
+γ =0.995,λ =1
+γ =0.995,λ =0.96
+Figure 3: Left: Learning curves for 3D bipedal locomotion, averaged across nine runs of the algo-
+rithm. Right: learning curves for 3D quadrupedal locomotion, averaged across ﬁve runs.
+6.3.2 3D BIPEDAL LOCOMOTION
+Each trial took about 2 hours to run on a 16-core machine, where the simulation rollouts were paral-
+lelized, as were the function, gradient, and matrix-vector-product evaluations used when optimizing
+the policy and value function. Here, the results are averaged across 9 trials with different random
+seeds. The best performance is again obtained using intermediate values of γ∈ [0.99, 0.995],λ ∈
+[0.96, 0.99]. The result after 1000 iterations is a fast, smooth, and stable gait that is effectively
+completely stable. We can compute how much “real time” was used for this learning process:
+0.01 seconds/timestep×50000 timesteps/batch×1000 batches/3600·24 seconds/day = 5.8 days. Hence,
+it is plausible that this algorithm could be run on a real robot, or multiple real robots learning in par-
+allel, if there were a way to reset the state of the robot and ensure that it doesn’t damage itself.
+6.3.3 O THER 3D ROBOT TASKS
+The other two motor behaviors considered are quadrupedal locomotion and getting up off the ground
+for the 3D biped. Again, we performed 5 trials per experimental condition, with different random
+seeds (and initializations). The experiments took about 4 hours per trial on a 32-core machine.
+We performed a more limited comparison on these domains (due to the substantial computational
+resources required to run these experiments), ﬁxingγ = 0.995 but varyingλ ={0, 0.96}, as well as
+an experimental condition with no value function. For quadrupedal locomotion, the best results are
+obtained using a value function with λ = 0.96 Section 6.3.2. For 3D standing, the value function
+always helped, but the results are roughly the same forλ = 0.96 andλ = 1.
+10
+
+===== PAGE 11 =====
+
+Published as a conference paper at ICLR 2016
+0 100 200 300 400 500
+number of policy iterations
+0.0
+0.5
+1.0
+1.5
+2.0
+2.5
+cost
+3D Standing Up
+γ =0.99, No value fn
+γ =0.99,λ =1
+γ =0.99,λ =0.96
+Figure 4: (a) Learning curve from quadrupedal walking, (b) learning curve for 3D standing up, (c)
+clips from 3D standing up.
+7 D ISCUSSION
+Policy gradient methods provide a way to reduce reinforcement learning to stochastic gradient de-
+scent, by providing unbiased gradient estimates. However, so far their success at solving difﬁcult
+control problems has been limited, largely due to their high sample complexity. We have argued that
+the key to variance reduction is to obtain good estimates of the advantage function.
+We have provided an intuitive but informal analysis of the problem of advantage function estimation,
+and justiﬁed the generalized advantage estimator, which has two parameters γ,λ which adjust the
+bias-variance tradeoff. We described how to combine this idea with trust region policy optimization
+and a trust region algorithm that optimizes a value function, both represented by neural networks.
+Combining these techniques, we are able to learn to solve difﬁcult control tasks that have previously
+been out of reach for generic reinforcement learning methods.
+Our main experimental validation of generalized advantage estimation is in the domain of simulated
+robotic locomotion. As shown in our experiments, choosing an appropriate intermediate value of λ
+in the range [0.9, 0.99] usually results in the best performance. A possible topic for future work is
+how to adjust the estimator parametersγ,λ in an adaptive or automatic way.
+One question that merits future investigation is the relationship between value function estimation
+error and policy gradient estimation error. If this relationship were known, we could choose an error
+metric for value function ﬁtting that is well-matched to the quantity of interest, which is typically the
+accuracy of the policy gradient estimation. Some candidates for such an error metric might include
+the Bellman error or projected Bellman error, as described in Bhatnagar et al. (2009).
+Another enticing possibility is to use a shared function approximation architecture for the policy and
+the value function, while optimizing the policy using generalized advantage estimation. While for-
+mulating this problem in a way that is suitable for numerical optimization and provides convergence
+guarantees remains an open question, such an approach could allow the value function and policy
+representations to share useful features of the input, resulting in even faster learning.
+In concurrent work, researchers have been developing policy gradient methods that involve differen-
+tiation with respect to the continuous-valued action (Lillicrap et al., 2015; Heess et al., 2015). While
+we found empirically that the one-step return (λ = 0) leads to excessive bias and poor performance,
+these papers show that such methods can work when tuned appropriately. However, note that those
+papers consider control problems with substantially lower-dimensional state and action spaces than
+the ones considered here. A comparison between both classes of approach would be useful for future
+work.
+ACKNOWLEDGEMENTS
+We thank Emo Todorov for providing the simulator as well as insightful discussions, and we thank
+Greg Wayne, Yuval Tassa, Dave Silver, Carlos Florensa Campo, and Greg Brockman for insightful
+discussions. This research was funded in part by the Ofﬁce of Naval Research through a Young
+11
+
+===== PAGE 12 =====
+
+Published as a conference paper at ICLR 2016
+Investigator Award and under grant number N00014-11-1-0688, DARPA through a Young Faculty
+Award, by the Army Research Ofﬁce through the MAST program.
+A F REQUENTLY ASKED QUESTIONS
+A.1 W HAT’S THE RELATIONSHIP WITH COMPATIBLE FEATURES ?
+Compatible features are often mentioned in relation to policy gradient algorithms that make use
+of a value function, and the idea was proposed in the paper On Actor-Critic Methods by Konda
+& Tsitsiklis (2003). These authors pointed out that due to the limited representation power of the
+policy, the policy gradient only depends on a certain subspace of the space of advantage functions.
+This subspace is spanned by the compatible features∇θi logπθ(at|st), wherei∈{ 1, 2,..., dimθ}.
+This theory of compatible features provides no guidance on how to exploit the temporal structure of
+the problem to obtain better estimates of the advantage function, making it mostly orthogonal to the
+ideas in this paper.
+The idea of compatible features motivates an elegant method for computing the natural policy gradi-
+ent (Kakade, 2001a; Peters & Schaal, 2008). Given an empirical estimate of the advantage function
+ˆAt at each timestep, we can project it onto the subspace of compatible features by solving the fol-
+lowing least squares problem:
+minimize
+r
+∑
+t
+∥r·∇θ logπθ(at|st)− ˆAt∥2. (32)
+If ˆA isγ-just, the least squares solution is the natural policy gradient (Kakade, 2001a). Note that
+any estimator of the advantage function can be substituted into this formula, including the ones we
+derive in this paper. For our experiments, we also compute natural policy gradient steps, but we use
+the more computationally efﬁcient numerical procedure from Schulman et al. (2015), as discussed
+in Section 6.
+A.2 W HY DON’T YOU JUST USE A Q-FUNCTION ?
+Previous actor critic methods, e.g. in Konda & Tsitsiklis (2003), use a Q-function to obtain poten-
+tially low-variance policy gradient estimates. Recent papers, including Heess et al. (2015); Lillicrap
+et al. (2015), have shown that a neural network Q-function approximator can used effectively in a
+policy gradient method. However, there are several advantages to using a state-value function in the
+manner of this paper. First, the state-value function has a lower-dimensional input and is thus easier
+to learn than a state-action value function. Second, the method of this paper allows us to smoothly
+interpolate between the high-bias estimator (λ = 0) and the low-bias estimator (λ = 1). On the other
+hand, using a parameterizedQ-function only allows us to use a high-bias estimator. We have found
+that the bias is prohibitively large when using a one-step estimate of the returns, i.e., theλ = 0 esti-
+mator, ˆAt =δV
+t =rt +γV (st+1)−V (st). We expect that similar difﬁculty would be encountered
+when using an advantage estimator involving a parameterized Q-function, ˆAt = Q(s,a )−V (s).
+There is an interesting space of possible algorithms that would use a parameterized Q-function and
+attempt to reduce bias, however, an exploration of these possibilities is beyond the scope of this
+work.
+B P ROOFS
+Proof of Proposition 1: First we can split the expectation into terms involvingQ andb,
+Es0:∞,a0:∞ [∇θ logπθ(at|st)(Qt(s0:∞,a 0:∞)−bt(s0:t,a 0:t−1))]
+= Es0:∞,a0:∞ [∇θ logπθ(at|st)(Qt(s0:∞,a 0:∞))]
+− Es0:∞,a0:∞ [∇θ logπθ(at|st)(bt(s0:t,a 0:t−1))] (33)
+12
+
+===== PAGE 13 =====
+
+Published as a conference paper at ICLR 2016
+We’ll consider the terms withQ andb in turn.
+Es0:∞,a0:∞ [∇θ logπθ(at|st)Qt(s0:∞,a 0:∞)]
+= Es0:t,a0:t
+[
+Est+1:∞,at+1:∞ [∇θ logπθ(at|st)Qt(s0:∞,a 0:∞)]
+]
+= Es0:t,a0:t
+[
+∇θ logπθ(at|st)Est+1:∞,at+1:∞ [Qt(s0:∞,a 0:∞)]
+]
+= Es0:t,a0:t−1 [∇θ logπθ(at|st)Aπ(st,at)]
+Next,
+Es0:∞,a0:∞ [∇θ logπθ(at|st)bt(s0:t,a 0:t−1)]
+= Es0:t,a0:t−1
+[
+Est+1:∞,at:∞ [∇θ logπθ(at|st)bt(s0:t,a 0:t−1)]
+]
+= Es0:t,a0:t−1
+[
+Est+1:∞,at:∞ [∇θ logπθ(at|st)]bt(s0:t,a 0:t−1)
+]
+= Es0:t,a0:t−1 [0·bt(s0:t,a 0:t−1)]
+= 0.
+REFERENCES
+Barto, Andrew G, Sutton, Richard S, and Anderson, Charles W. Neuronlike adaptive elements that can solve
+difﬁcult learning control problems. Systems, Man and Cybernetics, IEEE Transactions on , (5):834–846,
+1983.
+Baxter, Jonathan and Bartlett, Peter L. Reinforcement learning in POMDPs via direct gradient ascent. InICML,
+pp. 41–48, 2000.
+Bertsekas, Dimitri P. Dynamic programming and optimal control, volume 2. Athena Scientiﬁc, 2012.
+Bhatnagar, Shalabh, Precup, Doina, Silver, David, Sutton, Richard S, Maei, Hamid R, and Szepesv ´ari, Csaba.
+Convergent temporal-difference learning with arbitrary smooth function approximation. In Advances in
+Neural Information Processing Systems, pp. 1204–1212, 2009.
+Greensmith, Evan, Bartlett, Peter L, and Baxter, Jonathan. Variance reduction techniques for gradient estimates
+in reinforcement learning. The Journal of Machine Learning Research , 5:1471–1530, 2004.
+Hafner, Roland and Riedmiller, Martin. Reinforcement learning in feedback control. Machine learning, 84
+(1-2):137–169, 2011.
+Heess, Nicolas, Wayne, Greg, Silver, David, Lillicrap, Timothy, Tassa, Yuval, and Erez, Tom. Learning contin-
+uous control policies by stochastic value gradients. arXiv preprint arXiv:1510.09142, 2015.
+Hull, Clark. Principles of behavior. 1943.
+Kakade, Sham. A natural policy gradient. In NIPS, volume 14, pp. 1531–1538, 2001a.
+Kakade, Sham. Optimizing average reward using discounted rewards. In Computational Learning Theory, pp.
+605–615. Springer, 2001b.
+Kimura, Hajime and Kobayashi, Shigenobu. An analysis of actor/critic algorithms using eligibility traces:
+Reinforcement learning with imperfect value function. In ICML, pp. 278–286, 1998.
+Konda, Vijay R and Tsitsiklis, John N. On actor-critic algorithms. SIAM journal on Control and Optimization ,
+42(4):1143–1166, 2003.
+Lillicrap, Timothy P, Hunt, Jonathan J, Pritzel, Alexander, Heess, Nicolas, Erez, Tom, Tassa, Yuval, Sil-
+ver, David, and Wierstra, Daan. Continuous control with deep reinforcement learning. arXiv preprint
+arXiv:1509.02971, 2015.
+Marbach, Peter and Tsitsiklis, John N. Approximate gradient methods in policy-space optimization of markov
+reward processes. Discrete Event Dynamic Systems, 13(1-2):111–148, 2003.
+Minsky, Marvin. Steps toward artiﬁcial intelligence. Proceedings of the IRE, 49(1):8–30, 1961.
+Ng, Andrew Y , Harada, Daishi, and Russell, Stuart. Policy invariance under reward transformations: Theory
+and application to reward shaping. In ICML, volume 99, pp. 278–287, 1999.
+Peters, Jan and Schaal, Stefan. Natural actor-critic. Neurocomputing, 71(7):1180–1190, 2008.
+13
+
+===== PAGE 14 =====
+
+Published as a conference paper at ICLR 2016
+Schulman, John, Levine, Sergey, Moritz, Philipp, Jordan, Michael I, and Abbeel, Pieter. Trust region policy
+optimization. arXiv preprint arXiv:1502.05477, 2015.
+Sutton, Richard S and Barto, Andrew G. Introduction to reinforcement learning. MIT Press, 1998.
+Sutton, Richard S, McAllester, David A, Singh, Satinder P, and Mansour, Yishay. Policy gradient methods for
+reinforcement learning with function approximation. In NIPS, volume 99, pp. 1057–1063. Citeseer, 1999.
+Thomas, Philip. Bias in natural actor-critic algorithms. In Proceedings of The 31st International Conference
+on Machine Learning, pp. 441–448, 2014.
+Todorov, Emanuel, Erez, Tom, and Tassa, Yuval. Mujoco: A physics engine for model-based control. In
+Intelligent Robots and Systems (IROS), 2012 IEEE/RSJ International Conference on , pp. 5026–5033. IEEE,
+2012.
+Wawrzy´nski, Paweł. Real-time reinforcement learning by sequential actor–critics and experience replay.Neural
+Networks, 22(10):1484–1497, 2009.
+Williams, Ronald J. Simple statistical gradient-following algorithms for connectionist reinforcement learning.
+Machine learning, 8(3-4):229–256, 1992.
+Wright, Stephen J and Nocedal, Jorge. Numerical optimization. Springer New York, 1999.
+14

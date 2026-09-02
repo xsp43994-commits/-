@@ -1,0 +1,611 @@
+{
+  "boundary_epsilon_px": 0.001,
+  "context_definition": "two deterministic launch contexts per DSM, each using the complete clipped OSM road corridor for point placement and a distinct geometry-certified launch position; contexts are nested within map and are not independent geographic samples",
+  "coordinate_domain": "[epsilon, width-1-epsilon] x [epsilon, height-1-epsilon]",
+  "manifest_hash": "f534c51ee1b31f0a12b8cc81b405c36e22cdceb4828c8259eb2a61eb6314a031",
+  "map_registry_sha256": "61b1da4cac5d97d90324aeef9ffbbe3218980f59714ef7e3acc08fa64c5cf719",
+  "maps": [
+    {
+      "asset_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets\\cn_guizhou_karst.npz",
+      "asset_sha256": "343dced4a5e74791a3a74a02e7275a3a007d7550afa645db24fe80eb5c1fd9c4",
+      "context_hash": "7f8c9da6a5cedb2270d19af867ad9f1b5672947f6899fa750f4af793ec3baeda",
+      "contexts": [
+        {
+          "capacity": 377,
+          "radii": {
+            "16": {
+              "interval_m": [
+                1000.0,
+                1400.0
+              ],
+              "minimum_m": 1000.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 0,
+          "sample_index": 336,
+          "start_xy": [
+            75.31157684326172,
+            130.64442443847656
+          ]
+        },
+        {
+          "capacity": 317,
+          "radii": {
+            "16": {
+              "interval_m": [
+                900.0,
+                1400.0
+              ],
+              "minimum_m": 900.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 1,
+          "sample_index": 292,
+          "start_xy": [
+            109.85906982421875,
+            41.808326721191406
+          ]
+        }
+      ],
+      "map_hash": "44f6e3201c42b33c8bcd3f78271f251e60a27c534339c1f3e1ba06c93028d155",
+      "map_id": "cn_guizhou_karst",
+      "road_segment_count": 28,
+      "source_osm_sha256": "bbb5d8f3e456385a7a4f10003c359a16b8449e70351fc375afed80592861e357"
+    },
+    {
+      "asset_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets\\cn_hengduan.npz",
+      "asset_sha256": "430b734b15601543d7e56084998760b270d3d53c18d50f5c672038733c05b101",
+      "context_hash": "1172261ffa4eabd67c30d772c36feccb8270dbdadbc3a18f4ea36f8bd4d4b43b",
+      "contexts": [
+        {
+          "capacity": 475,
+          "radii": {
+            "16": {
+              "interval_m": [
+                900.0,
+                1400.0
+              ],
+              "minimum_m": 900.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 0,
+          "sample_index": 584,
+          "start_xy": [
+            106.76394653320312,
+            158.3815460205078
+          ]
+        },
+        {
+          "capacity": 449,
+          "radii": {
+            "16": {
+              "interval_m": [
+                900.0,
+                1400.0
+              ],
+              "minimum_m": 900.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 1,
+          "sample_index": 236,
+          "start_xy": [
+            49.592472076416016,
+            83.4903335571289
+          ]
+        }
+      ],
+      "map_hash": "e818271df0359e1d2637a4791c9eed8cdc822d12977a0ad8bf12a1068acdfbaf",
+      "map_id": "cn_hengduan",
+      "road_segment_count": 44,
+      "source_osm_sha256": "c52402de407eb3033cc6359e0e09a16214e467973cdaba586bf99825ce26cc5a"
+    },
+    {
+      "asset_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets\\cn_qinling.npz",
+      "asset_sha256": "1c5ed6a8b018996992e22446bc2bc830f38c81270765660f05a99138e79ca81c",
+      "context_hash": "b53929118d458b0625732ae311e3cd98d89895836fdaca0384b8550c0b635c60",
+      "contexts": [
+        {
+          "capacity": 343,
+          "radii": {
+            "16": {
+              "interval_m": [
+                1000.0,
+                1400.0
+              ],
+              "minimum_m": 1000.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 0,
+          "sample_index": 376,
+          "start_xy": [
+            167.66854858398438,
+            22.484485626220703
+          ]
+        },
+        {
+          "capacity": 325,
+          "radii": {
+            "16": {
+              "interval_m": [
+                1000.0,
+                1400.0
+              ],
+              "minimum_m": 1000.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 1,
+          "sample_index": 488,
+          "start_xy": [
+            265.9989929199219,
+            66.69310760498047
+          ]
+        }
+      ],
+      "map_hash": "ade5906abc35b88fc406eab1fe19e50e11bbacff01610be83e761b6305e352ac",
+      "map_id": "cn_qinling",
+      "road_segment_count": 75,
+      "source_osm_sha256": "b286d64522dc863755d3f4829bdf6689b0048a1dd870d294d64bf82b7fdffcc1"
+    },
+    {
+      "asset_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets\\cn_taihang.npz",
+      "asset_sha256": "cf72e2aade86e1056aed13f074ef258230cbd68638453559c285832a35757169",
+      "context_hash": "7e77257869773f589b1dd80d48296c8f7b7e64cae3b860ac81f2fc4ceceef886",
+      "contexts": [
+        {
+          "capacity": 235,
+          "radii": {
+            "16": {
+              "interval_m": [
+                1000.0,
+                1400.0
+              ],
+              "minimum_m": 1000.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 0,
+          "sample_index": 36,
+          "start_xy": [
+            239.73080444335938,
+            103.40394592285156
+          ]
+        },
+        {
+          "capacity": 219,
+          "radii": {
+            "16": {
+              "interval_m": [
+                1400.0,
+                1700.0
+              ],
+              "minimum_m": 1400.0
+            },
+            "20": {
+              "interval_m": [
+                1550.0,
+                1850.0
+              ],
+              "minimum_m": 1550.0
+            },
+            "24": {
+              "interval_m": [
+                1600.0,
+                1900.0
+              ],
+              "minimum_m": 1600.0
+            }
+          },
+          "road_index": 1,
+          "sample_index": 192,
+          "start_xy": [
+            204.19140625,
+            5.692235469818115
+          ]
+        }
+      ],
+      "map_hash": "727201fbb5cf39471bae328e85c1c5d9eaa3069df13d93048e713bd81b1de903",
+      "map_id": "cn_taihang",
+      "road_segment_count": 41,
+      "source_osm_sha256": "688f14a0ef4975007a3eadcdea4fa1c8623f5b1e8ea45dfcc6437240aa6c3379"
+    },
+    {
+      "asset_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets\\global_alps.npz",
+      "asset_sha256": "8a6aa6081239085db371e01a517319c1cbf189410c4780d9ce9b92b2797a14b3",
+      "context_hash": "77349df923868f40688dc78914c372e2d8cbc4626c4e67c969e97bbf888aa9c8",
+      "contexts": [
+        {
+          "capacity": 421,
+          "radii": {
+            "16": {
+              "interval_m": [
+                900.0,
+                1400.0
+              ],
+              "minimum_m": 900.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 0,
+          "sample_index": 80,
+          "start_xy": [
+            47.99371337890625,
+            170.58950805664062
+          ]
+        },
+        {
+          "capacity": 410,
+          "radii": {
+            "16": {
+              "interval_m": [
+                900.0,
+                1400.0
+              ],
+              "minimum_m": 900.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 1,
+          "sample_index": 44,
+          "start_xy": [
+            0.0010000000474974513,
+            158.55328369140625
+          ]
+        }
+      ],
+      "map_hash": "db06db1f551a2c1d0b49d19975591e35ff40e17c0c4ef5e6843f503b4623fec6",
+      "map_id": "global_alps",
+      "road_segment_count": 92,
+      "source_osm_sha256": "a61e4b45eb90e98c955212e92bd0ad064726a81978995a3090272b5d478cb739"
+    },
+    {
+      "asset_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets\\global_colorado_rockies.npz",
+      "asset_sha256": "05437a1bb95fbd81ec262a6d9061ff998273937f9be58b838dfb4b5cce668620",
+      "context_hash": "a7f4b813d69334a4c09b87f29ab588c79829685b07c3298c4f556041f87d8ccf",
+      "contexts": [
+        {
+          "capacity": 81,
+          "radii": {
+            "16": {
+              "interval_m": [
+                1600.0,
+                1900.0
+              ],
+              "minimum_m": 1600.0
+            },
+            "20": {
+              "interval_m": [
+                2250.0,
+                2550.0
+              ],
+              "minimum_m": 2250.0
+            },
+            "24": {
+              "interval_m": [
+                2800.0,
+                3100.0
+              ],
+              "minimum_m": 2800.0
+            }
+          },
+          "road_index": 0,
+          "sample_index": 236,
+          "start_xy": [
+            9.622199058532715,
+            0.16961368918418884
+          ]
+        },
+        {
+          "capacity": 73,
+          "radii": {
+            "16": {
+              "interval_m": [
+                2100.0,
+                2400.0
+              ],
+              "minimum_m": 2100.0
+            },
+            "20": {
+              "interval_m": [
+                2450.0,
+                2750.0
+              ],
+              "minimum_m": 2450.0
+            },
+            "24": {
+              "interval_m": [
+                2800.0,
+                3100.0
+              ],
+              "minimum_m": 2800.0
+            }
+          },
+          "road_index": 1,
+          "sample_index": 156,
+          "start_xy": [
+            132.6487579345703,
+            264.93109130859375
+          ]
+        }
+      ],
+      "map_hash": "340713ed05825544d6fcfe7dd17a48abf5dd777e7f927fcb078daa045bcc7230",
+      "map_id": "global_colorado_rockies",
+      "road_segment_count": 32,
+      "source_osm_sha256": "9bbaeae9f7d3f34ac7e63f521857864d48c95b08a54a9e77ceba382be4a9cc16"
+    },
+    {
+      "asset_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets\\global_peruvian_andes.npz",
+      "asset_sha256": "d10b0466c2b167ae59b7668519dac788968ab957aa27d6f5c501eb9dab3d086c",
+      "context_hash": "b64a66a74480192e15585e6679fa9eb0e3c063f047e03fb0e32cebd48f6f43b6",
+      "contexts": [
+        {
+          "capacity": 188,
+          "radii": {
+            "16": {
+              "interval_m": [
+                1100.0,
+                1400.0
+              ],
+              "minimum_m": 1100.0
+            },
+            "20": {
+              "interval_m": [
+                1450.0,
+                1750.0
+              ],
+              "minimum_m": 1450.0
+            },
+            "24": {
+              "interval_m": [
+                1600.0,
+                1900.0
+              ],
+              "minimum_m": 1600.0
+            }
+          },
+          "road_index": 0,
+          "sample_index": 112,
+          "start_xy": [
+            138.86656188964844,
+            131.08055114746094
+          ]
+        },
+        {
+          "capacity": 119,
+          "radii": {
+            "16": {
+              "interval_m": [
+                2100.0,
+                2400.0
+              ],
+              "minimum_m": 2100.0
+            },
+            "20": {
+              "interval_m": [
+                2550.0,
+                2850.0
+              ],
+              "minimum_m": 2550.0
+            },
+            "24": {
+              "interval_m": [
+                2800.0,
+                3100.0
+              ],
+              "minimum_m": 2800.0
+            }
+          },
+          "road_index": 1,
+          "sample_index": 60,
+          "start_xy": [
+            171.76535034179688,
+            13.885038375854492
+          ]
+        }
+      ],
+      "map_hash": "9f3c1789f63f2492a57b26d1e9ccec500416a2a8213dbceaa8ef1dc37ded18ec",
+      "map_id": "global_peruvian_andes",
+      "road_segment_count": 17,
+      "source_osm_sha256": "d0d2268c81f4613655f2a33a7ed29ec8a1e92f1b62d71fdb1370402b41cc9066"
+    },
+    {
+      "asset_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets\\global_southern_alps_nz.npz",
+      "asset_sha256": "dbabbcbce33b6974c8a13089e2a35174f776d6a3025c17d296891ed4103ddfd6",
+      "context_hash": "048828a752c6ef9c49c81259aec27c67b68e66a14ec36635ae0625dd2d640346",
+      "contexts": [
+        {
+          "capacity": 429,
+          "radii": {
+            "16": {
+              "interval_m": [
+                1000.0,
+                1400.0
+              ],
+              "minimum_m": 1000.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 0,
+          "sample_index": 280,
+          "start_xy": [
+            167.25729370117188,
+            228.66064453125
+          ]
+        },
+        {
+          "capacity": 283,
+          "radii": {
+            "16": {
+              "interval_m": [
+                900.0,
+                1400.0
+              ],
+              "minimum_m": 900.0
+            },
+            "20": {
+              "interval_m": [
+                1150.0,
+                1650.0
+              ],
+              "minimum_m": 1150.0
+            },
+            "24": {
+              "interval_m": [
+                1400.0,
+                1900.0
+              ],
+              "minimum_m": 1400.0
+            }
+          },
+          "road_index": 1,
+          "sample_index": 68,
+          "start_xy": [
+            48.91310501098633,
+            224.45066833496094
+          ]
+        }
+      ],
+      "map_hash": "ecca304196794e377a55e312d1c70907725aee75ff947cd95ada25d9f9c15f4d",
+      "map_id": "global_southern_alps_nz",
+      "road_segment_count": 75,
+      "source_osm_sha256": "cf1610b3d816dd8847ee7bfb0c6b41eb26cd8e7efdbafa3030a75ba8e274cb42"
+    }
+  ],
+  "protocol_hash": "21a2d0be8896bc3838a5ee71dd5ff7fd839debc675995e4658aa45ac3f021ac2",
+  "schema_version": 1
+}

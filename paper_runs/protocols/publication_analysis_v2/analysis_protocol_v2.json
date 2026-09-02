@@ -1,0 +1,244 @@
+{
+  "schema_version": 2,
+  "protocol_name": "publication_analysis_v2",
+  "created_at": "2026-07-25T18:10:00+08:00",
+  "created_after_experiment_completion": true,
+  "created_before_metric_aggregation_and_ranking": true,
+  "amends": {
+    "protocol_name": "frozen_test_v1",
+    "protocol_hash": "7a010c749881dd452c78a03602d42c797b32b14590637f63676a216cd34dce16",
+    "scope": "analysis_and_visualization_only",
+    "replaced_clause": "forbidden_rankings.manual_composite_score",
+    "unchanged_assets": [
+      "models",
+      "checkpoints",
+      "training",
+      "scenarios",
+      "manifest",
+      "MissionEvaluator",
+      "raw_results",
+      "routes"
+    ]
+  },
+  "analysis_protocol_hash": "ceb17e3df479c532a798a433a844d2e1e3b4f49876c89347155aac2acd1ae870",
+  "analysis_protocol_hash_method": "sha256_canonical_json_excluding_analysis_protocol_hash",
+  "study_scope_cn": "复杂山区多约束无人机巡检仿真场景",
+  "main_family": [
+    "full",
+    "ppo_mlp",
+    "a2c_pointer",
+    "nearest_feasible",
+    "priority_resource_greedy",
+    "aco",
+    "ga",
+    "sa",
+    "milp_orienteering"
+  ],
+  "reference_algorithm": "full",
+  "primary_split": "id_test",
+  "power_scale": 1.0,
+  "statistical_unit": "scenario",
+  "within_scenario_reduction": "mean_over_training_or_planner_repeats",
+  "score": {
+    "name": "coverage_priority_overall_utility",
+    "range": [
+      0.0,
+      1.0
+    ],
+    "components": {
+      "E": "scenario mean safe_weighted_coverage",
+      "R": "scenario mean of E_run * (1 - mean(energy_utilization, distance_utilization, time_utilization)); unsafe runs contribute zero",
+      "C": "E * q, where q is inverse within-scenario planning-time rank utility among the fixed nine main methods"
+    },
+    "time_rank": {
+      "aggregate": "median planning_time_s per algorithm-scenario",
+      "tie_method": "average",
+      "main_family_formula": "q = 1 - (rank - 1) / (K - 1)",
+      "non_main_projection": "piecewise-linear interpolation on log-time against the fixed main-family rank anchors, clamped to [0,1]",
+      "K": 9
+    },
+    "fixed_weights": {
+      "E": 0.6,
+      "R": 0.25,
+      "C": 0.15
+    },
+    "formula": "S = 0.60*E + 0.25*R + 0.15*C",
+    "missing_or_invalid_safe_resource_fields": "fail",
+    "unsafe_resource_contribution": 0.0
+  },
+  "confirmatory_sequence": [
+    "overall_utility_score",
+    "safe_weighted_coverage_if_overall_utility_passes"
+  ],
+  "statistics": {
+    "omnibus": "Friedman",
+    "pairwise": "paired two-sided Wilcoxon signed-rank against full",
+    "multiplicity": "Holm within family",
+    "alpha": 0.05,
+    "effect_sizes": [
+      "rank_biserial",
+      "Hodges_Lehmann"
+    ],
+    "bootstrap": {
+      "samples": 10000,
+      "confidence_level": 0.95,
+      "seed": 20260725,
+      "outer_unit": "paired_scenario",
+      "inner_unit": "independent repeat resampling per algorithm",
+      "time_rank_utility": "fixed at the observed algorithm-scenario median rank during bootstrap"
+    },
+    "families": {
+      "main": {
+        "status": "confirmatory",
+        "members": [
+          "full",
+          "ppo_mlp",
+          "a2c_pointer",
+          "nearest_feasible",
+          "priority_resource_greedy",
+          "aco",
+          "ga",
+          "sa",
+          "milp_orienteering"
+        ]
+      },
+      "ablation": {
+        "status": "confirmatory",
+        "members": [
+          "full",
+          "no_priority_bias",
+          "no_domain_randomization",
+          "no_resource_shaping",
+          "no_return_reserve"
+        ]
+      },
+      "supplementary": {
+        "status": "exploratory",
+        "members": [
+          "full",
+          "a_star",
+          "pso",
+          "exact_pareto_dp"
+        ]
+      }
+    }
+  },
+  "sensitivity": {
+    "sobol_samples": 100000,
+    "sobol_seed": 20260725,
+    "weight_bounds": {
+      "E": [
+        0.5,
+        0.75
+      ],
+      "R": [
+        0.15,
+        0.35
+      ],
+      "C": [
+        0.05,
+        0.2
+      ]
+    },
+    "weight_sum": 1.0,
+    "rank_acceptability": true,
+    "alternatives": [
+      "resource_max_utilization",
+      "online_empirical_repeat_percentile",
+      "drop_resource_and_renormalize",
+      "drop_online_and_renormalize",
+      "pareto_E_R_C"
+    ]
+  },
+  "winner_rule": {
+    "target": "full",
+    "all_required": true,
+    "conditions": [
+      "highest_fixed_weight_mean_score",
+      "friedman_p_below_alpha",
+      "all_eight_holm_adjusted_pairwise_p_below_alpha",
+      "all_Hodges_Lehmann_and_rank_biserial_directions_positive",
+      "all_bootstrap_intervals_strictly_above_zero",
+      "rank1_acceptability_at_least_0.80",
+      "not_pareto_dominated_on_mean_E_R_C"
+    ],
+    "rank1_acceptability_threshold": 0.8,
+    "claim_scope_cn": "当前复杂山区多约束无人机巡检仿真场景及冻结测试协议"
+  },
+  "secondary_analysis": {
+    "stress_test": "descriptive_only_no_new_confirmatory_tests",
+    "scale": "descriptive_only_no_new_confirmatory_tests",
+    "power_sensitivity": "cancelled_before_any_results"
+  },
+  "figure_contract_file": "paper_runs/protocols/publication_analysis_v2/figure_contract.json",
+  "figure_contract_sha256": "5a141f71b9e8c1026b9c133e4f6da1afc2a414ba9aa7e94503609fa5cbd445d1",
+  "figure_type_review_file": "paper_runs/protocols/publication_analysis_v2/figure_type_review.md",
+  "figure_type_review_sha256": "faaa6a6b62742e1ea3d62b3f60a9b25224533a0af848694a8c5195d885af1203",
+  "backend": "Python/Matplotlib",
+  "language": "zh-CN_with_necessary_English",
+  "exports": [
+    "svg",
+    "pdf",
+    "tiff_600dpi",
+    "png_preview",
+    "source_data_csv",
+    "caption_cn",
+    "figure_manifest_json"
+  ],
+  "representative_scenario": {
+    "scenario_id": "id_test_034",
+    "selection": "inherited_from_frozen_test_v1_before_results",
+    "display_algorithms": [
+      {
+        "algorithm": "full",
+        "training_seed": 42
+      },
+      {
+        "algorithm": "priority_resource_greedy",
+        "planner_seed": 42
+      },
+      {
+        "algorithm": "aco",
+        "planner_seed": 42
+      },
+      {
+        "algorithm": "milp_orienteering",
+        "planner_seed": 42
+      }
+    ]
+  },
+  "training_convergence_figure": {
+    "figure_id": "supplementary_figure_s1",
+    "training_runs": 35,
+    "episodes_per_run": 3000,
+    "seeds_per_variant": 5,
+    "core_return_panel": {
+      "variants": [
+        "full",
+        "ppo_mlp",
+        "a2c_pointer"
+      ],
+      "source": "episode_returns.json",
+      "summary": "five-seed median and interquartile band",
+      "smoothing": "centered rolling median, fixed 100-episode window"
+    },
+    "cross_variant_validation_panels": {
+      "variants": [
+        "full",
+        "ppo_mlp",
+        "a2c_pointer",
+        "no_priority_bias",
+        "no_domain_randomization",
+        "no_resource_shaping",
+        "no_return_reserve"
+      ],
+      "source": "metrics.jsonl external fixed validation records",
+      "metrics": [
+        "weighted_coverage",
+        "return_rate"
+      ],
+      "summary": "five-seed median and interquartile band"
+    },
+    "interpretation_boundary_cn": "训练曲线只用于说明收敛过程和种子稳定性；最终优劣由冻结id_test判定。改变奖励定义的消融不比较原始回报绝对高低。"
+  }
+}

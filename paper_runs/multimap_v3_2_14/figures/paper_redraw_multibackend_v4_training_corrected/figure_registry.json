@@ -1,0 +1,44 @@
+{
+  "schema_version": "training_corrected_figures_v4",
+  "analysis_manifest_hash": "7f719367c5608c2eda057294958304fb967f85dd181f7d9095d5fbd5aecc866a",
+  "figures": {
+    "M06": {
+      "role": "training diagnosis",
+      "metric": "validation.safe_weighted_coverage",
+      "independent_unit": "training_seed",
+      "uncertainty": "seed IQR"
+    },
+    "M07": {
+      "role": "training stability and sample efficiency",
+      "metric": "D6/D7",
+      "independent_unit": "paired training seed",
+      "uncertainty": "seed IQR"
+    },
+    "S06": {
+      "role": "training-batch description",
+      "metric": "mean_weighted_coverage",
+      "independent_unit": "training_seed",
+      "uncertainty": "seed IQR"
+    },
+    "S07": {
+      "role": "post-hoc composite summary",
+      "metric": "D1-D7 and 100-point score",
+      "independent_unit": "mixed frozen units",
+      "uncertainty": "shown separately"
+    },
+    "S08": {
+      "role": "joint sensitivity",
+      "metric": "first-place share",
+      "independent_unit": "weight/floor combination",
+      "uncertainty": "complete grid"
+    }
+  },
+  "visual": {
+    "width_mm": 183.0,
+    "tick_pt": 8.0,
+    "axis_pt": 9.0,
+    "dpi": 600,
+    "pad_mm": 1.2
+  },
+  "old_figures_used_as_source": false
+}

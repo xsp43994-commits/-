@@ -1,0 +1,528 @@
+
+
+===== PAGE 1 =====
+
+Ant Colony Optimization for Cooperative Inspection Path Planning
+Using Multiple Unmanned Aerial Vehicles
+Duy Nam Bui 1, Thuy Ngan Duong 2, Manh Duong Phung 3
+Abstract— This paper presents a new swarm intelligence-
+based approach to deal with the cooperative path planning
+problem of unmanned aerial vehicles (UA Vs), which is essential
+for the automatic inspection of infrastructure. The approach
+uses a 3D model of the structure to generate viewpoints for
+the UA Vs. The calculation of the viewpoints considers the con-
+straints related to the UA V formation model, camera parame-
+ters, and requirements for data post-processing. The viewpoints
+are then used as input to formulate the path planning as an
+extended traveling salesman problem and the definition of a new
+cost function. Ant colony optimization is finally used to solve the
+problem to yield optimal inspection paths. Experiments with 3D
+models of real structures have been conducted to evaluate the
+performance of the proposed approach. The results show that
+our system is not only capable of generating feasible inspection
+paths for UA Vs but also reducing the path length by 29.47%
+for complex structures when compared with another heuristic
+approach. The source code of the algorithm can be found at
+https://github.com/duynamrcv/aco_3d_ipp.
+Index Terms— Coverage path planning, infrastructure mon-
+itoring, vision-based inspection, ant colony optimization, un-
+manned aerial vehicle
+I. I NTRODUCTION
+Unmanned aerial vehicles (UA Vs) with their high flexibil-
+ity and versatile deployment play an important role in struc-
+tural health monitoring (SHM) to carry out non-destructive
+inspection, evaluation of cracks or damages, and prediction
+of catastrophic failures [1]–[3]. One of the essential tasks in
+SHM is solving the inspection path planning (IPP) problem
+as it generates the path the UA Vs need to follow to collect
+information about the structure [1], [3]. However, there are
+few IPP methods for aerial robotics, particularly when it
+comes to collaborative inspection (C-IPP). The C-IPP in-
+volves multiple UA Vs cooperating in a formation to enhance
+inspection solutions, such as decreasing the total inspection
+time [4], [5].
+In the literature, most works address the inspection prob-
+lem in 2D space [1], [4]. For 3D structures, most studies
+deal with it by using a visual approach that relies on image
+sensors equipped on UA Vs [1], [5], [6]. In [5], 3D visual
+inspection trajectories for UA Vs are generated based on
+artificial potential field to inspect complex structures. In [7],
+a heuristic method that splits the inspecting structure into
+multiple layers is used to generate paths for a group of UA Vs
+to carry out the visual inspection. While these methods create
+1Duy Nam Bui is with the Vietnam National University, Hanoi, Vietnam.
+e-mail: duynam@ieee.org
+2Thuy Ngan Duong is with the Ulsan National Institute of Science and
+Technology, Ulsan, Korea. e-mail: nganduong@unist.ac.kr
+3Manh Duong Phung is with the Fulbright University Vietnam, Ho Chi
+Minh City, Vietnam. e-mail: duong.phung@fulbright.edu.vn
+feasible flight paths for UA Vs, the optimality of those paths
+is hardly addressed.
+In another direction, the growing use of artificial intelli-
+gence is transforming the way the operation and management
+of SHM tasks are conducted [8]. The major topics that make
+significant contributions include expert systems, fuzzy logic,
+machine learning, and swarm intelligence. In particular, the
+application of swarm intelligence (SI) algorithms in the SHM
+problem is being widely studied [1], [9], [10]. SI algorithms
+are inspired by the collective behaviors of decentralized, self-
+organizing, natural, or man-made systems. The popular algo-
+rithms that can be referred to include the genetic algorithm
+(GA), particle swarm optimization (PSO) and ant colony
+optimization (ACO). In [9], a modified genetic algorithm
+was developed to inspect large-scale, complex 3D structures
+by using multiple UA Vs. In [10], PSO is used to address
+the co-optimal coverage path planning problem, where it
+concurrently optimizes the path of the UA V , the quality
+of the captured images, and the computational complexity.
+The nearest neighbor combined with GA is used in [11] to
+optimize the coverage paths for multiple UA Vs to reconstruct
+the 3D model of post-disaster damaged buildings. However,
+most studies only consider solving the inspection path for
+individual UA Vs or discretizing the inspection space to
+simplify the IPP problem. The C-IPP for multiple UA Vs
+is therefore still a challenging problem that needs further
+investigation.
+This paper presents a new approach to the C-IPP prob-
+lem for multiple UA Vs to carry out inspection tasks. The
+approach utilizes an effective sampling-based method to
+calculate the viewpoint positions. The overall problem is
+then modeled as an extended traveling salesman problem
+(TSP) and solved by the ACO algorithm to obtain the optimal
+inspection path for a given structure. The main contributions
+of our work are threefold: (i) model the UA V formation
+based on the camera carried on each individual UA V and
+then propose a method to generate viewpoints for visual data
+collection; (ii) formulate the inspection path planning as an
+extended TSP problem with a new fitness function and solve
+it using the ACO algorithm; (iii) experiment with real-world
+3D models to benchmark the performance of the proposed
+method in comparison with other algorithms.
+II. S YSTEM OVERVIEW
+The problem of collaborative inspection path planning
+(C-IPP) is finding efficient paths that guide autonomous
+systems such as unmanned aerial vehicles to inspect the
+region of interest with onboard sensors, e.g., camera sensors.
+arXiv:2402.08246v1  [eess.SY]  13 Feb 2024
+
+===== PAGE 2 =====
+
+Fig. 1: Overview of the proposed method
+Fig. 2: The camera’s field of view
+In this paper, the use of swarm intelligence is investigated
+to perform the C-IPP for a group of UA Vs to carry out the
+inspection task. The inspecting structure such as a building
+or a bridge is known, e.g., by using building information
+modeling (BIM) or 3D lidar scanners [12], [13]. The inspec-
+tion path for the UA V formation is defined as sequentially
+connected waypoints that indicate the location of the UA V
+formation. Path efficiency is measured in path length. The
+path also needs to satisfy constraints related to the sensor’s
+field of view, the distance from the UA Vs to the inspecting
+surface, and requirements for image stitching.
+Our approach to the C-IPP problem is presented in Fig.1.
+The system first takes 3D models of the structure such as the
+STL or PLY files as the input. It then pre-processes them to
+sample down and filter noises before passing through the
+viewpoints generation module. This module calculates the
+points that the UA Vs need to fly through to collect visual
+data of the structure. The viewpoints are then fed to the
+path optimization module that uses the ACO to generate
+inspection paths.
+III. G ENERATION OF VIEWPOINTS FOR UAV FORMATION
+To collect visual information of the structure’s surface, it
+is necessary to determine the viewpoints at which the UA Vs
+take photos. The calculation of those viewpoints depends
+on the UA V formation, the camera parameters, and the
+requirements for post-processing with details as follows.
+A. Visual-based UAV formation model
+The formation model used in this work is the virtual
+leader-follower [14]. In this model, the leader is a non-
+physical UA V used as a reference for other UA Vs, the
+followers, to determine their location. Each follower carries
+an RGB camera that can be stabilized and controlled via a
+Fig. 3: Overlapping area of two footprints
+three-axis gimbal. The gimbal controls the camera so that it
+is perpendicular to the inspecting surface. The footprint of
+the camera on the inspecting surface is illustrated as shown
+in Fig. 2. Let d be the working distance from the UA V to
+the structure’s surface so that the capturing photos meet the
+resolution required for the inspection task [1]. Height h and
+width w of the camera’s footprint are then given by:
+h = 2d tan α
+2
+w = 2d tan β
+2 ,
+(1)
+where α and β are the horizontal and vertical angles of
+the camera’s field of view (FOV), respectively. The overall
+footprint is then the union of the individual footprints but
+includes overlapping areas for image stitching. This area is
+given by oij = hij × wij, 0 < h ij ≤ h, 0 < w ij ≤ w,
+where hij and wij respectively be the width and height of
+the overlapping area between the footprints of UA V i and j.
+Without loss of generality, the camera points along the
+x−axis of the body frame and the local frame attached to
+each footprint is defined as shown in Fig. 3, where Bi is the
+center of footprint i. The distances of between UA Vs i and
+j, BiBj, along the y and z axes are given by (w − wij) and
+(h − hij), respectively. Denote γij as the angle formed by
+BiBj and Biz, and δij = − − − →BiBj as the vector representing the
+difference in position between UA Vsi and j. This difference
+is computed as follows:
+δij = − − − →BiBj =
+
+
+0
+(w − wij) sgn (sin γij)
+(h − hij) sgn (cos γij)
+
+ , (2)
+where sgn (·) denotes the sign function. Let ∆i and ∆j be
+the vectors from the virtual leader to UA V i and UA V j,
+respectively. ∆j is then computed as:
+∆j = ∆i + δij. (3)
+From (2) and (3), vectors ∆i, ∀i ∈ { 1, ..., n}, can be
+computed so that the corresponding position of each UA V
+satisfies the target formation. The largest width, wf , and
+height, hf , of the formation footprint are then obtained to
+calculate viewpoints.
+
+===== PAGE 3 =====
+
+Fig. 4: Horizontal and vertical overlapping requirements
+B. Viewpoint generation
+Given the overall footprint of the formation, the viewpoints
+at which the UA Vs take photos of the surface can be
+determined as illustrated in Fig. 4. The required distances
+between two consecutive points in the horizontal direction,
+δw, and vertical direction, δh, are computed based on the
+overlapping width, wo, and height, ho, as:
+δw = wf − wo,
+δh = hf − ho. (4)
+The 3D model of the structure, denoted as S, is then sliced
+by multiple horizontal planes, defined as λj, as shown in Fig.
+5. The value of λj ranges from (minz S + hf
+2 ) to (maxz S −
+hf
+2 ) along the z−axis with step δh. The intersection between
+the 3D model and plane λj is computed as
+Cj =
+
+(x, y, z) ∈ R3 : ⟨− →v , S (x, y, z)⟩ − λj = 0
+	
+, (5)
+where Cj (x, y, z) are the points of the intersecting surface,
+− →v = [0, 0, 1]T is the normal vector of the plane, and ⟨·, ·⟩ is
+the inner product operation [7]. For complex structures, Cj
+may include more than one cluster of points, and thus should
+be processed by clustering algorithms such as DBSCAN
+[15], to obtain clusters C k
+j (x, y, z).
+Let d be the distance from the UA V formation to the
+inspecting surface. A viewpoint P k
+j is then obtained by
+extending the intersection set by d as:
+P k
+j (x, y, z) = C k
+j (x, y, z) ± d− →v j, (6)
+where − →v j is the normal vector of the inspecting surface
+pointing through C k
+j (x, y, z) and ± indicates the direction
+of the normal vector [16]. The set of all viewpoints, P , is
+then obtained by merging all P k
+j and down-sampling them
+by distance δw.
+IV. A NT COLONY OPTIMIZATION FOR INSPECTION PATH
+PLANNING
+This section presents our formulation and implementation
+of the ACO algorithm to generate inspection paths.
+A. Inspection path planning problem
+After determining the set of viewpoints P , it is necessary
+to plan a path through these points that the UA Vs can follow.
+The path should be optimal and meet the constraints related
+to UA V operation. Since the viewpoints are generated for the
+formation, the planning path will be assigned to the virtual
+leader. Our approach is modeling this problem as an extended
+TSP problem, where the goal is to find a Hamiltonian path
+from the set of viewpoints. The TSP problem is formulated
+as a graph G = (P, E, F ), where P = {P1, P2, ..., Pm} is
+the set of viewpoints, E = {(i, j)|(j, i) ∈ p × p} is the set
+of edges connecting every two vertices with cost value Fij
+[17]. The objective is to minimize the cost of the travel tour,
+J, which is described as follows:
+J =
+mX
+i=1
+
+
+mX
+j̸=i,j=1
+Fijχij
+
+ , (7)
+where χij = {0, 1} represents whether there is a direct edge
+connecting two nodes i and j.
+Fij is the traveled cost from point i to j and is evaluated
+via a sequential convex function as follows:
+Fij = w1
+
+− − − − − →P xy
+i P xy
+j
+ + w2
+− − − →P z
+i P z
+j
+ , (8)
+where Pi = [ P x
+i , P y
+i , P z
+i ]T denotes the position of the
+viewpoints in 3D space, P xy
+i denotes the x and y components
+of Pi and P z
+i denotes the z component; w1 and w2 are
+positive weights. We select w2 > w 1 to punish more the
+difference in the z-axis since it affects the altitude of the
+UA V formation.
+B. Optimal inspection path planning using Ant Colony Op-
+timization
+The extended TSP problem formulated in (7) - (8) is NP-
+hard that cannot be solved by analytical methods. Instead,
+we propose to use a metaheuristic optimization technique
+called the ACO to take advantage of swarm intelligence in
+solving complex combinatorial optimization problems [18].
+This algorithm is inspired by the ants foraging in which
+ants lay chemical pheromone trails to discover efficient paths
+between their nest and food supplies. The pheromone τij
+contributed by l ants to edge Eij is computed as follows:
+τij = (1 − ϱ)τij +
+lX
+k=1
+∆τ k
+ij, (9)
+where ϱ is the pheromone evaporation rate, and ∆τ k
+ij is the
+pheromone quantity that ant k leaves on edge Eij. It is given
+by:
+∆τ k
+ij = χij
+Q
+Fij
+, (10)
+
+===== PAGE 4 =====
+
+Fig. 5: Virtual leader’s viewpoint generation
+where Q is a positive constant. The probability of an ant k
+moving from state i to state j is computed as:
+ρk
+ij = (τij)a (ηij)b
+P
+z∈Ω
+(τiz)a (ηiz)b , (11)
+where Ω is the set of unvisited viewpoints of ant k at state
+i, a and b are the parameters representing the influence of
+pheromones and heuristic information, and ηij = (Fij)−1 is
+the heuristic information.
+Algorithm 1: Pseudocode for the ACO algorithm
+/* Initialization */
+1 Get the list of m viewpoints ;
+2 Initialize parameters l, a, b, Q, ϱ;
+3 Initialize pheromone τ(0) and calculate η matrix;
+/* Searching */
+4 while iter ≤ max iteration do
+5 for Ant k in colony do
+6 for i ← 1 : (m − 1) do
+7 Choose the next viewpoint j with the
+probability ρk
+ij; /* Equation 11 */
+8 Evaluate Jk of tour given by ant k;
+/* Equation 7 */
+9 Update pheromone quantity τij in each edge;
+/* Equation 9, 10 */
+10 Store the best solution;
+11 Return the best solution as the inspection path;
+The implementation of the ACO algorithm to solve the
+extended TSP problem for 3D inspection path planning is
+described in Algorithm 1. Here, each viewpoint is considered
+as a node of the path and the line segment connecting two
+nodes is represented as an edge. Initially, the amount of
+pheromone τij in each edge is set equally. Each time, an
+ant in the colony chooses its route based on probability ρk
+computed in (11) and then calculates the fitness of that path
+using (7). After traveling through an edge Eij, each ant
+k leaves an amount of pheromone trail ∆τ k
+ij on that edge
+inversely proportional to the value Fij of the edge. The total
+quantity of pheromones τij in each edge is then updated
+based on the visited ants and the evaporation amount as in
+(9) and (10). From there, the probability matrix ρk is updated
+to guide the next ants to choose better routes. The procedure
+is reiterated until it reaches the maximum allowable number
+Fig. 6: The inspection formation structure
+of iterations. The path having the smallest value of J is
+chosen as the inspection path and is assigned to the virtual
+leader of the UA V formation. The real follower UA Vs then
+use that path as a reference to adjust their position according
+to (3) to form the expected formation for data collection.
+V. R ESULTS
+In this section, simulation experiments are conducted to
+evaluate the performance of the proposed algorithm.
+A. Scenario setup
+The UA Vs used in this work are 3DR Solo drones that
+can be programmed to fly automatically via ground control
+station software. Each UA V is equipped with an IMX-100
+camera for data collection, with the angles of view α =
+49.40 and β = 63 0. In the evaluation, we used 4 UA Vs
+for the inspection, whose formation structure is depicted as
+Fig. 6. The distance between the infrastructure surface and
+inspection system is chosen as d = 20 m [6]. From (1) and
+the image stitching requirement, the overall footprint of the
+formation is obtained as wf = 48 m and hf = 34 m.
+Experiments have been carried out on two scaled real
+structure models described by STL data as shown in Fig.
+7a and Fig. 8a. The first model is the tower named Turtle
+Tower with a size of 150 m × 210 m × 231 m. The second
+on is a twin tower with a size of 119.14 m × 242.61 m ×
+669.75 m. The second structure is challenging to inspect as it
+includes two blocks connected by a bridge in the middle. In
+experiments, parameters of the ACO algorithm are chosen as
+α = β = 1, ϱ = 0.05, Q = 1, w1 = 1, w2 = 2. The number
+of ants is set to 100. The maximum iteration is set to 500.
+B. Path generation and IPP convergence
+Figures 7b and 8b show the viewpoints generated to in-
+spect the two structures. It can be seen that the viewpoints are
+well spread throughout the structures to cover all surfaces.
+Figures 7c and 8c show the generated inspection paths. For
+
+===== PAGE 5 =====
+
+(a) 3D model
+ (b) Generated viewpoints
+ (c) Inspection path
+Fig. 7: Scenario 1 - The Turtle Tower
+(a) 3D model
+ (b) Generated viewpoints
+ (c) Inspection path
+Fig. 8: Scenario 2 - The twin tower
+the first structure, the path mainly goes along each layer
+from the bottom to the top similar to the simple back-and-
+forth strategy. The path for the second structure, however, is
+more complicated since the simple heuristic path generation
+strategies would not yield good results. The fitness values
+of the inspection paths during the optimization process are
+described in Fig 9. It can be seen that they converge to small
+values in both scenarios and thus show the efficiency of the
+ACO algorithm in providing optimal solutions to the C-IPP
+problem.
+To further evaluate the performance of the proposed ap-
+proach, a comparison with the back-and-forth (BAF) algo-
+rithm [19] is conducted in which the cost values of the
+TABLE I: Fitness values of the paths generated by the BAF
+and ACO
+Scenario BAF ACO ImprovementMean Std
+1 1.2297e+04 1.1173e+04 54 9.14%
+2 8.1639e+04 5.7582e+04 142 29.47%
+inspection path generated by the BAF algorithm are obtained
+via the same fitness function designed in (7). Table I shows
+the comparison results. It can be seen that for the first
+structure, the improvement of our algorithm is not significant
+due to the simplicity of the structure. For the second struc-
+
+===== PAGE 6 =====
+
+(a) Scenario 1
+ (b) Scenario2
+Fig. 9: Best fitness values over iterations of the ACO algorithm
+ture, however, the improvement of 29.47% clearly shows the
+superior performance of our algorithm compared to the BAF.
+It proves that the proposed method is capable of providing
+efficient inspection paths for 3D structures with different
+complexity.
+VI. C ONCLUSION
+In this work, we have presented a new approach for the
+cooperative path planning problem to inspect 3D structures
+using a group of UA Vs. The approach combines our cal-
+culation of the viewpoints for UA V formation to collect
+visual data of the structure and an optimal path planning
+method using nature-inspired intelligence named ACO. The
+evaluation results show that the proposed approach is su-
+perior to other heuristic algorithms in generating inspection
+paths for complex 3D structures. The results thus confirm
+the efficiency and applicability of the proposed method for
+real-world scenarios.
+ACKNOWLEDGEMENT
+Duy Nam Bui was funded by the Master, PhD Scholarship
+Programme of Vingroup Innovation Foundation (VINIF),
+code VINIF.2022.Ths.057.
+REFERENCES
+[1] M. D. Phung, C. H. Quach, T. H. Dinh, and Q. Ha, “Enhanced
+discrete particle swarm optimization path planning for UA V vision-
+based surface inspection,” Automation in Construction , vol. 81, pp.
+25–33, 2017.
+[2] V . Hoang, M. Phung, T. Dinh, and Q. Ha, “Angle-encoded swarm
+optimization for UA V formation path planning,” in 2018 IEEE/RSJ
+International Conference on Intelligent Robots and Systems (IROS) ,
+Oct 2018, pp. 5239–5244.
+[3] Y . Wang, Y . Li, F. Yin, W. Wang, H. Sun, J. Li, and K. Zhang, “An
+intelligent UA V path planning optimization method for monitoring
+the risk of unattended offshore oil platforms,” Process Safety and
+Environmental Protection, vol. 160, pp. 13–24, 2022.
+[4] Y . Wu, S. Wu, and X. Hu, “Multi-constrained cooperative path
+planning of multiple drones for persistent surveillance in urban en-
+vironments,” Complex & Intelligent Systems , vol. 7, no. 3, pp. 1633–
+1647, Jun 2021.
+[5] S. Ivi ´c, B. Crnkovi ´c, L. Grb ˇci´c, and L. Matlekovi ´c, “Multi-UA V
+trajectory planning for 3D visual inspection of complex structures,”
+Automation in Construction , vol. 147, p. 104709, 2023.
+[6] G. Li, S. He, Y . Ju, and K. Du, “Long-distance precision inspection
+method for bridge cracks with image processing,” Automation in
+Construction, vol. 41, pp. 83–95, 2014.
+[7] S. S. Mansouri, C. Kanellakis, E. Fresk, D. Kominiak, and G. Niko-
+lakopoulos, “Cooperative coverage path planning for visual inspec-
+tion,” Control Engineering Practice , vol. 74, pp. 118–131, 2018.
+[8] R. Panchalingam and K. C. Chan, “A state-of-the-art review on
+artificial intelligence for smart buildings,” Intelligent Buildings Inter-
+national, vol. 13, no. 4, pp. 203–226, 2021.
+[9] W. Jing, D. Deng, Y . Wu, and K. Shimada, “Multi-UA V coverage path
+planning for the inspection of large and complex structures,” in 2020
+IEEE/RSJ International Conference on Intelligent Robots and Systems
+(IROS), Oct 2020, pp. 1480–1486.
+[10] Z. Shang, J. Bradley, and Z. Shen, “A co-optimal coverage path
+planning method for aerial scanning of complex structures,” Expert
+Systems with Applications , vol. 158, p. 113535, 2020.
+[11] R. Nagasawa, E. Mas, L. Moya, and S. Koshimura, “Model-based anal-
+ysis of multi-UA V path planning for surveying postdisaster building
+damage,” Scientific Reports, vol. 11, no. 1, p. 18588, Sep 2021.
+[12] H. Son, F. Bosch ´e, and C. Kim, “As-built data acquisition and its use
+in production monitoring and automated layout of civil infrastructure:
+A survey,”Advanced Engineering Informatics, vol. 29, no. 2, pp. 172–
+183, 2015, infrastructure Computer Vision.
+[13] N. Bolourian and A. Hammad, “Lidar-equipped UA V path planning
+considering potential locations of defects for bridge inspection,” Au-
+tomation in Construction , vol. 117, p. 103250, 2020.
+[14] L. V . Santana, A. S. Brand ˜ao, and M. Sarcinelli-Filho, “On the design
+of outdoor leader-follower UA V-formation controllers from a practical
+point of view,” IEEE Access, vol. 9, pp. 107 493–107 501, 2021.
+[15] M. Ester, H.-P. Kriegel, J. Sander, and X. Xu, “A density-based
+algorithm for discovering clusters in large spatial databases with
+noise,” in Proceedings of the Second International Conference on
+Knowledge Discovery and Data Mining , ser. KDD’96. AAAI Press,
+1996, p. 226–231.
+[16] X.-Z. Liu, J.-H. Yong, G.-Q. Zheng, and J.-G. Sun, “An offset
+algorithm for polyline curves,” Computers in Industry , vol. 58, no. 3,
+pp. 240–254, 2007.
+[17] K. Chaudhari and A. Thakkar, “Travelling salesman problem: An em-
+pirical comparison between ACO, PSO, ABC, FA and GA,” in
+Emerging Research in Computing, Information, Communication and
+Applications, N. R. Shetty, L. M. Patnaik, H. C. Nagaraj, P. N.
+Hamsavath, and N. Nalini, Eds. Singapore: Springer Singapore, 2019,
+pp. 397–405.
+[18] M. Dorigo, M. Birattari, and T. Stutzle, “Ant colony optimization,”
+IEEE Computational Intelligence Magazine , vol. 1, no. 4, pp. 28–39,
+Nov 2006.
+[19] E. V . Vazquez-Carmona, J. I. Vasquez-Gomez, J. C. Herrera-Lozada,
+and M. Antonio-Cruz, “Coverage path planning for spraying drones,”
+Computers & Industrial Engineering , vol. 168, p. 108125, 2022.

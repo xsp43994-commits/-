@@ -1,0 +1,218 @@
+{
+  "checkpoint_hash": "80f04febc2a58805ad7febdd27fd84f8e4a79599258c81ce7738129be1d4e103",
+  "detail": {
+    "distance_m": 530.9583444889195,
+    "energy_wh": 3.3603090910327404,
+    "experiment": {
+      "domain_randomization": true,
+      "environment_interactions": 0,
+      "interaction_count_complete": true,
+      "lambda_priority": 0.5,
+      "parameter_count": 341505,
+      "policy_architecture": "pointer",
+      "resource_shaping": true,
+      "return_reserve_mask": false,
+      "reward_schema": "multimap_v3_1",
+      "scenario_mode": "frozen_multimap_v3_1",
+      "scenario_provider_hash": "4da6aeb53a7981422fef14f499c85af43eaded64e33e899f9b101edb97d1b4c2",
+      "simulation_only": true,
+      "training_algorithm": "ppo",
+      "variant": "no_return_reserve"
+    },
+    "flight_path": [
+      [
+        136.783935546875,
+        134.58409118652344,
+        1915.3026123046875
+      ],
+      [
+        136.783935546875,
+        134.58409118652344,
+        1933.3477783203125
+      ],
+      [
+        134.4652862548828,
+        141.49659729003906,
+        1933.3477783203125
+      ],
+      [
+        134.4652862548828,
+        141.49659729003906,
+        1904.6441650390625
+      ],
+      [
+        134.4652862548828,
+        141.49659729003906,
+        1933.3477783203125
+      ],
+      [
+        136.783935546875,
+        134.58409118652344,
+        1933.3477783203125
+      ],
+      [
+        136.783935546875,
+        134.58409118652344,
+        1915.3026123046875
+      ]
+    ],
+    "metrics": {
+      "constraint_violation_count": 0,
+      "constraint_violations": [],
+      "coverage": 0.0625,
+      "distance_budget_m": 9209.221700666309,
+      "distance_m": 530.9583444889195,
+      "distance_utilization": 0.057655072463995885,
+      "distance_violation": false,
+      "dynamics_violation": false,
+      "energy_budget_wh": 77.28817141800695,
+      "energy_utilization": 0.04347766326180464,
+      "energy_violation": false,
+      "energy_wh": 3.3603090910327404,
+      "episode_randomization": {
+        "distance_scale": 1.0,
+        "initial_soc": 0.9209042657813103,
+        "time_scale": 1.0,
+        "wind_rotation_deg": 0.0,
+        "wind_scale": 1.0,
+        "wind_vertical_bias_mps": 0.0
+      },
+      "experiment_variant": "no_return_reserve",
+      "min_remaining_soc": 0.8917349160327621,
+      "returned": true,
+      "simulation_only": true,
+      "termination_reason": "returned_partial",
+      "time_budget_s": 849.3743390390866,
+      "time_s": 70.76317508080582,
+      "time_utilization": 0.08331211790653054,
+      "time_violation": false,
+      "visited_count": 1,
+      "visited_order": [
+        5
+      ],
+      "weighted_coverage": 0.0625,
+      "wind_fallback_count": 0
+    },
+    "min_remaining_soc": 0.8917349160327621,
+    "path": [
+      [
+        136.783935546875,
+        134.58409118652344,
+        1915.3026123046875
+      ],
+      [
+        134.4652862548828,
+        141.49659729003906,
+        1904.6441650390625
+      ],
+      [
+        136.783935546875,
+        134.58409118652344,
+        1915.3026123046875
+      ]
+    ],
+    "segments": [
+      {
+        "cruise_altitude_m": 1933.3477785660775,
+        "feasible": true,
+        "flight_distance_m": 265.47917224445973,
+        "flight_energy_wh": 1.198940761205524,
+        "flight_path": [
+          [
+            136.783935546875,
+            134.58409118652344,
+            1915.3026123046875
+          ],
+          [
+            136.783935546875,
+            134.58409118652344,
+            1933.3477783203125
+          ],
+          [
+            134.4652862548828,
+            141.49659729003906,
+            1933.3477783203125
+          ],
+          [
+            134.4652862548828,
+            141.49659729003906,
+            1904.6441650390625
+          ]
+        ],
+        "flight_time_s": 26.921218679301646,
+        "from_node_index": 16,
+        "is_return": false,
+        "mean_wind_mps": [
+          3.1685597896575928,
+          0.10117007046937943,
+          0.9390461444854736
+        ],
+        "reason": "ok",
+        "service_energy_wh": 1.056,
+        "service_time_s": 20.0,
+        "to_node_index": 5,
+        "total_energy_wh": 2.254940761205524,
+        "total_time_s": 46.921218679301646
+      },
+      {
+        "cruise_altitude_m": 1933.3477785660775,
+        "feasible": true,
+        "flight_distance_m": 265.47917224445973,
+        "flight_energy_wh": 1.1053683298272163,
+        "flight_path": [
+          [
+            134.4652862548828,
+            141.49659729003906,
+            1904.6441650390625
+          ],
+          [
+            134.4652862548828,
+            141.49659729003906,
+            1933.3477783203125
+          ],
+          [
+            136.783935546875,
+            134.58409118652344,
+            1933.3477783203125
+          ],
+          [
+            136.783935546875,
+            134.58409118652344,
+            1915.3026123046875
+          ]
+        ],
+        "flight_time_s": 23.841956401504174,
+        "from_node_index": 5,
+        "is_return": true,
+        "mean_wind_mps": [
+          3.1685597896575928,
+          0.10117007046937943,
+          0.9390461444854736
+        ],
+        "reason": "ok",
+        "service_energy_wh": 0.0,
+        "service_time_s": 0.0,
+        "to_node_index": 16,
+        "total_energy_wh": 1.1053683298272163,
+        "total_time_s": 23.841956401504174
+      }
+    ],
+    "termination_reason": "returned_partial",
+    "time_s": 70.76317508080582,
+    "visit_order": [
+      5
+    ]
+  },
+  "matrix_row": {
+    "condition": "nominal",
+    "family": "synthetic_learning",
+    "model": "no_return_reserve",
+    "planner_seed": null,
+    "task_hash": "b81f92c3225d988a7f7f1a7e5ec174c5ced14bd73f625ea39a9e23d821c18f8f",
+    "task_id": "synthetic_test__synthetic_test__map_000__task_02",
+    "training_seed": 42
+  },
+  "protocol_hash": "2cff0a336a2f3aef49c5ca686bbdca168dd25937ad1918e7ed9e82b23f1f0647",
+  "schema_version": 1,
+  "task_hash": "b81f92c3225d988a7f7f1a7e5ec174c5ced14bd73f625ea39a9e23d821c18f8f"
+}

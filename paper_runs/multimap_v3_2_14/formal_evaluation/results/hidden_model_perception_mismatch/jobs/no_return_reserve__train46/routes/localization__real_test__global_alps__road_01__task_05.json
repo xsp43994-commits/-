@@ -1,0 +1,159 @@
+{
+  "checkpoint_hash": "eaa691472ad6048288118424c0999d3a55c168c6c2d1c96396a1e2e9171df9f5",
+  "execution_truth_hash": "20699451f4fd1ad6a667705e20e746856dacff662b0db2514e9bba5cc44be04f",
+  "matrix_row": {
+    "condition": "localization",
+    "family": "hidden_model_perception_mismatch",
+    "model": "no_return_reserve",
+    "planner_seed": null,
+    "task_hash": "109bbf8d35541f4cd0b6625d289cf987710ef60dbefc72eb77b395fd43bf3734",
+    "task_id": "real_test__global_alps__road_01__task_05",
+    "training_seed": 46
+  },
+  "observation_plan": {
+    "distance_m": 0.0,
+    "energy_wh": 0.0,
+    "experiment": {
+      "domain_randomization": true,
+      "environment_interactions": 0,
+      "interaction_count_complete": true,
+      "lambda_priority": 0.5,
+      "parameter_count": 341505,
+      "policy_architecture": "pointer",
+      "resource_shaping": true,
+      "return_reserve_mask": false,
+      "reward_schema": "multimap_v3_1",
+      "scenario_mode": "frozen_multimap_v3_1",
+      "scenario_provider_hash": "4da6aeb53a7981422fef14f499c85af43eaded64e33e899f9b101edb97d1b4c2",
+      "simulation_only": true,
+      "training_algorithm": "ppo",
+      "variant": "no_return_reserve"
+    },
+    "flight_path": [
+      [
+        0.0,
+        158.3025665283203,
+        1037.310546875
+      ]
+    ],
+    "metrics": {
+      "constraint_violation_count": 0,
+      "constraint_violations": [],
+      "coverage": 0.0,
+      "distance_budget_m": 2962.2733172606186,
+      "distance_m": 0.0,
+      "distance_utilization": 0.0,
+      "distance_violation": false,
+      "dynamics_violation": false,
+      "energy_budget_wh": 79.13962219133451,
+      "energy_utilization": 0.0,
+      "energy_violation": false,
+      "energy_wh": 0.0,
+      "episode_randomization": {
+        "distance_scale": 1.0,
+        "initial_soc": 0.9369758870775564,
+        "time_scale": 1.0,
+        "wind_rotation_deg": 0.0,
+        "wind_scale": 1.0,
+        "wind_vertical_bias_mps": 0.0
+      },
+      "experiment_variant": "no_return_reserve",
+      "min_remaining_soc": 0.9369758870775564,
+      "returned": true,
+      "simulation_only": true,
+      "termination_reason": "returned_partial",
+      "time_budget_s": 2785.4419445865233,
+      "time_s": 0.0,
+      "time_utilization": 0.0,
+      "time_violation": false,
+      "visited_count": 0,
+      "visited_order": [],
+      "weighted_coverage": 0.0,
+      "wind_fallback_count": 0
+    },
+    "min_remaining_soc": 0.9369758870775564,
+    "path": [
+      [
+        0.0,
+        158.3025665283203,
+        1037.310546875
+      ]
+    ],
+    "segments": [
+      {
+        "cruise_altitude_m": 1037.310546875,
+        "feasible": true,
+        "flight_distance_m": 0.0,
+        "flight_energy_wh": 0.0,
+        "flight_path": [
+          [
+            0.0,
+            158.3025665283203,
+            1037.310546875
+          ]
+        ],
+        "flight_time_s": 0.0,
+        "from_node_index": 20,
+        "is_return": true,
+        "mean_wind_mps": [
+          3.1139485836029053,
+          0.7166430950164795,
+          0.239427849650383
+        ],
+        "reason": "ok",
+        "service_energy_wh": 0.0,
+        "service_time_s": 0.0,
+        "to_node_index": 20,
+        "total_energy_wh": 0.0,
+        "total_time_s": 0.0
+      }
+    ],
+    "termination_reason": "returned_partial",
+    "time_s": 0.0,
+    "visit_order": []
+  },
+  "observed_input_hash": "537d52775787b6ac91183fabdd6bc039ae4981b6b304a7f7589b66d7757ab8b8",
+  "protocol_hash": "2cff0a336a2f3aef49c5ca686bbdca168dd25937ad1918e7ed9e82b23f1f0647",
+  "realization": {
+    "condition": "localization",
+    "family": "hidden_model_perception_mismatch",
+    "geometry_minimum_observed_start_z_m": 1034.4854072725773,
+    "geometry_observed_ground_z_m": 1034.4754072725773,
+    "geometry_observed_start_z_clipped": false,
+    "geometry_raw_observed_start_z_m": 1037.310546875,
+    "minimum_observed_start_z_m": 1034.4854072725773,
+    "node_xy_noise_sha256": "81c733a5af2e7b60ab8e7428a0a7599006bc7a3493e7e3e0bc92949215040e83",
+    "node_z_noise_sha256": "bf79927a66bd35c5ca070c0f65129ac1e61169d6939715903aa689dbb5c19e38",
+    "observed_start_z_clipped": false,
+    "raw_observed_start_z_m": 1037.3104872454503,
+    "realization_hash": "690c4af2fdb5b156d12fa7e570991fd16e973e3056f222561d6845ea4cc24c69",
+    "seed": 17039629538416794905,
+    "start_xy_noise_sha256": "9c9d770567db4f5a803f04af629dc1b08c1d28a5a77ee4515b4afb5d5520094a",
+    "start_z_noise_m": 1.5025038470128056
+  },
+  "robustness_manifest_hash": "cdc5a40b6ac098e23e9f8cf9ba518b009ab8d1d6b741a748abc2eb9b8d7cf37e",
+  "schema_version": 1,
+  "task_hash": "109bbf8d35541f4cd0b6625d289cf987710ef60dbefc72eb77b395fd43bf3734",
+  "truth_metrics": {
+    "coverage": 0.0,
+    "distance_budget_m": 2962.2733172606186,
+    "distance_m": 0.0,
+    "distance_utilization": 0.0,
+    "distance_violation": false,
+    "dynamics_violation": false,
+    "energy_budget_wh": 79.13962219133451,
+    "energy_utilization": 0.0,
+    "energy_violation": false,
+    "energy_wh": 0.0,
+    "min_remaining_soc": 0.9369758870775564,
+    "returned": true,
+    "termination_reason": "returned_partial",
+    "time_budget_s": 2785.4419445865233,
+    "time_s": 0.0,
+    "time_utilization": 0.0,
+    "time_violation": false,
+    "visited_count": 0,
+    "weighted_coverage": 0.0
+  },
+  "visit_order_locked": []
+}

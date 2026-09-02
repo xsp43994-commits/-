@@ -1,0 +1,142 @@
+{
+  "D6_training_stability": {
+    "seed_consistency": "1 - sample SD of five seed tail means",
+    "tail_start_episode_exclusive": 2500.0,
+    "temporal_consistency": "1 - mean within-seed tail sample SD",
+    "weights": {
+      "seed_consistency": 0.6,
+      "temporal_consistency": 0.4
+    }
+  },
+  "D7_sample_efficiency": {
+    "auc": "trapezoidal AUC of training mean_weighted_coverage over 0-3000 episodes",
+    "interaction_budget": 50000.0,
+    "rolling_window_updates": 5,
+    "threshold": 0.9,
+    "unreached_threshold_utility": 0.0,
+    "weights": {
+      "learning_curve_auc": 0.7,
+      "threshold_efficiency": 0.3
+    }
+  },
+  "analysis_role": "post_result_training_aware_manuscript_extension",
+  "default_weights": {
+    "D1": 0.28,
+    "D2": 0.18,
+    "D3": 0.15,
+    "D4": 0.1,
+    "D5": 0.07,
+    "D6": 0.12,
+    "D7": 0.1
+  },
+  "desired_winner_or_margin_constraint": null,
+  "eligible_scope": [
+    "full",
+    "traditional_ppo",
+    "a2c_pointer"
+  ],
+  "implementation_sha256": "e3fd23451aa774ba5a22a9d5bb9285589b2ef08bc7dadacb3e52b08776b58c6a",
+  "parent_v1_manifest_hash": "173734ec832ed04e6f2ba110a9e1772aa4a7412fea58f397dfde4a1440cccf55",
+  "parent_v1_protocol_hash": "79b51a403fa065d09516f3df8df4cf2f6b097f73fecfbafc85f99b952865ba35",
+  "plots_forbidden": true,
+  "protocol_hash": "c1df4a87ea744de3af2cd919ec2fa5ae30745eee4ab25e609e34b1f8baeeabef",
+  "scenarios": {
+    "balanced_default": {
+      "D1": 0.28,
+      "D2": 0.18,
+      "D3": 0.15,
+      "D4": 0.1,
+      "D5": 0.07,
+      "D6": 0.12,
+      "D7": 0.1
+    },
+    "mission_first": {
+      "D1": 0.4,
+      "D2": 0.15,
+      "D3": 0.12,
+      "D4": 0.08,
+      "D5": 0.05,
+      "D6": 0.1,
+      "D7": 0.1
+    },
+    "realtime_first": {
+      "D1": 0.25,
+      "D2": 0.15,
+      "D3": 0.12,
+      "D4": 0.08,
+      "D5": 0.2,
+      "D6": 0.1,
+      "D7": 0.1
+    },
+    "safety_first": {
+      "D1": 0.25,
+      "D2": 0.15,
+      "D3": 0.25,
+      "D4": 0.1,
+      "D5": 0.05,
+      "D6": 0.1,
+      "D7": 0.1
+    },
+    "training_first": {
+      "D1": 0.22,
+      "D2": 0.13,
+      "D3": 0.12,
+      "D4": 0.08,
+      "D5": 0.05,
+      "D6": 0.2,
+      "D7": 0.2
+    }
+  },
+  "schema_version": "manuscript_training_aware_v2",
+  "scientific_boundary": "D6 and D7 were added after formal outcomes existed. Their definitions and weights are frozen without a required winning model or score margin.",
+  "stopping_state": "ready_for_plot_plan",
+  "traditional_baseline_rule": "D6/D7 unavailable; no imputation and no seven-dimension score",
+  "training_source_hashes": {
+    "paper_runs/multimap_v3_2/formal_training/formal_traditional_ppo_seed42_3000ep/training_metrics.jsonl": "fd568999a67b471a7ef04a7cc74cfb40422c213eb9aaaef7b8fcf34336a87314",
+    "paper_runs/multimap_v3_2/formal_training/formal_traditional_ppo_seed43_3000ep/training_metrics.jsonl": "2a45bb6fc7de500b944f1dc29a4fa7b36e1fea0b420728f35e79a7e3411f7e46",
+    "paper_runs/multimap_v3_2/formal_training/formal_traditional_ppo_seed44_3000ep/training_metrics.jsonl": "3fd6f7db2c9311f4a060df0ba77ef8648ff91ad70fcbef0e929fc7ffe4e1c276",
+    "paper_runs/multimap_v3_2/formal_training/formal_traditional_ppo_seed45_3000ep/training_metrics.jsonl": "994c4305759a2ca1779031a70b0ce3316539e10a56ea57ff9ba2686d89f613b3",
+    "paper_runs/multimap_v3_2/formal_training/formal_traditional_ppo_seed46_3000ep/training_metrics.jsonl": "cd4488624912459cbda501bd8a94d643094f910408e039b59802fc018712052a",
+    "paper_runs/training/formal_a2c_pointer_seed42_3000ep/metrics.jsonl": "c2e5b4b9fab66ef5e2ff2054181717659e252dd6402d67923161c9fdc93bad84",
+    "paper_runs/training/formal_a2c_pointer_seed43_3000ep/metrics.jsonl": "c8c8e5fa438c6da7f40e788ba97cc979387eab2d0321e2529cb6413a8a332b59",
+    "paper_runs/training/formal_a2c_pointer_seed44_3000ep/metrics.jsonl": "951d5553060b367d3347d78101a26e3942de4a0bd98c086acf1fe805ae50350e",
+    "paper_runs/training/formal_a2c_pointer_seed45_3000ep/metrics.jsonl": "d1f540a52f92517802f81d1125333a35ae0f42c492ce9516a5f25d24c5ac8fa7",
+    "paper_runs/training/formal_a2c_pointer_seed46_3000ep/metrics.jsonl": "16257a021d49525c661eae71e8e1d87e918d1769d3e1fd581e98b60a4dca25e3",
+    "paper_runs/training/formal_full_seed42_3000ep/metrics.jsonl": "971d883f11f21bb6b5efb4984f501c2164998d541338cc18b36ca44ef977b014",
+    "paper_runs/training/formal_full_seed43_3000ep/metrics.jsonl": "5ffec9bd300038e5d610a9eb3baac09b155d32ad43613058db694a6960584609",
+    "paper_runs/training/formal_full_seed44_3000ep/metrics.jsonl": "82be34db86e4fba8564638d8e502bfedb8942f3a3ec07155e17c40ed85a9113a",
+    "paper_runs/training/formal_full_seed45_3000ep/metrics.jsonl": "d24aac0598feec237a5468a83bf7dd0c249aedb4dfa9c0a624f0ed2f806c9a81",
+    "paper_runs/training/formal_full_seed46_3000ep/metrics.jsonl": "e06d016bae1e0dd7fa2c5c06d11c9ffde88a7000d1f11d0daa59e4873c914e07"
+  },
+  "weight_ranges": {
+    "D1": [
+      0.2,
+      0.4
+    ],
+    "D2": [
+      0.1,
+      0.25
+    ],
+    "D3": [
+      0.1,
+      0.25
+    ],
+    "D4": [
+      0.05,
+      0.15
+    ],
+    "D5": [
+      0.05,
+      0.15
+    ],
+    "D6": [
+      0.05,
+      0.2
+    ],
+    "D7": [
+      0.05,
+      0.2
+    ]
+  },
+  "weight_step": 0.05
+}

@@ -1,0 +1,38 @@
+{
+  "version": "v2",
+  "prepared": "2026-08-09",
+  "source_scope": "12 complete EAAI exemplar PDFs",
+  "allow": [
+    "section function",
+    "argument order",
+    "evidence-to-claim distance",
+    "result-density pattern",
+    "generic figure role",
+    "claim-strength calibration"
+  ],
+  "prohibit": [
+    "verbatim or lightly paraphrased sentences",
+    "distinctive phrases",
+    "paper-specific equations or symbol order",
+    "paper-specific tasks, parameters, data or results",
+    "paper-specific contribution wording",
+    "paper-specific figure composition",
+    "reference-list or citation-cluster inheritance"
+  ],
+  "paper_boundaries": {
+    "1": "No periodic-frequency/28-day/MILP/DSP/TAA/FE content.",
+    "2": "No ASMAC/SMRR/LAM, sensor-control or physical-validation rhetoric.",
+    "3": "No AHF/SAPO/CNN-LSTM/DDPG, uncertainty model or causal module language.",
+    "4": "No AirSim wind, trajectory, SHAP or sim-to-real claims.",
+    "5": "No dynamic-soaring, HITL/SAC, aerodynamic or flight-readiness content.",
+    "6": "No eVTOL/CFD/noise/passenger objective or scalarisation transfer.",
+    "7": "No TD3/MPC/ISO manoeuvre, vehicle hardware or field-test claims.",
+    "8": "No FOPID/fuzzy/metaheuristic controller or qualitative-flight validation pattern.",
+    "9": "No docking/illegal-action-mask semantics or internal-submask causal attribution.",
+    "10": "No human-demonstration/MCE-IRL/Hybrid-A* or learned-human-risk claim.",
+    "11": "No curriculum/task/transfer-mask semantics, TD3 transfer or best-seed protocol.",
+    "12": "No wireless/Dec-POMDP/MARL/DDQN/charging model or post-hoc sweet-spot logic."
+  },
+  "audit_rule": "Compare the final English manuscript sentence by sentence with text extracted from all 12 PDFs. Any high-similarity or high-distinctiveness phrase must be investigated and rewritten from the project's own facts and scientific function. Generic technical terminology alone is not a copying finding.",
+  "status": "Baseline established before v2 manuscript drafting"
+}

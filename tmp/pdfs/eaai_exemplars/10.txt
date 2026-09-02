@@ -1,0 +1,1035 @@
+
+
+===== PAGE 1 =====
+Contents lists available at ScienceDirect
+Engineering Applications of Artificial Intelligence
+journal homepage: www.elsevier.com/locate/engappai
+Research Paper
+A reliable traversability learning method based on human-demonstrated risk
+cost mapping for mobile robots over uneven terrain
+Bo Zhang a,b,c, Guobin Lia,b, Jiale Zhanga,b, Xiaoshan Baia,b,∗
+a The College of Mechatronics and Control Engineering, Shenzhen University, Shenzhen, 518060, China
+b The Shenzhen City Joint Laboratory of Autonomous Unmanned Systems and Intelligent Manipulation, Shenzhen, 518060, China
+c Guangdong Laboratory of Artificial Intelligence and Digital Economy (SZ), Shenzhen, 518107, China
+A R T I C L E I N F O
+Keywords:
+Autonomous navigation
+Inverse reinforcement learning
+Feature mapping
+Uneven terrain
+A B S T R A C T
+The paper proposed a traversability learning method based on the human demonstration for generating
+risk cost maps. These maps aid mobile robots in identifying safe areas for reliable autonomous navigation
+over uneven terrain. Firstly, a maximum causal entropy-based inverse reinforcement learning method is
+employed to generate a reward function by considering human-demonstrated trajectories, robot poses, and
+feature vectors extracted from elevation data. This reward function is intended to accurately capture the
+behavioral preferences identified in human-demonstrated trajectories, specifically focusing on low-risk areas of
+the environment. Secondly, the reward function is combined with terrain feature data to generate a cost map
+and least-cost trajectory. Utilizing a wheeled mobile robot traversing uneven terrain, this paper verifies the
+adaptability enhancement of the proposed method for autonomous navigation over outdoor uneven terrain.
+The experimental results show an increase of 4%–10% in the success rate, a decrease of 13.6%–32.1% in
+the cumulative slope and gradient, and a decrease of 20.8%–27.4% in the Hausdorff distance of the robot’s
+trajectories compared with traditional inverse reinforcement learning-based navigation methods.
+1. Introduction
+Autonomous mobile robots are increasingly being utilized in out-
+door scenarios to assist or replace humans in various tasks, such as
+package delivery, Mars exploration, and mine search ( Chen et al. ,
+2021; Rankin et al. , 2021). To operate in such environments, mobile
+robots have to deal with intricate and uneven terrain, including various
+obstacles difficulty to identify, and uneven and bumpy ground ( Shah
+and Levine , 2022). However, ensuring a robot’s autonomous naviga-
+tion reliability in such complex environments remains challenging.
+To overcome such challenges, it is necessary to develop the robot’s
+ability to autonomously identify safe and feasible areas in challenging
+environments and to safely plan a reliable path to the target point in
+uneven terrain (Siva et al., 2019).
+Reinforcement learning (RL) is a promising approach to improve
+the adaptability of mobile robots in complex environments ( Guastella
+and Muscato, 2021; Weerakoon et al., 2022; Zhang et al., 2022, 2018).
+In Guastella and Muscato (2021), the authors review the learning-based
+methods, such as RL, employed to solve the problem of environmental
+perception and interpretation with the ultimate goal of autonomous
+navigation of ground vehicles in unstructured environments. By utiliz-
+ing elevation maps of the environment and the robot pose and goal
+∗ Corresponding author at: The College of Mechatronics and Control Engineering, Shenzhen University, Shenzhen, 518060, China.
+E-mail address: baixiaoshan@szu.edu.cn (X. Bai).
+as input, a fully trained deep reinforcement learning (DRL) network
+is used to generate an environment attention mask that identifies the
+reduced stability of regions and evaluates the risk level of the terrain
+in a given area ( Weerakoon et al. , 2022). Q-Learning, combined with
+the improved A* algorithm, is used for online planning of a safe path
+on uneven terrain ( Zhang et al. , 2022 ). In Zhang et al. ( 2018), a
+deep reinforcement learning network is used to precisely control the
+movement of a robot over a rough terrain by using a depth image as
+an input. It is important to acknowledge that the efficiency of these
+RL and planning algorithms is significantly affected by the reward
+function. Numerous existing traditional navigation frameworks rely
+on the manual setting of environmental reward functions based on
+personal experience, without taking into account the optimality of
+these reward values. In challenging and uncertain terrains, such as
+hilly wooded landscapes, the diverse and extensive presence of surface
+features will result in the necessity to continuously adjust the reward
+function settings, rather than completing it in a single attempt. Indeed,
+in extremely challenging situations, the process of determining an ap-
+propriate reward function will encounter struggles, potentially leading
+to a deteriorated performance for autonomous navigation ( Nair et al.,
+2018).
+https://doi.org/10.1016/j.engappai.2024.109339
+Received 31 October 2023; Received in revised form 29 June 2024; Accepted 12 September 2024
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+Available online 27 September 2024 
+0952-1976/© 2024 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies. 
+
+===== PAGE 2 =====
+B. Zhang et al.
+Fig. 1. The training process of reward function. Proposed method recovers the cost function that characterizes the environmental risk based on the preference characteristics of
+the human demonstration for different terrain features and then plans a reliable path to reach the target. Scenario A is shown as figure (a), which includes a slope with a steep
+front slope and a gentler side slope. Figure (b) shows the DEM corresponding to Scenario A and the 20 human-demonstrated trajectories. These trajectories imply the preference
+features for low-risk areas of the environment. The environmental cost function and the planned trajectories is shown as figure (c), intercepted by rviz.
+Human perceptual abilities and behavior exhibit good adaptability
+to complex environments. To learn this human environmental adapt-
+ability, the human–robot collaborative technology ( Chen et al. , 2020)
+combined with a learning-from-demonstration (LFD) approach is con-
+sidered to allow robots to learn from humans to traverse uneven
+terrain. To improve the adaptability of driverless vehicles in urban
+environments, LFD has been used to train a wide range of reward func-
+tions (Wulfmeier et al., 2017) or to learn driving strategies (You et al.,
+2019). In Kim and Pineau ( 2016), dynamic path planning efficiency
+in social environments is improved by combining LFD with specific
+environmental feature extraction strategies. For autonomous mobile
+robots operating in uneven outdoor environments, LFD facilitates the
+rapid adaptation of robots to new and complicated environments, as
+well as the acquisition of specific behaviors, such as following road
+edges (Wigness et al., 2018). However, these studies do not account for
+variations in terrain height or potential risky areas, nor do they involve
+extracting and mapping terrain features. If the number of trajectories
+demonstrated by human is insufficient, the learning results of these
+methods are often suboptimal due to infrequent access to significant
+features of uneven terrain.
+In this paper, a traversability learning method based on human
+demonstration is proposed for developing risk cost maps to assist
+mobile robots in identifying safe areas. Initially, the proposed method
+utilizes the digital elevation model (DEM) to extract the geometric fea-
+tures of the environment. Subsequently, inverse reinforcement learning
+(IRL) is utilized to acquire the reward function by learning from hu-
+man demonstrations, simultaneously constructing a risk cost map that
+depicts the risk information in different areas. Ultimately, considering
+the environmental risk information, trajectory planning is performed
+to enable the robot to avoid high-risk areas for reliable autonomous
+navigation. The advantage of the proposed method lies in its ability to
+generate a risk cost map of the uneven terrain through LFD. This makes
+the proposed method particularly suitable for autonomous navigation
+tasks in challenging terrains where directly specifying environmental
+reward functions is difficult. The main contributions of our research
+include the following.
+• To address the problem of inadequate and poorly generalizable
+learning results resulting from a restricted amount of human
+demonstrations, the terrain is mapped as states using geometric
+features.
+• To tackle the difficulty of determining the reward function in
+complicated terrain, a maximum causal entropy (MCE) IRL is
+employed to learn the reward function. This function captures
+the human preference characteristics of low-risk areas of the
+environment.
+• To improve the reliability of path planning, the methodology for
+generating the cost map and cost function considers both the
+robot kinematics and risk information.
+2. Related work
+This section provides a review of existing research in the following
+three areas: learning from demonstration, extracting terrain features
+and navigation in uneven terrain.
+2.1. Learning from demonstration
+LFD is a methodology allowing robots to learn knowledge by analyz-
+ing data obtained through human demonstrations. This data involves
+the human’s assessment of possible risks and their preferences about
+environmental features. The learning results are usually manifested in
+the reward function. The LFD methodology eliminates the requirement
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+2 
+
+===== PAGE 3 =====
+B. Zhang et al.
+for engineers to manually specify reward functions, which is a nec-
+essary step in traditional methods. The reward functions acquired by
+LFD exhibit a higher degree of alignment with the optimal criteria
+defined by human experts (Wigness et al., 2018). LFD research in
+autonomous navigation for mobile robots is inadequate in spite of
+various LFD-based approaches. These methods involve acquiring the
+reward function through imitation learning, as described in Argall
+et al. (2009). The demonstrated data in the method come from either
+trajectories categorized by humans on satellite maps (Silver et al.,
+2008) or trajectories gathered through remote operator control of
+mobile robots (Suger et al., 2015). Furthermore, the integration of
+IRL with various path planning algorithms, such as Rapidly Explor-
+ing Random Trees, has been employed to facilitate the acquisition of
+navigation behavior for robots (Pérez-Higueras et al., 2018). Regarding
+unstructured environments, this research in Siva et al. (2022) compares
+several IRL approaches to determine the most desirable trajectory.
+By learning the numerous demonstrations of human driving behavior,
+deep neural networks (DNNs) have motivated the utilization of deep
+IRL with convolutional neural networks (Wulfmeier et al., 2016) and
+highly parallel model predictive control (Triest et al., 2023) to obtain
+reward functions. However, these IRL methods using DNNs require
+considerable demonstration data to determine reward functions. The
+utilization of an approach that develops the reward function through
+a limited quantity of demonstration data exhibits significant poten-
+tial. Recent research has demonstrated the effectiveness of maximum
+entropy IRL in mitigating the matching ambiguity, illustrated in Xie
+et al. (2020). An MCE framework expands on the maximum entropy
+framework in statistical modeling by incorporating Markov decision
+processes (MDPs) with stochastic transitions (Ziebart et al., 2013).
+This research utilizes the MCE IRL technique for obtaining the reward
+function from human demonstrations.
+2.2. Extracting terrain features
+Accurately identifying terrain features is critical to improve learning
+efficiency and generalizability. In the initial stages of the investiga-
+tion, scholars relied on topographic mapping methods (Konolige et al.,
+2009) and commonly utilized LiDAR or cameras to reconstruct the
+three-dimensional environment (Shan et al., 2020). These techniques
+facilitated the acquisition of point clouds or image data, which were
+subsequently employed for terrain classification (Wurm et al., 2009).
+The utilization of DNNs has gained prominence in the field of ter-
+rain categorization, particularly in the incorporation of visual input
+through neural networks (Sathyamoorthy et al., 2022). A method for
+semantic terrain segmentation was presented in a recent work by Guan
+et al. (2023) that utilized both RGB pictures and 3D point clouds.
+Furthermore, several methods utilized data on robot–ground inter-
+action in real-time for DNNs training, as mentioned by Siva et al.
+(2021). Nevertheless, most of the visual features extracted by DNNs
+from robot–environment interaction data can considerably distinguish
+between environments. Moreover, the enormous amount of 3D point
+cloud data means that extracting environmental features directly from
+the data is insufficient to meet real-time navigation requirements. The
+critical role of DEM for efficient outdoor navigation tasks by robots has
+been highlighted in recent studies (Guastella and Muscato, 2021). In
+our paper, the environmental DEM obtained from the 3D point cloud
+data (Fankhauser et al., 2018) is merged with the developed feature
+mapping approach, presented in Section 4.1, to enhance the efficiency
+of environmental feature extraction. To overcome the challenges of
+DEM in modeling overlapping structures, the proposed algorithm filters
+out the point clouds that exceed the robot’s current maximum height,
+and maintains the point clouds that impact the robot’s navigation pro-
+cess. This excludes the necessity for investigating intricate overlapping
+structures. By employing DEM, the proposed method is now limited to
+solely taking into account the elevation data of the terrain. The trade-
+off for this approach is the inevitable restriction in the recognizability
+of the ground materials.
+Table 1
+Symbols and their meanings used in the formulas.
+Symbol Definitions
+𝐄𝐭 DEM data acquired at time t
+𝛾 Slope characteristic quantity of a cell
+𝜔 Uneven characteristic quantity of a cell
+𝑠𝑡 Robot’s state at time t
+𝑎𝑡 Robot’s action at time t
+𝜋 Policy function
+𝜁 Trajectory containing state–action pairs
+𝜙 Feature vectors mapped by trajectory or state
+𝑅 Reward function learned from MCE IRL
+𝜃 Reward function parameters
+𝐂𝐭 Cost map for path planning at time t
+2.3. Autonomous navigation on uneven terrain
+The safety of path planning algorithms is a crucial consideration in
+the framework of autonomous navigation for mobile robots performing
+on uneven terrain. Early research on autonomous navigation in uneven
+terrain involved robot–terrain interactions (Howard and Kelly, 2007),
+occupancy maps (Merhy et al., 2008), continuous obstacle spaces (Piv-
+toraiko et al., 2009), and uneven terrain fields (Shimoda et al., 2005).
+High-dimensional data can now be handled in the motion planner
+thanks to the advancement of DRL. For example, in Zhang et al. (2018),
+the sensor data onboard was applied to train DNNs to directly output
+the robot motion control command. In other approaches, perceptual
+inputs such as robot poses and images introduced additional reward
+constructs and self-supervised modules are applied to train the neural
+network (Josef and Degani, 2020), or a navigation method that learns
+from experience is used to allow the robot to pass through areas
+that were originally judged to be impassable (Kahn et al., 2021).
+However, most of these DRL methods are based on artificially awarded
+environmental reward functions. Therefore, in the environment of a
+robot traversing challenging and uneven terrain with various features,
+it becomes necessary to adjust the environmental reward function
+in order to ensure the continuing effectiveness of the algorithm. In
+the proposed method, the environmental reward function is acquired
+through IRL using human tutorials. In order to ensure that the learned
+autonomous navigation can be applied to a variety of difficult terrain
+scenarios, this method is combined with a path planning algorithm.
+3. Notations and problem formulation
+3.1. Notations
+Table 1 lists the notations and their meanings that are used in
+our formulation. The robot’s location is set as the origin of the world
+coordinate system at program startup, and the position of the grid in
+the map relative to the world coordinate origin is represented by the
+coordinates (𝑖, 𝑗). The symbol 𝑡 denotes the temporal information of
+the variable or matrix. The DEM 𝐄𝐭 and the cost map 𝐂𝐭 are both
+represented as two-dimensional matrices in this paper. The values in
+the matrices represent elevation values or risk cost values at corre-
+sponding positions. The size of all matrix data structures in our method
+are 200 × 200, representing a realistic environment of 20 × 20 m with
+a resolution of 0.1 m. This resolution accurately reflects the impact of
+the terrain on the robot’s movement safety while avoiding excessive
+computational burden. Additionally, the abbreviations used in this
+paper and their corresponding full names are listed in Table 2.
+3.2. Problem formulation
+In this paper, to address the challenge in traditional autonomous
+navigation frameworks of manually specifying environment cost maps
+in complex and uneven terrains, an LFD-based method for constructing
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+3 
+
+===== PAGE 4 =====
+B. Zhang et al.
+Table 2
+Abbreviations used in this paper.
+RL Reinforcement learning
+DRL Deep reinforcement learning
+IRL Inverse reinforcement learning
+MCE Maximum causal entropy
+DNNs Deep neural networks
+LFD Learning from demonstration
+DEM Digital elevation model
+MDPs Markov decision processes
+MPL motion primitive library
+IOC Inverse optimal control
+TL Trajectory length
+CSR Cumulative slope and roughness
+SR Success rate
+PT Planning time
+MHD Modified Hausdorff distance
+risk cost maps is adopted, which can be divided into two stages: learn-
+ing the reward function from human-demonstrated trajectories and
+calculating the cost map based on this reward function for least-cost
+trajectory planning. Additionally, a basic assumption is that the policy
+implied in the human-demonstrated trajectory 𝜁𝐸 is the optimal policy
+𝜋𝐸. To exploit this potentially optimal policy function, an IRL module is
+trained. This module requires in human-demonstrated trajectories and
+information about the current environment as input, and determines a
+reward function for the current environment:
+𝑅𝜃(𝑠𝑡) = 𝜃 ⋅ 𝜙(𝑠𝑡), (1)
+where the subscript 𝜃 indicates the dependence of the reward function
+𝑅 on the parameter 𝜃, 𝜙(𝑠𝑡) is the feature vector corresponding to
+state 𝑠𝑡, and 𝑠𝑡 contains topographic information about the current
+environment.
+Next, a cost map 𝐂𝐭 is constructed based on the reward function
+recovered from the demonstrated trajectories. The value of each cell
+index (𝑖, 𝑗) in the cost map 𝐂𝐭 (𝑖, 𝑗) can directly characterize the risk level
+of the corresponding terrain. The cost map 𝐂𝐭 guides the navigation
+component to plan a least-cost trajectory to reach the goal point (see
+Section 4.3). The least-cost trajectory satisfies the following criteria:
+min
+∑
+(𝑖,𝑗)∈𝜁
+𝐂𝐭 (𝑖, 𝑗), (2)
+where (𝑖, 𝑗) represents the terrain cells traversed by the trajectory 𝜁.
+3.3. Inverse reinforcement learning
+IRL is based on the MDPs, which comprise four components(𝑆, 𝐴, 𝑇 ,
+𝑅): 𝑆 is the set of states, 𝐴 is the set of actions, 𝑇 is the state–
+action transition model, and 𝑅 is the reward function. In MDPs, the
+interaction between the robot and the environment involves the robot’s
+observation of the state 𝑠 of the environment, selecting an action 𝑎
+based on the current policy 𝜋, executing the action, receiving the
+current reward 𝑟 as feedback, and using this reward 𝑟 to guide the
+improvement of the policy 𝜋 so that the robot can achieve higher
+rewards. It is worth noting that in MDPs of IRL, the reward function
+𝑅 is learned from human demonstrations 𝐷 (See Fig. 2). In this paper,
+IRL is employed to learn the environmental reward function 𝑅 from
+human demonstration trajectories 𝐷 = { 𝜁𝑖}𝑛
+𝑖=1 on uneven outdoor
+terrain, where each trajectory 𝜁 encompasses a sequence of states
+and actions. By integrating methods for constructing cost maps and
+planning paths, the robot is guided to perform tasks designed to imitate
+human behaviors.
+4. LFD based traversability learning method
+This section introduces the three main components of the proposed
+method: extracting and mapping environmental features using terrain
+geometry, building reward functions from human demonstrations using
+MCE IRL, and generating a least-cost trajectory using cost maps (refer
+to Fig. 3).
+4.1. Environmental geometric feature extraction and mapping
+To improve the computational efficiency of IRL optimization and
+obtain a generalizable reward function with topographic information,
+DEM data are used to compute the geometric features of each cell
+for state mapping. Unlike the traditional method, which maps only
+feature vectors to coordinates (𝑥, 𝑦), slope and roughness are computed
+to characterize the cell state.
+The slope 𝛾 of a cell is calculated by plane fitting. Let 𝑈𝑖 be a square
+region of size 𝑁 ×𝑁 sampled from the DEM, which contains 𝑁 2 points,
+denoted as (𝑥𝑖,𝑗 , 𝑦𝑖,𝑗 , 𝑧𝑖,𝑗 ), 𝑖, 𝑗 ∈ 𝑈𝑖. Plane fitting is applied to 𝑁 2 points
+within region 𝑈𝑖, resulting in the 3D plane 𝐴𝑥𝑖,𝑗 +𝐵𝑦𝑖,𝑗 +𝐶 = 𝑧𝑖,𝑗, where
+𝐴, 𝐵, 𝐶 are the coefficients of the 3D plane. The center point 𝛾 of the
+region 𝑈𝑖 is then calculated using the following equation:
+𝛾 = 𝜋
+2 − sin−1 1
+√
+𝐴2 + 𝐵2 + 1
+. (3)
+The abrupt changes in the ground elevation values are denoted by
+roughness 𝜔 and calculated as follows:
+𝜔 = 𝑑−1
+√
+1
+𝑁 2
+∑
+𝑖,𝑗∈𝑈𝑖
+(𝑧𝑖,𝑗 − ̄ 𝑧)2, (4)
+where 𝑑 is the wheel diameter of the mobile robot, and ̄ 𝑧is the average
+height of 𝑁 2 cells within 𝑈𝑖.
+Each cell state is represented as𝑠 = [𝛾, 𝜔]𝑇 instead of the coordinates
+(𝑥, 𝑦). To enable the states to participate in the computation, each state𝑠
+must be mapped into a feature vector 𝜙(𝑠). This is achieved by dividing
+each geometric feature into 𝑘 discrete intervals ranging from 0, 1
+𝑘 to
+𝑘−1
+𝑘 , resulting in a total of𝑘2 possible cell state combinations. Each state
+corresponds to an independent unit vector 𝜙(𝑠) ∈ R𝑘2
+. The proposed
+feature extraction method decreases the number of computations and
+demonstration trajectories required for the subsequent IRL optimization
+process. In addition, this feature mapping method can be adapted to
+different environments by adjusting the 𝑘 value, which is more efficient
+for computing.
+4.2. Learning reward functions from demonstrations
+The function of the IRL module is to explain human behaviors and
+build the underlying reward function. The feature extraction and map-
+ping approach mentioned in the previous Section 4.1 greatly reduces
+the number of required demonstration trajectories and maps uneven
+terrain into an MDP with stochastic transition dynamics. Therefore, an
+IRL method based on the MCE principle (Ziebart et al., 2013) is chosen,
+which has advantages over other IRL methods because the ambiguity of
+the decision to find the reward function is eliminated by the maximum
+entropy principle. MCE IRL is suitable for MDPs with few trajectories
+and random state transitions.
+As input to the MCE IRL component is a set of human demon-
+strations 𝐷 = { 𝜁𝑖}𝑛
+𝑖=1 comprising 𝑛 human-demonstrated trajectories.
+Each trajectory 𝜁 = [( 𝑠1, 𝑎1), (𝑠2, 𝑎2), … , (𝑠𝑇 −1, 𝑎𝑇 −1), (𝑠𝑇 , 𝑎𝑇 )] contains
+sequences of action variables 𝐚1∶𝑇 and sequences of state variables 𝐬1∶𝑇 .
+In the causal entropy method, the action𝑎𝑡 selected by the robot at time
+𝑡 depends not only on the current state𝑠𝑡 but also on the past state𝐬1∶𝑡−1
+and the past action 𝐚1∶𝑡−1. Therefore, the probability of performing
+action 𝑎𝑡 can be expressed as 𝑃 (𝑎𝑡|𝐬1∶𝑡, 𝐚1∶𝑡−1). Similarly, the state 𝑠𝑡 is
+related to the past state 𝐬1∶𝑡−1 and the past action 𝐚1∶𝑡−1. The probability
+of reaching the state 𝑠𝑡 can be expressed as 𝑃 (𝑠𝑡|𝐬1∶𝑡−1, 𝐚1∶𝑡−1). On the
+basis of this, the causal entropy is defined as follows.
+𝐻 (𝐚1∶𝑇 ∥ 𝐬1∶𝑇
+)≜ E𝑃 (𝐚1∶𝑇 ,𝐬1∶𝑇 )
+[− log 𝑃 (𝐚1∶𝑇 ∥ 𝐬1∶𝑇
+)]
+, (5)
+where E is the expectation and:
+⎧
+⎪
+⎨
+⎪⎩
+𝑃 (𝐚1∶𝑇 , 𝐬1∶𝑇
+)= ∏𝑇
+𝑡=1 𝑃 (𝑠𝑡 ∣ 𝐬1∶𝑡−1, 𝐚1∶𝑡−1
+)×
+𝑃 (𝐚1∶𝑇 ∥ 𝐬1∶𝑇
+)
+𝑃 (𝐚1∶𝑇 ∥ 𝐬1∶𝑇
+)≜ ∏𝑇
+𝑡=1 𝑃 (𝑎𝑡 ∣ 𝐚1∶𝑡−1, 𝐬1∶𝑡
+).
+(6)
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+4 
+
+===== PAGE 5 =====
+B. Zhang et al.
+Fig. 2. MDPs in IRL.
+Fig. 3. Proposed algorithmic architecture. The DEM of the current environment and
+the robot’s pose obtained from sensors are used along with the human-demonstrated
+trajectories as input to the MCE IRL module. The output is a reward function charac-
+terizing the trajectory preference for environmental features. This reward function is
+combined with the DEM to calculate a cost map, which serves as the input to the Hybrid
+A* algorithm for trajectory planning. The actual execution of the planned trajectory is
+performed using model predictive control (MPC).
+Remark 1. The entropy 𝐻 is utilized to evaluate the distribution
+𝑃 derived by optimization. If there are multiple distributions 𝑃 that
+satisfy the requirements, the one with the highest entropy 𝐻 should
+be selected, which means determining a solution that conforms with
+the information provided to the solver with minimal deviation (Ziebart
+et al., 2013).
+To allow the states into the computation, the feature mapping
+method described in Section 4.1 is used to transfer each state 𝐬 to a
+feature vector 𝜙(𝑠). The feature vector representing the trajectory 𝜁 is
+denoted as 𝜙(𝜁), and the relationship between two feature vectors is
+shown as follows:
+𝜙(𝜁) =
+∑
+(𝑠𝑖,𝑎𝑖)∈𝜁
+𝜙(𝑠𝑖). (7)
+MCE IRL is based on feature–expectation matching, which requires
+the expected frequency of visiting features in the human demonstra-
+tions to be equal to the expected frequency of features visited by the
+robot based on the recovered reward function. This is expressed as
+follows:
+E𝜋𝐿 [𝜙(𝜁)] = E𝜋𝐸 [𝜙(𝜁)], (8)
+where 𝜋𝐿 is the strategy held by the robot, which is obtained from the
+restructured reward, and 𝜋𝐸 represents the potential strategy followed
+by the human demonstrations and encodes the notion of environmental
+rewards and optimality.
+Combining (5) and (8), an optimization problem can be formulated
+as follows:
+argmax
+{𝑃 (𝑎𝑡∣𝐬1∶𝑡,𝐚1∶𝑡−1)}
+𝐻 (𝐚1∶𝑇 ∥ 𝐬1∶𝑇
+),
+𝑠.𝑡.
+{
+E𝜋𝐿 [𝜙(𝜁)] = E𝜋𝐸 [𝜙(𝜁)]
+∑
+∀𝐬1∶𝑡,𝐚1∶𝑡−1 𝑃 (𝑎𝑡|𝐬1∶𝑡, 𝐚1∶𝑡−1) = 1 .
+(9)
+By solving this optimization problem, an action probability dis-
+tribution can be obtained. This distribution, denoted 𝑃 (𝑎𝑡|𝐬1∶𝑡, 𝐚1∶𝑡−1),
+maximizes entropy and ensures that the expected feature visitation
+frequency of the robot’s trajectory, E𝜋𝐿 [𝜙(𝜁)], matches that of the
+human-demonstrated trajectory E𝜋𝐸 [𝜙(𝜁)].
+To learn the reward function, it must be parameterized. Combining
+(1) and ( 7), the reward of trajectory 𝜁 can be defined as a linear
+combination of the feature vectors that represent the states:
+𝑅𝜃(𝜁) = 𝜃𝑇 𝜙(𝜁) =
+|𝜁|∑
+𝑖=0
+𝜃𝑇 𝜙(𝑠𝑖). (10)
+where |𝜁| is the length of the trajectory 𝜁. Thus, given the trajectory
+feature vector 𝜙(𝜁), the objective of solving ( 9) is to optimize weight
+parameter vector 𝜃 to optimize reward 𝑅𝜃(𝜁).
+To solve parameter 𝜃 from ( 9), the Lagrange multipliers method
+and the gradient ascent method are used. The Lagrange multiplier
+is parameter 𝜃 of the reward function, and the gradient formula of
+parameter 𝜃 is obtained as:
+∇𝜃𝐿(𝑃 , 𝜃) = E𝜋𝐸 [𝜙(𝜁)] −
+∑
+𝑠𝑡∈𝑆
+𝐷𝑠𝑡 𝜙(𝑠𝑡), (11)
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+5 
+
+===== PAGE 6 =====
+B. Zhang et al.
+Fig. 4. Cost map generation and least-cost path planning. (a) A testing environment with numerous steep slopes and elevation values between 0 and 2 m. (b) The generated cost
+map in Rviz, where regions closer to red indicate higher risk. The least-cost path is planned using our cost function (pink) and compared to the standard cost function (orange)
+using the Hybrid A* algorithm. Compared with the orange path, the pink path stays away from high-risk (red) areas and does not pass through medium-risk (green) areas, resulting
+in a lower CSR. Therefore, the pink path can be considered to have higher reliability.
+where 𝑆 is the set containing all states 𝑠 in the trajectory 𝜁, and 𝐷𝑠𝑡 is
+the expected state visitation frequency and can be calculated iteratively
+as follows:
+𝐷𝑠𝑡+1 =
+∑
+𝑠𝑡∈𝑆
+∑
+𝑎𝑡∈𝐴
+𝐷𝑠𝑡 𝜋 (𝑎𝑡 ∣ 𝑠𝑡, 𝜃)𝑃 (𝑠𝑡+1 ∣ 𝑠𝑡, 𝑎𝑡
+). (12)
+where 𝐴 is the set containing all actions 𝑎 in the trajectory 𝜁, and the
+policy function 𝜋(𝑎𝑡|𝑠𝑡, 𝜃) can be calculated by the current optimized
+parameter 𝜃 combined with the known environmental state transfer
+probability 𝑃 (𝑠𝑡+1|𝑠𝑡, 𝑎𝑡):
+𝜋(𝑎𝑡|𝑠𝑡, 𝜃) = exp(log 𝑍𝑠𝑡,𝑎𝑡 − log 𝑍𝑠𝑡 ), (13)
+where:
+⎧
+⎪
+⎨
+⎪⎩
+log 𝑍𝑠𝑡,𝑎𝑡 = 𝜃𝑇 𝜙(𝑠𝑡) + 𝜆 ∑
+𝑠𝑡+1∈𝑆
+𝑃 (𝑠𝑡+1|𝑠𝑡, 𝑎𝑡) log 𝑍𝑠𝑡+1
+log 𝑍𝑠𝑡 = sof tmax
+𝑎𝑡
+log 𝑍𝑠𝑡,𝑎𝑡 ,
+(14)
+where 𝜆 ∈ (0, 1) is the discount factor, and sof tmax𝑥𝑓 (𝑥) ≜ log ∑
+𝑥𝑓 (𝑥).
+Remark 2. The parameter 𝜃 is determined through a rolling optimiza-
+tion process by Eqs. ( 11)–(14). In (14), 𝜃 represents the result of the
+previous optimization step, which is not optimal. The optimization pro-
+cess is accomplished once the ∇𝜃𝐿(𝑃 , 𝜃) in (11) reaches a sufficiently
+minimal number. By substituting the optimal value of 𝜃 into (10), the
+ultimate reward function 𝑅𝜃 is obtained.
+4.3. Least-cost trajectory generation
+Before utilizing the planning algorithm to generate a least-cost
+navigation trajectory, it is necessary to construct a cost map containing
+information about the risk of the current uneven terrain. By combining
+the reward function recovered from the IRL with the terrain feature
+vector, the corresponding cost value is calculated as follows:
+𝐂𝐭 (𝑖, 𝑗) = ( 𝛾(𝑖, 𝑗) + 𝜔(𝑖, 𝑗)) × 𝑅−1
+𝜃 (𝑠𝑡). (15)
+Moreover, to improve the security of robot navigation, the following
+operation is performed on the cost map:
+𝐂𝐭 (𝑖, 𝑗) = ∞ if 𝐂𝐭 (𝑖, 𝑗) > 𝐶 max, (16)
+where 𝐶𝑚𝑎𝑥 is determined based on the generation value corresponding
+to very high-risk terrain and allows the robot to avoid these high-risk
+areas. In this paper, 𝐶𝑚𝑎𝑥 = 1 (See Fig. 4).
+The purpose of the proposed path planning method is to validate
+the effectiveness of cost maps. Therefore, in this paper, path plan-
+ning method does not take into account complex situations such as
+dynamic obstacles. The Hybrid A* algorithm ( Dolgov et al. , 2008) is
+used to generate the least-cost navigation trajectory. The advantage
+of the Hybrid A* algorithm over the A* algorithm lies in its ability
+to generate trajectories that satisfy the robot’s dynamic constraints,
+reducing the burden of trajectory optimization. However, the tipping
+risk of the wheeled robot driving on uneven terrain is not considered
+in the cumulative cost function and the heuristic cost function of the
+classical Hybrid A* algorithm. Moreover, the classical cost function
+penalizes the safety detours executed by the robot, rendering path
+planning in uneven terrain unreliable. Therefore, the cost function for
+the Hybrid A* algorithm is redesigned to match the cost map obtained
+in Section 4.2.
+The Hybrid A* algorithm chooses the node with the lowest total cost
+value 𝑐 from the priority queue to appear each time, where the total
+cost value corresponding to node 𝑛 is defined as 𝑐(𝑛) = 𝑔𝑠(𝑛)+ ℎ𝑔(𝑛). The
+cumulative cost 𝑔 designed according to ( 15) considers the recovery
+cost and is defined as:
+𝑔𝑠(𝑛) =
+𝑛−1∑
+𝑘=1
+(𝑤1 ⋅ 𝑙𝑘,𝑘+1 + 𝑤2 ⋅ 𝐂𝐭 (𝑖𝑘+1, 𝑗𝑘+1)), (17)
+where the subscript 𝑠 denotes the accumulation from the starting state,
+𝑙𝑘,𝑘+1 is the length of the path elapsed from time 𝑘 to time 𝑘 + 1, and
+𝑤1, 𝑤2 are weighting factors, which can be adjusted according to the
+actual experimental conditions. For the heuristic cost ℎ, we account
+for not only the kinetic constraints and obstacle constraints but also
+the total cost on the prediction path. Therefore, the heuristic cost ℎ is
+defined as:
+ℎ𝑔(𝑛) = 𝑚𝑎𝑥(ℎ𝑟𝑠(𝑛), ℎ2𝑑 (𝑛)), (18)
+where ℎ𝑟𝑠(𝑛) denotes the cumulative cost of the Reeds–Shepp curve
+(Reeds and Shepp , 1990 ) considering wheeled robot dynamics con-
+straints but not obstacles from the current state 𝑠𝑛 to the end state 𝑠𝑔.
+The cumulative cost of the path refers to the sum of the corresponding
+generated trajectory values containing nodes in 𝐂𝐭. ℎ2𝑑 (𝑛) denotes the
+cumulative cost of the path from 𝑠𝑛 to 𝑠𝑔 without considering vehicle
+dynamics constraints but considering obstacles. This path is given by
+the two-dimensional A* algorithm ( Zhang et al. , 2022) using (17) as
+the cumulative cost function and the Euclidean distance from 𝑠𝑛 to 𝑠𝑔
+as the heuristic function. (18) is applied to ensure that ℎ𝑔(𝑛) = ℎ2𝑑 (𝑛) is
+satisfied if the robot is far from 𝑠𝑔 for emphasizing obstacle avoidance
+to approach the goal quickly. Inversely, if the robot is closer to 𝑠𝑔,
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+6 
+
+===== PAGE 7 =====
+B. Zhang et al.
+Table 3
+Comparison of experimental results of two cost functions.
+Metrics Cost function Mean Best
+TL Standard 28.64 21.93
+Proposed 37.83 24.51
+CSR Standard 0.39 0.28
+Proposed 0.21 0.17
+ℎ𝑔(𝑛) = ℎ𝑟𝑠(𝑛) is satisfied, ensuring that the robot can approach the
+target point with the appropriate pose. The Hybrid A* algorithm is
+configured with both standard and proposed cost functions respectively
+to compare which cost function can result in more reliable trajectory
+planning. Additionally, two evaluation metrics are set:
+• Trajectory Length (TL) - The length of the robot’s trajectory (m).
+• Cumulative Slope and Roughness (CSR) - The sum of the gradient
+and unevenness values of the cell passed by the robot along the
+trajectory divided by the TL, where a lower value indicates a safer
+trajectory.
+Table 3 shows the results of using the Hybrid A* algorithm with
+the standard and unique cost functions to plan 30 trajectories indepen-
+dently. The higher CSR observed in the standard cost function can be
+attributed to its exclusive reliance on distance information, neglecting
+to account for environmental risk information. As a result, the planning
+algorithm incurs a penalty if detour decisions are predicated upon se-
+curity concerns. In contrast, the proposed cost function associated with
+lower CSR values indicates the trajectories’ effectiveness for avoiding
+medium to high-risk areas and the reliability of the Hybrid A* algo-
+rithm. Moreover, the trajectories planned based on the proposed cost
+function have a higher TL compared with the standard cost function.
+This is attributed to the detour processing made by the proposed cost
+function to enhance safety by avoiding certain medium to high-risk
+areas (see Fig. 4(b)).
+5. Experimental result
+In this section, the implementation of proposed method in real out-
+door scenarios is presented. Then, the evaluation metrics are explained
+and the experimental results are discussed.
+5.1. Implementation
+The robot used in the experiments is equipped with a four-wheel
+differential chassis as a mobile carrier, an Oster OS0-128 LiDAR, an
+SBG-Ellipse-N INS, a dual real-time kinematics (RTK) antenna for re-
+ceiving GPS satellite signals, a microcomputer (NUC) that houses an
+Nvidia RTX 2060 GPU and an Intel i7 CPU, and two auxiliary debugging
+peripherals, a screen and Wi-Fi. The NUC is installed with Ubuntu 18.04
+and ROS Melodic (See Fig. 5).
+All our programs run in the ROS environment. DEM data are ob-
+tained using the elevation mapping ROS package ( Fankhauser et al. ,
+2018) with point clouds generated by LiDAR. INS and GPS are used to
+obtain the vehicle position. The demonstration trajectories are obtained
+by human remote control operations. The code for our method is
+lightweight enough that all the ROS packages can be run together in
+real time on the NUC.
+5.2. Evaluation metrics
+In addition to the TL and CSR metrics mentioned in Section 4.3, the
+subsequent metrics are utilized to compare the navigation performance
+of proposed method with the motion primitive library (MPL) ( Silver
+et al. , 2008 ) and the inverse optimal control (IOC) ( Wigness et al. ,
+2018) in outdoor scenarios. The MPL method is based on imitation
+learning and uses maximum margin planning to learn costs given desir-
+able trajectory demonstrations. The IOC method is based on maximum
+entropy IRL, which does not map features to the environment.
+Fig. 5. Robot with associated sensors and auxiliary peripherals.
+• Success Rate (SR) - The number of times the robot successfully
+reaches the target goal while avoiding obstacles and high-risk
+areas divided by the total number of attempts. A value closer to
+1 indicates a higher practical feasibility of the method.
+• Planning Time (PT) - The algorithm’s computational time for
+trajectory planning (ms).
+• Modified Hausdorff Distance (MHD) - The Hausdorff distance be-
+tween the method planning trajectory and the human-
+demonstrated trajectory, defined as:
+ℎ(𝜁𝐿, 𝜁𝐸 ) = 1
+|𝜁𝐿|
+∑
+𝑠𝑖∈𝜁𝐿
+(
+min
+𝑠𝑗 ∈𝜁𝐸
+̂𝑑 (𝑠𝑖, 𝑠𝑗
+))
+, (19)
+where 𝜁𝐿 is the trajectory to be compared, 𝜁𝐸 is the human-
+demonstrated trajectory, and the function ̂𝑑 indicates the distance
+between two states along these trajectories. A lower value indi-
+cates that the trajectory planned by the method is more similar
+to the human demonstrations.
+The CSR, TL and SR metrics represent our attention to plan tra-
+jectories with lower accumulated risk, shorter trajectory lengths, and
+successful arrival at the destination. In the training scenarios, the MHD
+metric additionally signifies our desire for the planned trajectories to
+closely resemble the demonstrations. Furthermore, this paper focuses
+primarily on the risk characteristics of the environments, while ignoring
+the additional energy consumption caused by risky regions. Considering
+that the controller intends to maintain a relatively constant robot
+speed, the trajectory length can be seen as a reflection of the energy
+consumption.
+5.3. Testing scenarios
+Our autonomous navigation framework is trained and tested in the
+following three outdoor scenarios and compared with the previously
+mentioned methods:
+• Scenario A - a training scenario consisting of an uneven outdoor
+terrain environment with elevation values ranging from 0 to 2 m.
+The robot acquires the reward function 𝑅 by learning from hu-
+man demonstrations in scenario A. Twenty human-demonstrated
+trajectories are acquired by human remote control operation
+of the robot, which contains a preference for areas with low
+environmental risk (see Fig. 1).
+• Scenario B - a test scenario consisting of an uneven outdoor
+terrain environment with elevation values ranging from 0 to
+1.5 m. Scenario B serves as a generalization test scenario, where
+experiments do not involve IRL process. The reward function𝑅 in
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+7 
+
+===== PAGE 8 =====
+B. Zhang et al.
+Fig. 6. The correlation between the number of demonstration trajectories and the
+quality of generating cost maps. A smaller value of CSR and MHD indicates a higher
+quality of the cost map corresponding to the trajectory.
+Scenario B is learned from the human demonstrations in Scenario
+A (see Fig. 8(a)).
+• Scenario C - a test scenario consisting of an urban environment
+with a high curb and small slope, where the curb is well above
+the ground clearance of the robot and must be safely avoided.
+Similar to Scenario B, Scenario C also serves as a generalization
+test scenario (see Fig. 8(c)).
+5.4. Comparison and analysis
+To validate the correlation between different numbers of demon-
+stration trajectories and the quality of the generated cost maps, a
+comparison is performed between proposed method and other methods
+in generating the cost maps using various numbers of demonstration
+trajectories in Scenario A. To mitigate potential impacts from planning
+algorithm parameters and the robot’s intrinsic state, a fixed-parameter
+A* algorithm is employed to generate a single trajectory. Since the
+actual optimal cost map is unknown, the validation of the cost map
+quality was performed indirectly by assessing the performance of the
+trajectories planned on the map. CSR and MHD metrics are used to
+evaluate the quality of the generated cost maps.
+The experimental results (see Fig. 6 ) show that if the number
+of demonstration trajectories is less than 15, increasing the number
+of demonstration trajectories for all three methods consistently leads
+to a significant reduction in both the CSR and MHD values of the
+generated trajectory. This observation indicates an improvement in the
+quality of the generated cost maps. The effect above occurs due to
+the increase in the number of demonstration trajectories, resulting in a
+higher frequency of visits to significant states 𝐷𝑠𝑡 in both the proposed
+approach and IOC methods. As indicated by ( 11), the frequency of
+visiting these significant states directly influences the iterative gradient
+during the training process, thereby affecting the cost values corre-
+sponding to these states in the generated cost map. In the MPL method,
+increasing the number of demonstration trajectories further restricts the
+space of possible cost functions, thereby encouraging the learned cost
+function to get closer to the underlying optimal cost function. Once
+the number of demonstration trajectories exceeds twenty, increasing
+the number of demonstration trajectories has a marginal effect on the
+quality of the cost maps generated. Therefore, a consistent set of twenty
+demonstration trajectories is employed in subsequent experiments to
+train the proposed method, IOC and MPL methods.
+Twenty human-demonstrated trajectories (see Fig. 1 (b)) are uni-
+formly used by different methods for training, and each method per-
+forms 30 experiments, resulting in 30 obtained trajectories. The opti-
+mization curve of parameter 𝜃 during training is shown in Fig. 7 . The
+optimization of parameter 𝜃 using the MPL and IOC methods takes
+38.083 and 47.579 s, respectively, while the convergence process of
+Fig. 7. Optimization process of parameter 𝜃. The convergence criterion is defined as
+the absolute change 𝛥𝜃 < 0.0001 (𝑙𝑜𝑔𝛥𝜃 < −4). This indicates that the parameter 𝜃 has
+reached a stable solution and the optimization is finished.
+Table 4
+Experimental results.
+Metrics Method Scenario A Scenario B Scenario C
+Mean Best Mean Best Mean Best
+SR
+MPL 0.93 – 0.80 – 0.17 –
+IOC 0.90 – 0.87 – 0.57 –
+Ours 0.93 – 0.90 – 0.93 –
+PT
+MPL 317.99 298.23 232.19 185.32 252.77 207.62
+IOC 284.23 265.19 210.73 189.47 224.60 193.57
+Ours 393.92 344.17 249.41 198.56 326.89 274.33
+TL
+MPL 58.33 52.62 25.74 21.87 28.02 23.49
+IOC 62.25 51.57 30.29 25.64 35.33 29.69
+Ours 61.94 59.72 29.14 27.91 43.12 40.51
+CSR
+MPL 0.26 0.22 0.28 0.23 0.67 0.31
+IOC 0.27 0.19 0.22 0.17 0.37 0.29
+Ours 0.22 0.20 0.19 0.15 0.21 0.18
+MHD
+MPL 2.15 1.41 – – – –
+IOC 1.97 1.31 – – – –
+Ours 1.56 1.35 – – – –
+parameter 𝜃 in the proposed method takes only 11.843 s, which is
+significantly faster than that of the MPL and IOC methods. This is due to
+the feature mapping method mentioned in Section 4.1 , which reduces
+the computational effort of the optimization process by reducing the
+number of states to 100(𝑘 = 10) in the 200 × 200 DEM. In contrast, the
+MPL and IOC methods perform feature mapping by cell coordinates,
+which results in a DEM containing 40,000 feature vectors and a longer
+optimization process.
+The experimental results are listed in Table 4 . The SR statistical
+results show that all methods have a higher success rate in the training
+environment, and the proposed method’s success rate remains high
+in the test environment. In contrast, the MPL and IOC methods have
+decreased SRs. This is because proposed method selects the lowest risk
+area for navigation through terrain feature mapping. However, since
+the MPL and IOC methods do not feature maps of the environment, the
+absence of some environmental features in the new scenario results in
+a reduction in the SR. Furthermore, MPL, based on imitation learning,
+has a more severe feature loss in the new environment Scenario C,
+which is different from the training environment Scenario A, leading
+to a lower navigation SR.
+The TL and CSR values in Table 4 show that proposed method
+navigates through the least costly state points, resulting in a lower
+average trajectory risk. Thus, these TL and CSR values validate the
+reliability of proposed method. However, this also results in an increase
+in TL compared to other methods. The PT metrics in Table 4 show that
+the proposed method takes more time in trajectory planning compared
+with IOC and MPL. The reason is that the proposed method necessi-
+tates extra computation of Reeds–Shepp curves when calculating the
+heuristic function (18). Additionally, the longer trajectories generated
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+8 
+
+===== PAGE 9 =====
+B. Zhang et al.
+Fig. 8. Robot trajectories navigating in different testing scenarios using proposed method (pink), IOC (purple) and MPL (orange). (a) Testing Scenario B. (b) The corresponding
+cost map generated by proposed method for Scenario B. (c) Testing Scenario C. (d) The corresponding cost map generated by proposed method for Scenario C.
+by the proposed method result in a larger search space during the
+planning process, leading to an increase in PT. In this paper, the robot’s
+maximum speed is 2 m/s, and PT values below 500 ms are sufficient for
+the robot to perform navigation tasks. Therefore, the PT values for the
+proposed method in Table 4 are considered acceptable. In addition, the
+MHD values in Table 4 confirm that the trajectories generated by the
+proposed method are closer to the optimal navigation behavior defined
+by the human demonstrations, indicating that the proposed method
+learns human strategy 𝜋𝐸 more effectively. The MHD metric is not
+applicable in Scenarios B and C because the MHD metric is used to
+evaluate the similarity between trajectories generated by the proposed
+method and human-demonstrated trajectories, and Scenarios B and C
+serve as generalization test scenarios, not involving the IRL process.
+Human demonstrations are only conducted in Scenario A.
+In urban environment Scenario C, the curbs above the robot’s
+ground clearance pose a challenge for all methods, and the lower eleva-
+tion gain in the curb regions is likely to lead to erroneous trajectories.
+However, proposed method can focus on the low-risk feature regions
+near the curb, thus achieving a higher SR than other methods. It is
+observed that the paths from proposed method have low cumulative
+slope and roughness and can handle challenging curb scenarios (See
+Fig. 8(d)).
+6. Conclusions
+This study introduced a traversability learning method based on
+human demonstration for generating risk cost maps. Proposed method
+combines geometry-based terrain feature extraction with MCE IRL to
+generate a cost map, and employs the hybrid A* algorithm with a
+proposed cost function to generate the least-cost trajectory. Proposed
+method is compared with other IRL-based navigation methods on vari-
+ous metrics on a real wheeled robot and uneven outdoor environments
+to demonstrate its effectiveness.
+Despite the promising result, our method still has some limitations
+that require future investigation. For example, the limited perceptual
+capability of LiDAR prevents the robot from discriminating between
+different soil materials. This limitation can be addressed in the future
+by incorporating visual information from a camera. In addition, our
+method may not perform well in new environments that differ signifi-
+cantly from the training environment. For instance, in the challenging
+newly-appeared surfaces stricken by disasters, the generalization of our
+method might be compromised without sufficient demonstrated data
+for these new features. This issue will be addressed by adding online
+demonstration correction and integrating LFD results from multiple
+scenarios. Finally, it can be anticipated that the combination of large
+models with big data can significantly enhance the representational
+capability of IRL methods. In other words, large models will enable IRL
+to improve algorithm performance in different scenarios by learning
+from massive human demonstration data. This is an important direction
+for future improvements to our method.
+CRediT authorship contribution statement
+Bo Zhang: Writing – review & editing, Supervision, Funding acqui-
+sition, Formal analysis, Conceptualization. Guobin Li: Writing – origi-
+nal draft, Software, Methodology, Investigation, Formal analysis. Jiale
+Zhang: Writing – review & editing, Software, Data curation. Xiaoshan
+Bai: Visualization, Validation, Resources, Funding acquisition.
+Declaration of competing interest
+The authors declare that they have no known competing finan-
+cial interests or personal relationships that could have appeared to
+influence the work reported in this paper.
+Data availability
+Data will be made available on request.
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+9 
+
+===== PAGE 10 =====
+B. Zhang et al.
+Acknowledgments
+This work was supported in part by the National Natural Sci-
+ence Foundation of China (NSFC) (No. 62173234, 62003217, and
+62373255), the Natural Science Foundation of Guangdong Province
+(No. 2024A1515011204), the Shenzhen Science and Technology Pro-
+gram (No. 20220818095816035), and the Shenzhen Natural Science
+Fund through the Stable Support Plan Program (No. 20220809175
+803001).
+Appendix A. Supplementary data
+Supplementary material related to this article can be found online
+at https://doi.org/10.1016/j.engappai.2024.109339.
+The video link illustrates an experimental demonstration of inno-
+vative autonomous navigation technology detailed in the paper titled
+‘‘Autonomous Navigation Inverse Reinforcement Learning Feature Map-
+ping Uneven Terrain’’. It fuses human risk awareness with machine
+learning capabilities. By analyzing terrain data, we construct a feature
+vector and employ inverse reinforcement learning to refine the reward
+function, thus producing a risk map. This approach markedly en-
+hances both the efficiency and safety of robotic navigation in intricate
+environments, with experimental results confirming its outstanding
+performance. Below are the web links to our permanent video viewing
+and downloads.
+https://drive.google.com/file/d/1sugnU8GZQDf5bgyPDDfxzqWIXn
+AaWUNd/view
+References
+Argall, B.D., Chernova, S., Veloso, M., Browning, B., 2009. A survey of robot learning
+from demonstration. Robot. Auton. Syst. 57 (5), 469–483.
+Chen, Z., Alonso-Mora, J., Bai, X., Harabor, D.D., Stuckey, P.J., 2021. Integrated task
+assignment and path planning for capacitated multi-agent pickup and delivery. IEEE
+Robot. Autom. Lett. 6 (3), 5816–5823.
+Chen, M., Nikolaidis, S., Soh, H., Hsu, D., Srinivasa, S.S., 2020. Trust-aware decision
+making for human-robot collaboration. ACM Trans. Hum.-Robot Interact. 9 (2),
+1–23.
+Dolgov, D., Thrun, S., Montemerlo, M., Diebel, J., 2008. Practical search techniques
+in path planning for autonomous driving. In: International Symposium on Search
+Techniques in Artificial Intelligence and Robotics. STAIR, pp. 29–34.
+Fankhauser, P., Bloesch, M., Hutter, M., 2018. Probabilistic terrain mapping for mobile
+robots with uncertain localization. IEEE Robot. Autom. Lett. 3 (4), 3019–3026.
+Guan, T., He, Z., Manocha, D., Zhang, L., 2023. TNES: terrain traversability mapping,
+navigation and excavation system for autonomous excavators on worksite. Auton.
+Robots 47 (6), 695–714.
+Guastella, D.C., Muscato, G., 2021. Learning-based methods of perception and naviga-
+tion for ground vehicles in unstructured environments: A review. Sensors 21 (1),
+73.
+Howard, T.M., Kelly, A., 2007. Optimal rough terrain trajectory generation for wheeled
+mobile robots. Int. J. Robot. Res. 26 (2), 141–166.
+Josef, S., Degani, A., 2020. Deep reinforcement learning for safe local planning of
+a ground vehicle in unknown rough terrain. IEEE Robot. Autom. Lett. 5 (4),
+6748–6755.
+Kahn, G., Abbeel, P., Levine, S., 2021. BADGR: An autonomous self-supervised
+learning-based navigation system. IEEE Robot. Autom. Lett. 6 (2), 1312–1319.
+Kim, B., Pineau, J., 2016. Socially adaptive path planning in human environments using
+inverse reinforcement learning. Int. J. Soc. Robot. 8 (1), 51–66.
+Konolige, K., Agrawal, M., Blas, M.R., Bolles, R.C., Gerkey, B., Sola, J., Sundaresan, A.,
+2009. Mapping, navigation, and learning for off-road traversal. J. Field Robotics
+26 (1), 88–113.
+Merhy, B.A., Payeur, P., Petriu, E.M., 2008. Application of segmented 2-D probabilistic
+occupancy maps for robot sensing and navigation. IEEE Trans. Instrum. Meas. 57
+(12), 2827–2837.
+Nair, A., McGrew, B., Andrychowicz, M., Zaremba, W., Abbeel, P., 2018. Overcom-
+ing exploration in reinforcement learning with demonstrations. In: 2018 IEEE
+International Conference on Robotics and Automation. ICRA, pp. 6292–6299.
+Pérez-Higueras, N., Caballero, F., Merino, L., 2018. Teaching robot navigation behaviors
+to optimal RRT planners. Int. J. Soc. Robot. 10 (2), 235–249.
+Pivtoraiko, M., Knepper, R.A., Kelly, A., 2009. Differentially constrained mobile robot
+motion planning in state lattices. J. Field Robotics 26 (3), 308–333.
+Rankin, A.L., Maimone, M.W., Biesiadecki, J.J., Patel, N., Levine, D., Toupet, O., 2021.
+Mars curiosity rover mobility trends during the first 7 years. J. Field Robotics 38
+(5), 759–800.
+Reeds, J.A., Shepp, L.A., 1990. Optimal paths for a car that goes both forwards and
+backwards. Pacific J. Math. 145 (2), 367–393.
+Sathyamoorthy, A.J., Weerakoon, K.M.K., Guan, T., Liang, J., Manocha, D., 2022.
+Terrapn: Unstructured terrain navigation using online self-supervised learning. In:
+2022 IEEE/RSJ International Conference on Intelligent Robots and Systems. IROS,
+pp. 7197–7204.
+Shah, D., Levine, S., 2022. ViKiNG: Vision-based kilometer-scale navigation with
+geographic hints. In: Robotics: Science and Systems. RSS.
+Shan, T., Englot, B., Meyers, D., Wang, W., Ratti, C., Rus, D., 2020. LIO-SAM: Tightly-
+coupled lidar inertial odometry via smoothing and mapping. In: 2020 IEEE/RSJ
+International Conference on Intelligent Robots and Systems. IROS, pp. 5135–5142.
+Shimoda, S., Kuroda, Y., Iagnemma, K., 2005. Potential field navigation of high
+speed unmanned ground vehicles on uneven terrain. In: 2005 IEEE International
+Conference on Robotics and Automation. ICRA, pp. 2828–2833.
+Silver, D., Bagnell, J.A., Stentz, A., 2008. High performance outdoor navigation from
+overhead data using imitation learning. In: Robotics: Science and Systems. RSS.
+Siva, S., Wigness, M.B., Rogers, J.G., 2019. Robot adaptation to unstructured terrains by
+joint representation and apprenticeship learning. In: Robotics: Science and Systems
+(RSS).
+Siva, S., Wigness, M.B., Rogers, J.G., Quang, L., Zhang, H., 2021. Self-reflective
+terrain-aware robot adaptation for consistent off-road ground navigation. arXiv
+arXiv:2111.06742.
+Siva, S., Wigness, M.B., Rogers, J.G., Quang, L., Zhang, H., 2022. NAUTS: Negotiation
+for adaptation to unstructured terrain surfaces. In: 2022 IEEE/RSJ International
+Conference on Intelligent Robots and Systems. IROS, pp. 1733–1740.
+Suger, B., Steder, B., Burgard, W., 2015. Traversability analysis for mobile robots in
+outdoor environments: A semi-supervised learning approach based on 3D-lidar data.
+In: 2015 IEEE International Conference on Robotics and Automation. ICRA, pp.
+3941–3946.
+Triest, S., Castro, M.G., Maheshwari, P., Sivaprakasam, M., Wang, W., Scherer, S.,
+2023. Learning risk-aware costmaps via inverse reinforcement learning for off-road
+navigation. In: 2023 IEEE International Conference on Robotics and Automation.
+ICRA, pp. 924–930.
+Weerakoon, K.M.K., Sathyamoorthy, A.J., Patel, U., Manocha, D., 2022. TERP: Reliable
+planning in uneven outdoor environments using deep reinforcement learning. In:
+2022 International Conference on Robotics and Automation. ICRA, pp. 9447–9453.
+Wigness, M.B., Rogers, J.G., Navarro-Serment, L.E., 2018. Robot navigation from human
+demonstration: Learning control behaviors. In: 2018 IEEE International Conference
+on Robotics and Automation. ICRA, pp. 1150–1157.
+Wulfmeier, M., Rao, D., Wang, D.Z., Ondruska, P., Posner, I., 2017. Large-scale cost
+function learning for path planning using deep inverse reinforcement learning. Int.
+J. Robot. Res. 36 (10), 1073–1087.
+Wulfmeier, M., Wang, D.Z., Posner, I., 2016. Watch this: Scalable cost-function
+learning for path planning in urban environments. In: 2016 IEEE/RSJ International
+Conference on Intelligent Robots and Systems. IROS, pp. 2089–2095.
+Wurm, K.M., Kümmerle, R., Stachniss, C., Burgard, W., 2009. Improving robot naviga-
+tion in structured outdoor environments by identifying vegetation from laser data.
+In: 2009 IEEE/RSJ International Conference on Intelligent Robots and Systems.
+IROS, pp. 1217–1222.
+Xie, Z., Zhang, Q., Jiang, Z., Liu, H., 2020. Robot learning from demonstration for path
+planning: A review. Sci. China Technol. Sci. 63 (8), 1325–1334.
+You, C., Lu, J., Filev, D., Tsiotras, P., 2019. Advanced planning for autonomous
+vehicles using reinforcement learning and deep inverse reinforcement learning.
+Robot. Auton. Syst. 114, 1–18.
+Zhang, B., Li, G., Zheng, Q., Bai, X., Ding, Y., Khan, A., 2022. Path planning for wheeled
+mobile robot in partially known uneven terrain. Sensors 22 (14), 5217.
+Zhang, K., Niroui, F., Ficocelli, M., Nejat, G., 2018. Robot navigation of environments
+with unknown rough terrain using deep reinforcement learning. In: 2018 IEEE
+International Symposium on Safety, Security, and Rescue Robotics. SSRR, pp. 1–7.
+Ziebart, B.D., Bagnell, J.A., Dey, A.K., 2013. The principle of maximum causal entropy
+for estimating interacting processes. IEEE Trans. Inform. Theory 59 (4), 1966–1980.
+Engineering Applications of Artiϧcial Intelligence 138 (2024) 109339 
+10 

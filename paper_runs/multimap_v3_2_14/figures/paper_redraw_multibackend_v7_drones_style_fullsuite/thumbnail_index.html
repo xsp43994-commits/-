@@ -1,0 +1,17 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>v7 figure index</title>
+<style>
+body{font:14px Arial,"Microsoft YaHei",sans-serif;margin:24px;background:#f4f5f6;color:#20252b}
+h1{font-size:22px}.grid{display:grid;grid-template-columns:repeat(3,minmax(280px,1fr));gap:16px}
+.card{background:#fff;border:1px solid #cfd3d7;padding:10px}.pair{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+img{display:block;width:100%;height:220px;object-fit:contain;background:#fff}.links{margin-top:8px;font-size:12px}
+a{color:#0069a8;text-decoration:none} @media(max-width:1000px){.grid{grid-template-columns:1fr}}
+</style>
+<h1>v7 Drones-style full suite — bilingual thumbnail index</h1>
+<div id="grid" class="grid"></div>
+<script>
+const ids=[...Array.from({length:10},(_,i)=>`M${String(i+1).padStart(2,'0')}`),...Array.from({length:9},(_,i)=>`S${String(i+1).padStart(2,'0')}`),'V01','V02'];
+const tier=id=>id[0]==='M'?'main':id[0]==='S'?'supplementary':'visual';
+document.querySelector('#grid').innerHTML=ids.map(id=>{const source=id==='V02'?'source_data/V02/metadata.csv':`source_data/${id}_source_data.csv`;return `<section class="card"><b>${id}</b><div class="pair"><img alt="${id} English" src="exports/en/${tier(id)}/${id}_v7_drones_style_en.png"><img alt="${id} Chinese" src="exports/zh/${tier(id)}/${id}_v7_drones_style_zh.png"></div><div class="links"><a href="exports/en/${tier(id)}/${id}_v7_drones_style_en.pdf">EN PDF</a> · <a href="exports/zh/${tier(id)}/${id}_v7_drones_style_zh.pdf">ZH PDF</a> · <a href="captions/${id}_caption_bilingual.md">caption</a> · <a href="${source}">Source Data</a></div></section>`}).join('');
+</script>

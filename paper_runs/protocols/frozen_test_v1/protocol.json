@@ -1,0 +1,1259 @@
+{
+  "algorithms": {
+    "ablation_variants": [
+      "no_priority_bias",
+      "no_domain_randomization",
+      "no_resource_shaping",
+      "no_return_reserve"
+    ],
+    "core_learning_variants": [
+      "full",
+      "ppo_mlp",
+      "a2c_pointer"
+    ],
+    "deterministic_baselines": [
+      "a_star",
+      "exact_pareto_dp",
+      "milp_orienteering",
+      "nearest_feasible",
+      "priority_resource_greedy"
+    ],
+    "learning_variants": [
+      "full",
+      "ppo_mlp",
+      "a2c_pointer",
+      "no_priority_bias",
+      "no_domain_randomization",
+      "no_resource_shaping",
+      "no_return_reserve"
+    ],
+    "main_baselines": [
+      "nearest_feasible",
+      "priority_resource_greedy",
+      "aco",
+      "ga",
+      "sa",
+      "milp_orienteering"
+    ],
+    "stochastic_baselines": [
+      "aco",
+      "ga",
+      "pso",
+      "sa"
+    ],
+    "supplementary_baselines": [
+      "a_star",
+      "pso",
+      "exact_pareto_dp"
+    ]
+  },
+  "budgets": {
+    "certification": {
+      "a_star": "certified only after complete search",
+      "exact_pareto_dp": "certified only after complete search",
+      "milp_orienteering": "certified only when HiGHS reports optimal",
+      "timeout": "retain feasible result and real gap/bound; never claim optimality"
+    },
+    "deterministic_greedy": {
+      "algorithms": [
+        "nearest_feasible",
+        "priority_resource_greedy"
+      ],
+      "planner_seed_identity": 42,
+      "replicates": 1
+    },
+    "learning": {
+      "decode_mode": "deterministic",
+      "replicates": "five independently trained checkpoints"
+    },
+    "stochastic_search": {
+      "algorithms": [
+        "aco",
+        "ga",
+        "pso",
+        "sa"
+      ],
+      "max_evaluations": 50000,
+      "planner_seeds": [
+        42,
+        43,
+        44,
+        45,
+        46,
+        47,
+        48,
+        49,
+        50,
+        51
+      ],
+      "rule": "complete the evaluation budget; no common 60-second truncation",
+      "time_limit_s": null
+    },
+    "time_limited_exact_or_graph": {
+      "algorithms": [
+        "a_star",
+        "exact_pareto_dp",
+        "milp_orienteering"
+      ],
+      "max_evaluations": null,
+      "time_limit_s": 60.0
+    }
+  },
+  "checkpoints": [
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_full_seed42_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_full_seed42_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "1360608aa0d54911bcf783dd256c9ceea4a2768965a90f756914473be8497970",
+      "simulation_only": false,
+      "size_bytes": 12712638,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 42,
+      "variant": "full",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_full_seed43_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_full_seed43_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "6c3b7383204e8cb32e85ee9ead19949d529f58fdbcdfc14c2d5b13d2d8914124",
+      "simulation_only": false,
+      "size_bytes": 12712638,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 43,
+      "variant": "full",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_full_seed44_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_full_seed44_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "a8af69cd57d1431a7dc5d7de3846a73990fb0bd7ce7c862ed3935b553e47327f",
+      "simulation_only": false,
+      "size_bytes": 12712638,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 44,
+      "variant": "full",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_full_seed45_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_full_seed45_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "2aa7e2e4448cc819c196960ebe25d708fe4129ffdf3680eecfb0f844cdec8f8a",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 45,
+      "variant": "full",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_full_seed46_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_full_seed46_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "a53d3afc56f6cc00cfd219c592166a1b078ff9dfb29a1092b0cee01fd59a7f8c",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 46,
+      "variant": "full",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_ppo_mlp_seed42_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_ppo_mlp_seed42_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "89f9afb92f80e759fa624bb45edfd32a1caff7ddd5e9fd3e8604e459a08ad916",
+      "simulation_only": false,
+      "size_bytes": 12901510,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 42,
+      "variant": "ppo_mlp",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_ppo_mlp_seed43_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_ppo_mlp_seed43_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "4e07ea95f6dcc03b223e6ac27ecc87e3f3adb5668ca6847cfdd19c39567463fd",
+      "simulation_only": false,
+      "size_bytes": 12901510,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 43,
+      "variant": "ppo_mlp",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_ppo_mlp_seed44_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_ppo_mlp_seed44_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "22f8dea7fc9e3f6e3b4a3a09d94ede495abbb2f41965e6d6b8899100805aedfe",
+      "simulation_only": false,
+      "size_bytes": 12901510,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 44,
+      "variant": "ppo_mlp",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_ppo_mlp_seed45_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_ppo_mlp_seed45_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "ca249ee6fac4a728e436cd1736a51efc886830a5c838ea008922bee1805100c2",
+      "simulation_only": false,
+      "size_bytes": 12901574,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 45,
+      "variant": "ppo_mlp",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_ppo_mlp_seed46_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_ppo_mlp_seed46_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "da670ac6a269f458b260bd46fd8cf205998af0a29eabe518e0e656fdf099ad7e",
+      "simulation_only": false,
+      "size_bytes": 12901510,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 46,
+      "variant": "ppo_mlp",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_a2c_pointer_seed42_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_a2c_pointer_seed42_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "4f26cd2e0bb9537157a040102737fc57f5f3e9727850e545fa2a5bd88dd96f0d",
+      "simulation_only": false,
+      "size_bytes": 12712638,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 42,
+      "variant": "a2c_pointer",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_a2c_pointer_seed43_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_a2c_pointer_seed43_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "fe65262e1a8a1fb460fc849b7b1c4ec97399c9d3ff239b3c64fa15dbd031a72d",
+      "simulation_only": false,
+      "size_bytes": 12712638,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 43,
+      "variant": "a2c_pointer",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_a2c_pointer_seed44_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_a2c_pointer_seed44_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "42ba7c771be6be5b2304737d01d15fb6d0d8c7288589cec5014f3bb50b6c6217",
+      "simulation_only": false,
+      "size_bytes": 12712638,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 44,
+      "variant": "a2c_pointer",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_a2c_pointer_seed45_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_a2c_pointer_seed45_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "0cf8e5b33cd11714d0f1fb7a5173eb1e62faa528dd9de76453d18c40f0758914",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 45,
+      "variant": "a2c_pointer",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_a2c_pointer_seed46_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_a2c_pointer_seed46_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "42849cf4c37da2545a9724808879de1d7c821459fbe05b11bb925aeec9153148",
+      "simulation_only": false,
+      "size_bytes": 12712638,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 46,
+      "variant": "a2c_pointer",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_priority_bias_seed42_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_priority_bias_seed42_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "76f8358e4c824985f788e6b12d24cb44b88ce11b013df7bb39e0aa47aaae5309",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 42,
+      "variant": "no_priority_bias",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_priority_bias_seed43_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_priority_bias_seed43_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "b322f4904473e3b2eca510ba29930d445a7e8d5202674cba98dc041a963c35b6",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 43,
+      "variant": "no_priority_bias",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_priority_bias_seed44_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_priority_bias_seed44_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "3bf35e8805d406d3603fbe0b72db87fc6a91d3c2e25fbe0dde405384e755fdeb",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 44,
+      "variant": "no_priority_bias",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_priority_bias_seed45_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_priority_bias_seed45_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "3cd309c8bc72f0257ff2e12312ab6dd8a6857977c23c1e02c29080fca0f7fbd2",
+      "simulation_only": false,
+      "size_bytes": 12712766,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 45,
+      "variant": "no_priority_bias",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_priority_bias_seed46_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_priority_bias_seed46_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "f00ea4339871a77fdd4d890cfb6f3dc956244e0e4fc1272e51f1e08c0f6d8605",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 46,
+      "variant": "no_priority_bias",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_domain_randomization_seed42_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_domain_randomization_seed42_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "21a4e0f293e2615fd755ec67c650fe09115e9d3c4479b209c023c731f05ca9d4",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 42,
+      "variant": "no_domain_randomization",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_domain_randomization_seed43_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_domain_randomization_seed43_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "9914455641760ba0c50be59108c482bf50f7637e6c66cb260cbb67d5e12a695f",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 43,
+      "variant": "no_domain_randomization",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_domain_randomization_seed44_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_domain_randomization_seed44_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "edbfa337a9f09b8bc61a5e021df6bdae75e1eec923928313b574bff4fa54c5d7",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 44,
+      "variant": "no_domain_randomization",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_domain_randomization_seed45_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_domain_randomization_seed45_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "26ed73a88cf4ff3e50fa3948d93eb9225399b8360a9c44a0e6c9211361b68036",
+      "simulation_only": false,
+      "size_bytes": 12712766,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 45,
+      "variant": "no_domain_randomization",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_domain_randomization_seed46_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_domain_randomization_seed46_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "24e82ae717ec2e3dec785b95015a7dba278b7ace291a026ea00950bc2670797f",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 46,
+      "variant": "no_domain_randomization",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_resource_shaping_seed42_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_resource_shaping_seed42_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "65b79a7a7ca81d93e6ac357e2a5db0e17e800d029769e253988c0fa85f08f9d3",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 42,
+      "variant": "no_resource_shaping",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_resource_shaping_seed43_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_resource_shaping_seed43_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "8e49822e565128df8e80ba5d1e19da0a70450a963ca8e6e4427cd0e2920a9e69",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 43,
+      "variant": "no_resource_shaping",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_resource_shaping_seed44_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_resource_shaping_seed44_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "902003cc14f27457555dd8a97351a37490ec9d7bb134a8c3afa6aed9494f02a0",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 44,
+      "variant": "no_resource_shaping",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_resource_shaping_seed45_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_resource_shaping_seed45_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "c9116e17a4b630e50919f26766db4b5e9a6ac991a3735ef7ab296df325541c0f",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 45,
+      "variant": "no_resource_shaping",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_resource_shaping_seed46_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_resource_shaping_seed46_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "fc51b2660ee6f4468e9315aae306ead2e040fa8b10a330f3e6e27f6860b3d10a",
+      "simulation_only": false,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 46,
+      "variant": "no_resource_shaping",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_return_reserve_seed42_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_return_reserve_seed42_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "f111755eeff84971fa00d0d855857f39141ab726360563c185869b2cc2d29c77",
+      "simulation_only": true,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 42,
+      "variant": "no_return_reserve",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_return_reserve_seed43_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_return_reserve_seed43_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "b4172a13bc5fda6a463142e40a631871ffc924899c22fbdcd45e7c181373ced8",
+      "simulation_only": true,
+      "size_bytes": 12712638,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 43,
+      "variant": "no_return_reserve",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_return_reserve_seed44_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_return_reserve_seed44_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "0ea2182cb9d13ad7fe4df55827575a5001c41468aa978f232b4d4032d9cb94c9",
+      "simulation_only": true,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 44,
+      "variant": "no_return_reserve",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_return_reserve_seed45_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_return_reserve_seed45_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "5d17e9d4d168f80dc16b5e62d21a4b3352e23f0f287cec946059f9a3a5b6022d",
+      "simulation_only": true,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 45,
+      "variant": "no_return_reserve",
+      "verification_passed": true
+    },
+    {
+      "checkpoint_kind": "best_safe",
+      "deterministic_reproducible": true,
+      "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+      "path": "paper_runs/training/formal_no_return_reserve_seed46_3000ep/best_safe.pt",
+      "run_dir": "paper_runs/training/formal_no_return_reserve_seed46_3000ep",
+      "safe": true,
+      "scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+      "sha256": "dcf3032825e2086beb7a72488c709b0eb348cbcc534e87a09685d99492f1d6ab",
+      "simulation_only": true,
+      "size_bytes": 12712702,
+      "status_state": "completed",
+      "target_episodes": 3000,
+      "training_seed": 46,
+      "variant": "no_return_reserve",
+      "verification_passed": true
+    }
+  ],
+  "claim_boundaries": {
+    "bug_policy": "invalidate and rerun the complete affected algorithm-by-scenario matrix; never rerun only unfavorable outcomes",
+    "failure_policy": "retain all failed, unsafe, stranded, and constraint-violating rows",
+    "no_return_reserve_label": "simulation safety ablation",
+    "supported_domains": [
+      "current road/DEM simulation",
+      "registered stress conditions",
+      "same-generator scale generalization without fine-tuning"
+    ],
+    "supported_mask_claim": "return-aware multi-resource feasibility mask",
+    "training_budget": "same 3000-episode budget and update schedule; observed environment interactions range from 46844 to 50072 and are not identical",
+    "unsupported_claims": [
+      "cross-map generalization",
+      "real-flight safety certification",
+      "measured real-world power",
+      "independent energy-mask contribution",
+      "independent reachability-mask contribution"
+    ]
+  },
+  "code_fingerprints": [
+    {
+      "path": "final_python_ppo_pointer.py",
+      "sha256": "a7b8115813cfce8ce6d31a5024e4928817ee1c6e4fc19638c251d01798d6a527",
+      "size_bytes": 168004
+    },
+    {
+      "path": "paper_evaluation.py",
+      "sha256": "e9b68025f63a2383b1c31b1ed732de2eab871e64cccf06653c522f303e556428",
+      "size_bytes": 77281
+    },
+    {
+      "path": "paper_experiments.py",
+      "sha256": "bd90118957419158921f5287c20a4015634ac9b50e3b66db27068faec0002cab",
+      "size_bytes": 104728
+    },
+    {
+      "path": "paper_protocol.py",
+      "sha256": "06cb4cb62e6e54646b3e23aa420f0c8e99763fecbba0ed3e3eb8a224e15baa87",
+      "size_bytes": 68175
+    },
+    {
+      "path": "ppo_training_scenario.py",
+      "sha256": "5f10baac67774fac6966cbed385549b2152e994e27af2eaa0e8f345c8e50ebc3",
+      "size_bytes": 55894
+    },
+    {
+      "path": "python_classical_algs/__init__.py",
+      "sha256": "449fe2200835ec3d853a709a8f545a765d0dc17c7ded7da949a0822080062c17",
+      "size_bytes": 5912
+    },
+    {
+      "path": "python_classical_algs/a_star.py",
+      "sha256": "68a7cc4b95450f3b5ec255ce2b12f7054e998e8c4c9b595accd75b7c079dea42",
+      "size_bytes": 8791
+    },
+    {
+      "path": "python_classical_algs/aco.py",
+      "sha256": "2becd065455386f4838ba5338db9f10bad146740659c740e9fd84a19bfa68b52",
+      "size_bytes": 5355
+    },
+    {
+      "path": "python_classical_algs/common.py",
+      "sha256": "d844809934647bd61991a1769387a7638a5f1bd9dbc179d5017a5bdb08ccce08",
+      "size_bytes": 25580
+    },
+    {
+      "path": "python_classical_algs/ga.py",
+      "sha256": "2e7ffc72c8122767f70e2b00f08848bd7bd986df774c1877165e9c8dda1a9584",
+      "size_bytes": 6192
+    },
+    {
+      "path": "python_classical_algs/greedy.py",
+      "sha256": "b619c5737747e1a8b0b42445f83438385c29e3b061f6bae24a343166ff52a1e8",
+      "size_bytes": 3515
+    },
+    {
+      "path": "python_classical_algs/milp.py",
+      "sha256": "c0a89b96ae90bfaa770c314fa6c67f77e0633ad64058b49ad9bfa31bde28ea0d",
+      "size_bytes": 17359
+    },
+    {
+      "path": "python_classical_algs/pso.py",
+      "sha256": "2c71c117f21e91f1916ebc2546a3adfa3a2f3585d7f3e4ef2862868427a4edba",
+      "size_bytes": 4585
+    },
+    {
+      "path": "python_classical_algs/sa.py",
+      "sha256": "ff29cdb8b427c88d42f41ad634c2dda3dc6e91f04ecf6427c69c79b8d0429741",
+      "size_bytes": 4398
+    }
+  ],
+  "environment": {
+    "gpus": [
+      {
+        "driver_version": "572.83",
+        "name": "NVIDIA GeForce RTX 4070 Laptop GPU"
+      }
+    ],
+    "packages": {
+      "numpy": "1.26.4",
+      "scipy": "1.13.1",
+      "torch": "2.4.1+cu124"
+    },
+    "platform": {
+      "logical_cpu_count": 16,
+      "machine": "AMD64",
+      "processor": "AMD64 Family 25 Model 97 Stepping 2, AuthenticAMD",
+      "release": "10",
+      "system": "Windows",
+      "version": "10.0.26200"
+    },
+    "python": {
+      "executable": "D:\\anaconda3\\envs\\Deeplearning-gpu\\python.exe",
+      "implementation": "CPython",
+      "version": "3.9.25"
+    },
+    "thread_environment": {
+      "CUDA_VISIBLE_DEVICES": null,
+      "MKL_NUM_THREADS": null,
+      "OMP_NUM_THREADS": null,
+      "OPENBLAS_NUM_THREADS": null
+    }
+  },
+  "environment_sha256": "40794b3d227ccc406cdc7f0e8aecee37138194fa55265b49601e18b7b1773595",
+  "immutable": true,
+  "manifest": {
+    "base_scenario_hash": "00f92e2a1bea7ea63e57d80ec4dd8635b6f628113cab00e337962bb08facc51d",
+    "manifest_hash": "1861dd0bb740f2188e69a460879d520ddad08a738a71e1ac03f023f6399246a8",
+    "manifest_seed": 20260720,
+    "records_sha256": "5ce9f86acb7d592560ce502ac260940a3d38b4fa1345a59ba83a25e3e3970380",
+    "source": "paper_runs/manifests/frozen_v1",
+    "split_counts": {
+      "id_test": 100,
+      "scale_12": 25,
+      "scale_20": 25,
+      "scale_24": 25,
+      "scale_8": 25,
+      "stress_test": 100,
+      "validation": 64
+    }
+  },
+  "metrics": {
+    "aggregate_metrics": {
+      "return_rate": "scenario-equal mean of returned",
+      "runtime_summary": "median and interquartile range",
+      "safety_rate": "scenario-equal mean of safe indicator",
+      "termination_distribution": "counts and rates; failed rows are retained",
+      "violation_rates": "scenario-equal rates for each violation flag"
+    },
+    "forbidden_rankings": [
+      "manual_composite_score",
+      "radar_total",
+      "subjective_weight_rank"
+    ],
+    "internal_only": [
+      "objective"
+    ],
+    "primary_metric": "safe_weighted_coverage",
+    "resource_population": "safe routes only",
+    "row_metrics": {
+      "coverage": {
+        "definition": "visited_count / node_count",
+        "direction": "higher",
+        "role": "coverage_auxiliary"
+      },
+      "distance_budget_m": {
+        "role": "resource_budget",
+        "unit": "m"
+      },
+      "distance_m": {
+        "direction": "lower",
+        "role": "resource_safe_routes_only",
+        "unit": "m"
+      },
+      "distance_utilization": {
+        "direction": "lower",
+        "role": "resource_safe_routes_only"
+      },
+      "distance_violation": {
+        "direction": "lower",
+        "role": "safety"
+      },
+      "dynamics_violation": {
+        "direction": "lower",
+        "role": "safety"
+      },
+      "energy_budget_wh": {
+        "role": "resource_budget",
+        "unit": "Wh"
+      },
+      "energy_utilization": {
+        "direction": "lower",
+        "role": "resource_safe_routes_only"
+      },
+      "energy_violation": {
+        "direction": "lower",
+        "role": "safety"
+      },
+      "energy_wh": {
+        "direction": "lower",
+        "role": "resource_safe_routes_only",
+        "unit": "Wh"
+      },
+      "evaluations": {
+        "direction": "lower",
+        "role": "search_compute"
+      },
+      "high_priority_coverage": {
+        "direction": "higher",
+        "role": "priority_coverage"
+      },
+      "low_priority_coverage": {
+        "direction": "higher",
+        "role": "priority_coverage"
+      },
+      "medium_priority_coverage": {
+        "direction": "higher",
+        "role": "priority_coverage"
+      },
+      "min_remaining_soc": {
+        "direction": "higher",
+        "role": "safety_resource"
+      },
+      "optimality_certified": {
+        "direction": "higher",
+        "role": "exact_reference"
+      },
+      "optimality_gap": {
+        "direction": "lower",
+        "role": "exact_reference"
+      },
+      "planning_time_s": {
+        "direction": "lower",
+        "role": "online_compute",
+        "unit": "s"
+      },
+      "returned": {
+        "direction": "higher",
+        "role": "safety"
+      },
+      "safe_coverage": {
+        "definition": "coverage if safe else 0",
+        "direction": "higher",
+        "role": "coverage_auxiliary"
+      },
+      "safe_weighted_coverage": {
+        "definition": "weighted_coverage if safe else 0",
+        "direction": "higher",
+        "role": "sole_primary"
+      },
+      "solver_dual_bound": {
+        "direction": null,
+        "role": "exact_reference"
+      },
+      "solver_status": {
+        "direction": null,
+        "role": "exact_reference"
+      },
+      "termination_reason": {
+        "direction": null,
+        "role": "safety_diagnostic"
+      },
+      "time_budget_s": {
+        "role": "resource_budget",
+        "unit": "s"
+      },
+      "time_s": {
+        "direction": "lower",
+        "role": "resource_safe_routes_only",
+        "unit": "s"
+      },
+      "time_utilization": {
+        "direction": "lower",
+        "role": "resource_safe_routes_only"
+      },
+      "time_violation": {
+        "direction": "lower",
+        "role": "safety"
+      },
+      "visited_count": {
+        "direction": "higher",
+        "role": "coverage_auxiliary"
+      },
+      "weighted_coverage": {
+        "definition": "sum of visited priority weights / sum of all priority weights",
+        "direction": "higher",
+        "role": "coverage_auxiliary"
+      }
+    },
+    "safe_definition": "returned and not energy_violation and not distance_violation and not time_violation and not dynamics_violation"
+  },
+  "primary_id_test_counts": {
+    "learning": 3500,
+    "main_baselines": 3300,
+    "supplementary_baselines": 1200,
+    "total": 8000
+  },
+  "protocol_hash": "7a010c749881dd452c78a03602d42c797b32b14590637f63676a216cd34dce16",
+  "protocol_name": "frozen_test_v1",
+  "representative_scenario": {
+    "center": "componentwise_median",
+    "display_algorithms": [
+      {
+        "algorithm": "full",
+        "training_seed": 42
+      },
+      {
+        "algorithm": "priority_resource_greedy",
+        "planner_seed": 42
+      },
+      {
+        "algorithm": "aco",
+        "planner_seed": 42
+      },
+      {
+        "algorithm": "milp_orienteering",
+        "planner_seed": 42
+      }
+    ],
+    "distance": "euclidean_z_score_distance",
+    "field_medians": {
+      "distance_budget_scale": 0.9229424684751941,
+      "initial_soc": 0.9013173949179607,
+      "time_budget_scale": 0.9279159100229626,
+      "wind_rotation_deg": -0.47519397143947373,
+      "wind_scale": 1.0415054738047802,
+      "wind_vertical_bias_mps": 0.004521510864272105
+    },
+    "field_standard_deviations": {
+      "distance_budget_scale": 0.04216787803535123,
+      "initial_soc": 0.0516112050229292,
+      "time_budget_scale": 0.044766508514186676,
+      "wind_rotation_deg": 8.304415534977778,
+      "wind_scale": 0.1147522024473418,
+      "wind_vertical_bias_mps": 0.5779760437297428
+    },
+    "fields": [
+      "initial_soc",
+      "distance_budget_scale",
+      "time_budget_scale",
+      "wind_scale",
+      "wind_rotation_deg",
+      "wind_vertical_bias_mps"
+    ],
+    "scenario_id": "id_test_034",
+    "selected_distance": 1.2435189594763456,
+    "selection_split": "id_test",
+    "standardization": "population_standard_deviation",
+    "tie_break": "lexicographically_smallest_scenario_id"
+  },
+  "schema_version": 1,
+  "secondary_experiments": {
+    "power_sensitivity": {
+      "baselines": [
+        "nearest_feasible",
+        "priority_resource_greedy",
+        "aco",
+        "ga",
+        "sa",
+        "milp_orienteering"
+      ],
+      "expected_new_rows": 19200,
+      "learning_variants": [
+        "full",
+        "ppo_mlp",
+        "a2c_pointer"
+      ],
+      "new_power_scales": [
+        0.8,
+        0.9,
+        1.1,
+        1.2
+      ],
+      "power_scales": [
+        0.8,
+        0.9,
+        1.0,
+        1.1,
+        1.2
+      ],
+      "reuse_nominal_power_results": true,
+      "scope": "core",
+      "splits": [
+        "id_test"
+      ]
+    },
+    "scale_generalization": {
+      "baselines": [
+        "nearest_feasible",
+        "priority_resource_greedy",
+        "aco",
+        "ga",
+        "sa",
+        "milp_orienteering"
+      ],
+      "expected_rows": 4800,
+      "fine_tuning": false,
+      "learning_variants": [
+        "full",
+        "ppo_mlp",
+        "a2c_pointer"
+      ],
+      "power_scales": [
+        1.0
+      ],
+      "scope": "core",
+      "splits": [
+        "scale_8",
+        "scale_12",
+        "scale_20",
+        "scale_24"
+      ]
+    },
+    "stress_test": {
+      "baselines": [
+        "nearest_feasible",
+        "priority_resource_greedy",
+        "aco",
+        "ga",
+        "sa",
+        "milp_orienteering"
+      ],
+      "expected_rows": 6800,
+      "learning_variants": [
+        "full",
+        "ppo_mlp",
+        "a2c_pointer",
+        "no_priority_bias",
+        "no_domain_randomization",
+        "no_resource_shaping",
+        "no_return_reserve"
+      ],
+      "power_scales": [
+        1.0
+      ],
+      "scope": "full",
+      "splits": [
+        "stress_test"
+      ]
+    }
+  },
+  "seeds": {
+    "deterministic_planner_identity": 42,
+    "stochastic_planner": [
+      42,
+      43,
+      44,
+      45,
+      46,
+      47,
+      48,
+      49,
+      50,
+      51
+    ],
+    "training": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ]
+  },
+  "statistics_families": {
+    "ablation": {
+      "comparisons": [
+        "no_priority_bias",
+        "no_domain_randomization",
+        "no_resource_shaping",
+        "no_return_reserve"
+      ],
+      "confidence_interval": "10000-replicate hierarchical bootstrap",
+      "effect_sizes": [
+        "rank_biserial",
+        "Hodges_Lehmann"
+      ],
+      "members": [
+        "full",
+        "no_priority_bias",
+        "no_domain_randomization",
+        "no_resource_shaping",
+        "no_return_reserve"
+      ],
+      "multiplicity": "Holm correction within this family",
+      "omnibus": "Friedman",
+      "pairwise": "paired Wilcoxon signed-rank versus full",
+      "reference": "full",
+      "status": "confirmatory",
+      "unit": "scenario",
+      "within_scenario_reduction": "mean over training/planner seeds before testing"
+    },
+    "main": {
+      "comparisons": [
+        "ppo_mlp",
+        "a2c_pointer",
+        "nearest_feasible",
+        "priority_resource_greedy",
+        "aco",
+        "ga",
+        "sa",
+        "milp_orienteering"
+      ],
+      "confidence_interval": "10000-replicate hierarchical bootstrap",
+      "effect_sizes": [
+        "rank_biserial",
+        "Hodges_Lehmann"
+      ],
+      "members": [
+        "full",
+        "ppo_mlp",
+        "a2c_pointer",
+        "nearest_feasible",
+        "priority_resource_greedy",
+        "aco",
+        "ga",
+        "sa",
+        "milp_orienteering"
+      ],
+      "multiplicity": "Holm correction within this family",
+      "omnibus": "Friedman",
+      "pairwise": "paired Wilcoxon signed-rank versus full",
+      "reference": "full",
+      "status": "confirmatory",
+      "unit": "scenario",
+      "within_scenario_reduction": "mean over training/planner seeds before testing"
+    },
+    "supplementary": {
+      "comparisons": [
+        "a_star",
+        "pso",
+        "exact_pareto_dp"
+      ],
+      "confidence_interval": "10000-replicate hierarchical bootstrap",
+      "effect_sizes": [
+        "rank_biserial",
+        "Hodges_Lehmann"
+      ],
+      "members": [
+        "full",
+        "a_star",
+        "pso",
+        "exact_pareto_dp"
+      ],
+      "multiplicity": "Holm correction within this family",
+      "omnibus": "Friedman",
+      "pairwise": "paired Wilcoxon signed-rank versus full",
+      "reference": "full",
+      "status": "exploratory",
+      "unit": "scenario",
+      "within_scenario_reduction": "mean over training/planner seeds before testing"
+    }
+  },
+  "timing_protocol": {
+    "execution": "single process with no concurrent heavy workload",
+    "learning_inference": "warm up once and synchronize CUDA before/after timing; exclude model loading and disk I/O",
+    "offline_training_hours": 26.95,
+    "offline_training_reporting": "report separately from online planning time",
+    "runtime_summary": "median and IQR",
+    "traditional_algorithms": "include evaluator/context initialization, search, and final unified route replay"
+  }
+}

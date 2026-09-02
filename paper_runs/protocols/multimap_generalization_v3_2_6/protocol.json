@@ -1,0 +1,1142 @@
+{
+  "amendment_reason": "replace the archived shared-node PPO-MLP baseline with a true fixed-slot flat MLP PPO baseline; close real-terrain ablation, robustness semantics, and map-level statistics gaps before any formal test is generated",
+  "asset_parent_protocol_hash": "8014a94241779ca55745ebcf533784a51682a6ff8cfa1ad41af0ce84760e61ce",
+  "atomic_replace_runtime_policy": {
+    "failed_partial_formal_run_is_not_paper_eligible": true,
+    "initial_backoff_seconds": 0.05,
+    "max_attempts": 7,
+    "retryable_windows_winerrors": [
+      5,
+      32,
+      33
+    ],
+    "semantic_change_to_training_or_evaluation": false
+  },
+  "atomic_replace_runtime_revision_reason": "after the first formal model reached episode 724 without numerical, health, or scientific-validity alerts, Windows returned WinError 5 while atomically replacing status.json; bounded retries for transient WinError 5, 32, and 33 were added solely to preserve execution continuity, with no change to maps, records, scenarios, reward, network, masks, optimizer, training schedule, evaluator, or selection rule",
+  "certification": {
+    "algorithm": "milp_weighted_coverage",
+    "candidate_screening_rule": "discard_only_when_finite_milp_bounds_do_not_intersect_the_preregistered_difficulty_band_or_no_safe_partial_incumbent_exists",
+    "candidate_screening_time_limit_s": 10.0,
+    "classification_rule": "mip_gap_le_1pct_or_lower_and_upper_bounds_in_same_difficulty_band",
+    "complete_coverage_must_be_excluded": true,
+    "mip_rel_gap": 0.01,
+    "time_limit_s": 60.0
+  },
+  "claim_boundaries": {
+    "individual_mask_component_claim_forbidden": true,
+    "mask_claim": "return_aware_multi_resource_feasibility_mask",
+    "no_domain_randomization_retains_multimap_training": true,
+    "no_priority_bias_removes_only_explicit_attention_bias": true,
+    "node_counts": [
+      16,
+      20,
+      24
+    ],
+    "out_of_range_scale_generalization_claim_forbidden": true,
+    "raw_reward_cross_variant_ranking_forbidden": true,
+    "real_claim": "zero_shot_geographic_DSM_simulation_transfer",
+    "real_flight_or_safety_certification_claim_forbidden": true,
+    "synthetic_claim": "unseen_procedural_map_generalization"
+  },
+  "compensation_scope_revision_reason": "before any pilot training, the four-map smoke test showed that geometry compensation improved single-constraint cells but duplicated the dedicated mixed dual-bottleneck calibration on a strongly expanded loop-spur map; geometry compensation was therefore restricted uniformly to single-constraint tasks",
+  "constraint_types": [
+    "energy",
+    "distance",
+    "time",
+    "mixed"
+  ],
+  "dem_source": {
+    "aws_bucket": "https://copernicus-dem-30m.s3.amazonaws.com",
+    "citation": "Copernicus Digital Elevation Model (DEM) was accessed from https://registry.opendata.aws/copernicus-dem/",
+    "fallback_product": "NASADEM_HGT.001_or_SRTMGL1_V003",
+    "modified_product_notice": "produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved",
+    "nominal_resolution_m": 30.0,
+    "primary_product": "Copernicus DEM GLO-30 Public",
+    "primary_release": "2021",
+    "product_kind": "DSM",
+    "single_source_rule": "all_eight_maps_must_use_one_product_and_release"
+  },
+  "difficulty_bands": {
+    "extreme": [
+      0.3,
+      0.5
+    ],
+    "hard": [
+      0.5,
+      0.7
+    ],
+    "moderate": [
+      0.7,
+      0.85
+    ]
+  },
+  "forbidden": [
+    "evaluating_archived_ppo_mlp",
+    "hidden_and_observed_perturbation_semantics_mixing",
+    "individual_submask_ablation_claim",
+    "mixing_dem_products",
+    "out_of_range_scale_generalization_claim",
+    "partial_retraining_after_material_change",
+    "posthoc_weighted_champion_score",
+    "power_sensitivity",
+    "real_flight_claim",
+    "scenario_row_pseudoreplication",
+    "selecting_maps_or_scenarios_using_algorithm_results",
+    "target_map_finetuning",
+    "training_on_real_external_test",
+    "using_old_dem_as_independent_test"
+  ],
+  "formal_evaluation": {
+    "active_learning_variants": [
+      "full",
+      "traditional_ppo",
+      "a2c_pointer",
+      "no_priority_bias",
+      "no_domain_randomization",
+      "no_resource_shaping",
+      "no_return_reserve"
+    ],
+    "counts": {
+      "hidden_model_perception_mismatch": 2496,
+      "known_domain_shift": 1008,
+      "real_baselines": 1152,
+      "real_learning": 5040,
+      "real_total": 6192,
+      "robustness_total": 3504,
+      "synthetic_learning": 7560,
+      "synthetic_main_baselines": 3888,
+      "synthetic_supplementary": 504,
+      "synthetic_total": 11952,
+      "total": 21648
+    },
+    "deterministic_learning_decode": true,
+    "real_external": {
+      "all_four_ablations_on_all_tasks": true,
+      "all_learning_variants_on_all_tasks": true,
+      "baseline_planners": {
+        "aco": [
+          42,
+          43,
+          44,
+          45,
+          46
+        ],
+        "milp": [
+          42
+        ],
+        "nearest_feasible": [
+          42
+        ],
+        "priority_resource_greedy": [
+          42
+        ]
+      },
+      "map_count": 8,
+      "road_contexts_are_nested_within_map": true,
+      "road_contexts_per_map": 2,
+      "task_count": 144
+    },
+    "robustness": {
+      "common_random_realizations_across_algorithms": true,
+      "factorial_perturbations_forbidden": true,
+      "hidden_model_perception_mismatch": {
+        "baseline": "priority_resource_greedy",
+        "factors": [
+          "wind",
+          "power_model",
+          "dem_error",
+          "localization"
+        ],
+        "learning_variants": [
+          "full",
+          "traditional_ppo",
+          "a2c_pointer",
+          "no_domain_randomization",
+          "no_return_reserve"
+        ],
+        "route_locked_before_truth_evaluation": true
+      },
+      "known_domain_shift": {
+        "baseline": "priority_resource_greedy",
+        "factors": [
+          "wind",
+          "power_model"
+        ],
+        "learning_variants": [
+          "full",
+          "traditional_ppo",
+          "a2c_pointer",
+          "no_domain_randomization"
+        ],
+        "planner_and_execution_share_shifted_truth": true
+      },
+      "selection": {
+        "algorithm_results_forbidden": true,
+        "balance_fields": [
+          "difficulty",
+          "constraint_type",
+          "priority_layout"
+        ],
+        "node_counts_per_map": [
+          16,
+          20,
+          24
+        ],
+        "road_balance_total": {
+          "context_0": 12,
+          "context_1": 12
+        },
+        "tasks_per_map": 3
+      },
+      "task_count": 24
+    },
+    "row_definition": "one checkpoint or planner seed on one task under one evaluation condition",
+    "synthetic": {
+      "all_learning_variants_on_all_tasks": true,
+      "main_baselines": {
+        "aco": [
+          42,
+          43,
+          44,
+          45,
+          46
+        ],
+        "ga": [
+          42,
+          43,
+          44,
+          45,
+          46
+        ],
+        "milp": [
+          42
+        ],
+        "nearest_feasible": [
+          42
+        ],
+        "priority_resource_greedy": [
+          42
+        ],
+        "sa": [
+          42,
+          43,
+          44,
+          45,
+          46
+        ]
+      },
+      "map_count": 24,
+      "supplementary_baselines": {
+        "a_star": [
+          42
+        ],
+        "exact_pareto_dp": [
+          42
+        ],
+        "pso": [
+          42,
+          43,
+          44,
+          45,
+          46
+        ]
+      },
+      "supplementary_selection": "deterministic_stratification_before_any_algorithm_result",
+      "supplementary_task_count": 72,
+      "task_count": 216
+    },
+    "training_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ]
+  },
+  "formal_training": {
+    "archived_excluded_variants": [
+      "ppo_mlp"
+    ],
+    "cumulative_executed_formal_episode_count_after_completion": 120000,
+    "episodes": 3000,
+    "monitor_episodes": [
+      250,
+      500,
+      1000,
+      1500,
+      2000,
+      2500,
+      3000
+    ],
+    "new_training_variants": [
+      "traditional_ppo"
+    ],
+    "paper_eligible_episode_count": 105000,
+    "paper_eligible_model_count": 35,
+    "restart_all_after_material_change": true,
+    "reused_parent_variants": [
+      "full",
+      "a2c_pointer",
+      "no_priority_bias",
+      "no_domain_randomization",
+      "no_resource_shaping",
+      "no_return_reserve"
+    ],
+    "seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "variants": [
+      "full",
+      "traditional_ppo",
+      "a2c_pointer",
+      "no_priority_bias",
+      "no_domain_randomization",
+      "no_resource_shaping",
+      "no_return_reserve"
+    ]
+  },
+  "geometry_budget_revision_reason": "before any pilot training, geometry-only audit showed that 254 of 756 training and validation task cells required radius expansion, with a maximum factor near 1.96; physical budget compensation and at most two certificate-only single-constraint adjustments were added uniformly across maps",
+  "geometry_revision_reason": "before training, validation map 003 loop-spur roads proved unable to place 16 nodes at 120 m spacing inside the nominal moderate radius; deterministic geometry-only radius expansion was added without reading any algorithm result",
+  "initial_soc_boundary_revision_reason": "before pilot training, training map 040 task 08 exposed that the registered 0.24 calibration floor was below the frozen evaluator's strict battery reserve ratio of 0.25; all workers were paused at 134 unique records, the uniform generator and every budget transform were constrained to a 0.251 minimum SOC, and all retained records were verified to remain above 0.394 before byte-identical migration",
+  "initial_v3_1_protocol_hash": "86c82ad4444f9f0d59e014360184125e5ccd7f6fdb18821b859991be7fa0d3f5",
+  "map_splits": {
+    "real_external_test": {
+      "map_count": 8,
+      "model_access_forbidden_before_training_freeze": true,
+      "road_tracks_per_map": 2,
+      "scenario_count": 144,
+      "seed": 2026072704,
+      "tasks_per_track": 9
+    },
+    "synthetic_test": {
+      "generation_deferred_until_training_freeze": true,
+      "map_count": 24,
+      "scenario_count": 216,
+      "seed": 2026072703,
+      "tasks_per_map": 9
+    },
+    "training": {
+      "map_count": 72,
+      "scenario_count": 648,
+      "seed": 2026072701,
+      "tasks_per_map": 9
+    },
+    "validation": {
+      "map_count": 12,
+      "scenario_count": 108,
+      "seed": 2026072702,
+      "tasks_per_map": 9
+    }
+  },
+  "mixed_budget_revision_reason": "before any pilot training, a model-independent MILP smoke test showed that independently sampled mixed budgets produced a very low dual-bottleneck hit rate; deterministic certificate-only adjustment of the second-most-utilized resource was added without reading any learning or comparison algorithm result",
+  "mixed_standard_incumbent_revision_reason": "before any pilot training, the first v3.1.13 production replay showed that a standard MILP route already inside the target band but missing only the second bottleneck unnecessarily repeated up to three lower-threshold solves; the same safe incumbent is now checked first and may undergo the identical one-budget monotone tightening rule, while threshold MILPs remain the fallback only when the standard lower bound is outside the band",
+  "mixed_threshold_certificate_revision_reason": "before any pilot training, training map 005 task 06 exceeded the registered 30-minute and 200-attempt stall gate; model-independent diagnostics found a safe in-band lower-threshold route while the standard MILP had already proved a same-band upper bound, so a uniform mixed certificate now combines those proofs and may deterministically tighten only the second resource budget, which preserves the looser scenario's upper bound by feasible-set monotonicity",
+  "mixed_threshold_shortfall_revision_reason": "before any pilot training, the v3.1.14 production replay showed that candidates far below the lower-band threshold could consume the full three-resource threshold budget without producing a route; threshold rescue is now uniformly limited to standard incumbents at most one discrete priority unit below the registered lower threshold, while in-band incumbents retain the zero-extra-solve fast path and all farther candidates are rejected without changing any acceptance criterion",
+  "monotone_step_revision_reason": "before any pilot training, a model-independent focus diagnostic showed that short-horizon MILP incumbent utilization could fluctuate during single-resource calibration; minimum monotone step sizes were added while final 60-second certification remained unchanged",
+  "node_counts": [
+    16,
+    20,
+    24
+  ],
+  "non_intended_resource_revision_reason": "before any pilot training, validation map 008 task 06 remained below the moderate band even after the intended time budget reached its registered upper bound; model-independent threshold MILPs proved that distance was the nuisance bottleneck and that releasing only non-intended resources before recalibrating time produced a valid same-band certificate, so a uniform scheduled fallback was added without reading any learning or comparison algorithm output",
+  "objective": {
+    "confirmatory_metric": "safe_weighted_coverage",
+    "coverage_fraction": 0.25,
+    "hard_constraints": [
+      "safe_return",
+      "energy",
+      "distance",
+      "time",
+      "terrain",
+      "wind",
+      "dynamics"
+    ],
+    "reward_schema": "multimap_v3_1",
+    "secondary_scale": 0.25
+  },
+  "oracle_bound_order_tolerance": 1e-12,
+  "oracle_bound_ordering_revision_reason": "before any pilot episode, the zero-episode pilot preflight exposed a mathematically equal MILP lower/upper bound serialized in reverse order by approximately 3e-17; normalization now accepts only such rounding-scale reversals within the registered 1e-12 tolerance and conservatively orders the in-memory interval, while material reversals remain invalid",
+  "parallel_certification_revision_reason": "before pilot training, the first 42 training tasks showed a median generation attempt of 0, a 90th percentile of 4 and a maximum accepted attempt of 13, while one 24-node task reached attempt 40 in a single-core serial worker; the model-independent fallback was therefore scheduled from attempt 20 and remaining maps were frozen into four independent single-thread shards with strict identical-duplicate merge and full certificate audit",
+  "parallel_duplicate_boundary_revision_reason": "the pre-migration audit found that six map 004 tasks existed in both the 42-record serial artifact and shard 00 with identical task inputs but runtime-dependent MILP certificate fields; the original 42-record artifact remains immutable, while the formal merge uses a derived disjoint 36-record serial input for maps 000-003 and takes all map 004 tasks from shard 00",
+  "parent_protocol": "difficulty_test_v2_1",
+  "parent_protocol_hash": "8014a94241779ca55745ebcf533784a51682a6ff8cfa1ad41af0ce84760e61ce",
+  "pilot_training": {
+    "engineering_only": true,
+    "episodes": 600,
+    "monitor_episodes": [
+      100,
+      200,
+      400,
+      600
+    ],
+    "paper_eligible": false,
+    "required_checks": [
+      "finite_metrics",
+      "valid_padding_and_masks",
+      "checkpoint_roundtrip",
+      "at_least_one_safe_return"
+    ],
+    "required_node_counts": [
+      16,
+      20,
+      24
+    ],
+    "score_based_tuning_forbidden": true,
+    "seed": 42,
+    "variants": [
+      "traditional_ppo"
+    ]
+  },
+  "pre_acquisition_correction": "candidate score keys were aligned with unit-bearing metric field names after the first run failed before producing any map or registry",
+  "pre_pilot_failure_record": "the v3.1.15 pilot full seed 42 run stopped before episode 1, gradient update, checkpoint selection, or algorithm comparison; its failed status and prior environment freeze are retained as superseded audit artifacts",
+  "pretest_bounded_certificate_search": {
+    "algorithm_results_used": false,
+    "archived_v3_2_3_output_root": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_3",
+    "final_acceptance": "unchanged existing MILP safety, difficulty-band, return, and bottleneck certificate",
+    "fixed_geometry_attempt_count": 16,
+    "mixed_grid": "4 primary factors x 3 secondary factors after resource-utilization ranking",
+    "mixed_rule": "move the most-utilized resource into the registered coverage band, then monotonically tighten only the second-most-utilized resource until the existing strict mixed-bottleneck certificate accepts",
+    "old_v3_2_3_records_excluded_from_v3_2_4_statistics": true,
+    "probe_time_limit_s": 2.0,
+    "reason": "random joint sampling of geometry and multiple resource budgets can spend 2000 MILP probes on candidates that are trivially full-coverage or far below the prespecified band. A finite monotone certificate search reaches the same pre-registered band using fewer model-free probes.",
+    "resource_factor_order": [
+      1.0,
+      0.85,
+      0.7,
+      0.55,
+      0.46,
+      0.4,
+      0.32,
+      0.25
+    ],
+    "training_semantics_changed": false
+  },
+  "pretest_coordinate_boundary_repair": {
+    "algorithm_results_used": false,
+    "archived_v3_2_1_output_root": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_1",
+    "boundary_epsilon_px": 0.001,
+    "coordinate_rule": "clip only source-road geometry to [epsilon, width-1-epsilon] x [epsilon, height-1-epsilon] before any task sampling",
+    "old_v3_2_1_records_excluded_from_v3_2_2_statistics": true,
+    "reason": "v3.2.1 real corridor coordinates could equal a raster edge after geographic-to-pixel conversion; TerrainModel correctly rejects coordinates outside its half-open raster domain.",
+    "required_preflight": [
+      "all clipped road coordinates and selected bases are in the valid raster domain",
+      "each map context is feasible for node counts 16, 20, and 24",
+      "one end-to-end certified task per map context completes before full task generation"
+    ],
+    "training_semantics_changed": false
+  },
+  "pretest_fast_probe_grid": {
+    "algorithm_results_used": false,
+    "archived_v3_2_5_output_root": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_5",
+    "final_certificate_limits_unchanged": [
+      10.0,
+      60.0
+    ],
+    "mixed_above_band_primary_factors": [
+      0.7,
+      0.55,
+      0.46,
+      0.4
+    ],
+    "mixed_above_band_secondary_factors": [
+      0.85,
+      0.7,
+      0.55
+    ],
+    "old_v3_2_5_records_excluded_from_v3_2_6_statistics": true,
+    "probe_time_limit_s": 2.0,
+    "reason": "the v3.2.5 sequential first-resource search could miss a valid mixed task when a 2-second single-resource probe has no bound even though the jointly tightened two-resource candidate is decisive. The fixed grid evaluates those joint candidates directly.",
+    "training_semantics_changed": false
+  },
+  "pretest_geometry_preselection": {
+    "acceptance": "each selected context still requires explicit 16/20/24 geometry preflight and one end-to-end MILP-certified smoke task before formal task generation",
+    "algorithm_results_used": false,
+    "archived_v3_2_2_output_root": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_2",
+    "candidate_deck": "fixed top-48 source-road samples ranked by geometry-only reachable-road capacity, ties broken by source sample index",
+    "old_v3_2_2_records_excluded_from_v3_2_3_statistics": true,
+    "reason": "v3.2.2 exhaustively reran all-node-count geometry preflight for every possible launch sample although only two contexts per map are required; this is redundant and delays input construction without adding independent evidence.",
+    "training_semantics_changed": false
+  },
+  "pretest_repair": {
+    "algorithm_results_used": false,
+    "archived_v3_2_output_root": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2",
+    "failed_real_records_retained": 12,
+    "failed_synthetic_records_retained": 213,
+    "old_records_excluded_from_v3_2_1_statistics": true,
+    "reason": "v3.2 pre-test certification failed before any formal algorithm evaluation: one synthetic cell exhausted its model-free MILP candidate budget, and the sealed real-road tracks could not support the prespecified 24-node per-road task grid.",
+    "training_semantics_changed": false
+  },
+  "pretest_two_stage_search": {
+    "algorithm_results_used": false,
+    "archived_v3_2_4_output_root": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4",
+    "fast_probe_limit_s": 2.0,
+    "final_certificate_limits_unchanged": [
+      10.0,
+      60.0
+    ],
+    "old_v3_2_4_records_excluded_from_v3_2_5_statistics": true,
+    "reason": "v3.2.4 used the final 10-second MILP screen for every monotone probe. A 2-second screen is sufficient to discard obvious full-coverage and out-of-band candidates; the unchanged 10/60-second certificate is reserved for candidates that pass this fast screen.",
+    "training_semantics_changed": false
+  },
+  "priority_layouts": [
+    "clustered",
+    "dispersed",
+    "far_high_conflict"
+  ],
+  "procedural_terrain": {
+    "coordinate_scale_m_per_unit": 30.0,
+    "copy_real_pixels_forbidden": true,
+    "grid_shape": [
+      267,
+      267
+    ],
+    "hurst_range": [
+      0.55,
+      0.85
+    ],
+    "real_statistics_only_for_aggregate_calibration": true,
+    "spectral_octaves": 6,
+    "topologies": [
+      "multi_arm",
+      "t_y",
+      "curved_trunk_branches",
+      "loop_spur"
+    ]
+  },
+  "protocol_hash": "287e3535e4af6774e9af3bec0e622d731913bc8fc13d3f8860f355b533c68294",
+  "protocol_hash_method": "sha256_canonical_json_excluding_protocol_hash",
+  "protocol_name": "multimap_generalization_v3_2_6_fast_probe_grid",
+  "protocol_version": "multimap_generalization_v3_2_6",
+  "purpose": "train on seeded procedural mountain maps and evaluate zero-shot on unseen procedural maps and eight independent real Copernicus DEM regions",
+  "real_corridor_asset_manifest_hash": "f534c51ee1b31f0a12b8cc81b405c36e22cdceb4828c8259eb2a61eb6314a031",
+  "real_corridor_asset_protocol_hash": "21a2d0be8896bc3838a5ee71dd5ff7fd839debc675995e4658aa45ac3f021ac2",
+  "real_corridor_asset_root": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_4\\real_corridor_assets",
+  "real_corridor_contexts": {
+    "all_node_counts_preflight": [
+      16,
+      20,
+      24
+    ],
+    "base_candidate_stride": 4,
+    "base_preflight_candidate_count": 48,
+    "base_selection": "first geometry-feasible member of the fixed capacity-ranked candidate deck, then the remaining feasible member with maximum spatial separation (capacity then source-index tie-break)",
+    "boundary_epsilon_px": 0.001,
+    "definition": "two deterministic launch contexts per DSM, each using the complete clipped OSM road corridor for point placement and a distinct geometry-certified launch position; contexts are nested within map and are not independent geographic samples",
+    "maximum_task_radius_m": 3200.0,
+    "minimum_spacing_m": 120.0,
+    "preflight_scope": "coordinate-domain validation for all road vertices and bases, all-node-count geometry preflight, then one certified task per context",
+    "source": "existing sealed DSM and archived raw OSM JSON only"
+  },
+  "real_dem_design": {
+    "candidate_grid_side": 5,
+    "candidate_score_weights": {
+      "relief_m": 0.35,
+      "road_branch_count": 0.1,
+      "road_length_m": 0.2,
+      "slope_iqr": 0.15,
+      "slope_median": 0.2
+    },
+    "china_count": 4,
+    "count": 8,
+    "crop_size_m": 8000.0,
+    "global_count": 4,
+    "maximum_nodata_fraction": 0.001,
+    "maximum_water_or_glacier_fraction": 0.35,
+    "minimum_relief_m": 300.0,
+    "minimum_road_branch_count": 3,
+    "minimum_usable_road_length_m": 6000.0,
+    "road_branch_definition": "count rounded one-metre road-graph vertices with at least three distinct adjacent vertices across every polyline coordinate, including intersections inside OSM ways",
+    "road_tracks_per_dem": 2,
+    "selection_must_not_read_algorithm_results": true,
+    "target_resolution_m": 30.0,
+    "tie_breaker": "candidate_id_ascending"
+  },
+  "regions": [
+    {
+      "bbox_wgs84": [
+        106.0,
+        32.5,
+        111.0,
+        34.5
+      ],
+      "group": "china",
+      "name_zh": "秦岭山区",
+      "region_id": "cn_qinling"
+    },
+    {
+      "bbox_wgs84": [
+        112.0,
+        35.0,
+        115.0,
+        40.0
+      ],
+      "group": "china",
+      "name_zh": "太行山区",
+      "region_id": "cn_taihang"
+    },
+    {
+      "bbox_wgs84": [
+        98.0,
+        25.0,
+        102.0,
+        30.0
+      ],
+      "group": "china",
+      "name_zh": "横断山—滇西北山区",
+      "region_id": "cn_hengduan"
+    },
+    {
+      "bbox_wgs84": [
+        105.0,
+        25.0,
+        108.0,
+        28.0
+      ],
+      "group": "china",
+      "name_zh": "贵州喀斯特山区",
+      "region_id": "cn_guizhou_karst"
+    },
+    {
+      "bbox_wgs84": [
+        6.0,
+        45.0,
+        13.0,
+        47.5
+      ],
+      "group": "global",
+      "name_zh": "欧洲阿尔卑斯山区",
+      "region_id": "global_alps"
+    },
+    {
+      "bbox_wgs84": [
+        -107.5,
+        37.0,
+        -105.0,
+        40.5
+      ],
+      "group": "global",
+      "name_zh": "美国科罗拉多落基山区",
+      "region_id": "global_colorado_rockies"
+    },
+    {
+      "bbox_wgs84": [
+        -76.0,
+        -15.0,
+        -72.0,
+        -10.0
+      ],
+      "group": "global",
+      "name_zh": "秘鲁安第斯山区",
+      "region_id": "global_peruvian_andes"
+    },
+    {
+      "bbox_wgs84": [
+        168.0,
+        -45.5,
+        172.5,
+        -42.0
+      ],
+      "group": "global",
+      "name_zh": "新西兰南阿尔卑斯山区",
+      "region_id": "global_southern_alps_nz"
+    }
+  ],
+  "resource_threshold_revision_reason": "before any pilot training, validation map 007 task 06 produced 198 missing short-horizon MILP bounds in 200 candidates; a model-independent diagnostic proved that low-threshold feasibility and high-threshold minimum-resource dual bounds can provide a strict same-band certificate without reading any learning or comparison algorithm output",
+  "revision_boundary": "the eight real DEM selections, every map pixel, every road and every map content hash are unchanged; no learning or comparison algorithm output was generated or consulted",
+  "revision_reason": "before any pilot or formal training, model-independent MILP probes showed that fixed-map absolute budget ranges did not transfer to 8 km multi-map geometry; task radius and budget candidate ranges were therefore frozen in physical units",
+  "schema_version": 18,
+  "statistics": {
+    "aggregation_order": [
+      "repeat_within_task",
+      "task_within_map"
+    ],
+    "confidence_interval": {
+      "inner_units": [
+        "task",
+        "repeat"
+      ],
+      "method": "hierarchical_bootstrap",
+      "outer_unit": "map",
+      "replicates": 10000
+    },
+    "effect_sizes": [
+      "rank_biserial",
+      "Hodges_Lehmann"
+    ],
+    "families": {
+      "hidden_model_perception_mismatch": {
+        "members": [
+          "full",
+          "traditional_ppo",
+          "a2c_pointer",
+          "no_domain_randomization",
+          "no_return_reserve",
+          "priority_resource_greedy"
+        ],
+        "reference": "full"
+      },
+      "known_domain_shift": {
+        "members": [
+          "full",
+          "traditional_ppo",
+          "a2c_pointer",
+          "no_domain_randomization",
+          "priority_resource_greedy"
+        ],
+        "reference": "full"
+      },
+      "real_ablation": {
+        "members": [
+          "full",
+          "no_priority_bias",
+          "no_domain_randomization",
+          "no_resource_shaping",
+          "no_return_reserve"
+        ],
+        "reference": "full"
+      },
+      "real_main": {
+        "members": [
+          "full",
+          "traditional_ppo",
+          "a2c_pointer",
+          "nearest_feasible",
+          "priority_resource_greedy",
+          "aco",
+          "milp"
+        ],
+        "reference": "full"
+      },
+      "synthetic_ablation": {
+        "members": [
+          "full",
+          "no_priority_bias",
+          "no_domain_randomization",
+          "no_resource_shaping",
+          "no_return_reserve"
+        ],
+        "reference": "full"
+      },
+      "synthetic_main": {
+        "members": [
+          "full",
+          "traditional_ppo",
+          "a2c_pointer",
+          "nearest_feasible",
+          "priority_resource_greedy",
+          "aco",
+          "ga",
+          "sa",
+          "milp"
+        ],
+        "reference": "full"
+      }
+    },
+    "multiplicity": "Holm_within_each_family",
+    "omnibus": "Friedman_on_map_aggregates",
+    "pairwise": "two_sided_paired_Wilcoxon_on_map_aggregates",
+    "primary_independent_unit": "map",
+    "primary_metric": "safe_weighted_coverage",
+    "scenario_rows_are_not_independent_samples": true,
+    "supplementary_and_interactions_are_descriptive": true
+  },
+  "supersedes_protocol_hash": "eff14cd486fab1e6eea963868b282b255677a2bb952be9af4a6bdf5f73bae446",
+  "target_resource_revision_reason": "before any pilot training, the four-map smoke test showed that compensating the intended resource and then calibrating it duplicated adjustments; geometry compensation was restricted to non-intended nuisance resources while the intended resource is controlled only by monotone MILP calibration",
+  "task_generation": {
+    "budget_candidate_ranges": {
+      "extreme": {
+        "distance": [
+          [
+            0.92,
+            1.0
+          ],
+          [
+            0.16,
+            0.68
+          ],
+          [
+            1.1,
+            1.2
+          ]
+        ],
+        "energy": [
+          [
+            0.24,
+            0.6
+          ],
+          [
+            1.15,
+            1.2
+          ],
+          [
+            1.1,
+            1.2
+          ]
+        ],
+        "mixed": [
+          [
+            0.3,
+            0.75
+          ],
+          [
+            0.22,
+            0.78
+          ],
+          [
+            0.1,
+            0.55
+          ]
+        ],
+        "time": [
+          [
+            0.92,
+            1.0
+          ],
+          [
+            1.15,
+            1.2
+          ],
+          [
+            0.08,
+            0.5
+          ]
+        ]
+      },
+      "hard": {
+        "distance": [
+          [
+            0.92,
+            1.0
+          ],
+          [
+            0.32,
+            0.9
+          ],
+          [
+            1.1,
+            1.2
+          ]
+        ],
+        "energy": [
+          [
+            0.4,
+            0.7
+          ],
+          [
+            1.15,
+            1.2
+          ],
+          [
+            1.1,
+            1.2
+          ]
+        ],
+        "mixed": [
+          [
+            0.5,
+            0.88
+          ],
+          [
+            0.38,
+            0.95
+          ],
+          [
+            0.18,
+            0.7
+          ]
+        ],
+        "time": [
+          [
+            0.92,
+            1.0
+          ],
+          [
+            1.15,
+            1.2
+          ],
+          [
+            0.18,
+            0.65
+          ]
+        ]
+      },
+      "moderate": {
+        "distance": [
+          [
+            0.92,
+            1.0
+          ],
+          [
+            0.5,
+            1.1
+          ],
+          [
+            1.1,
+            1.2
+          ]
+        ],
+        "energy": [
+          [
+            0.55,
+            0.8
+          ],
+          [
+            1.15,
+            1.2
+          ],
+          [
+            1.1,
+            1.2
+          ]
+        ],
+        "mixed": [
+          [
+            0.65,
+            1.0
+          ],
+          [
+            0.55,
+            1.15
+          ],
+          [
+            0.3,
+            0.9
+          ]
+        ],
+        "time": [
+          [
+            0.92,
+            1.0
+          ],
+          [
+            1.15,
+            1.2
+          ],
+          [
+            0.3,
+            0.9
+          ]
+        ]
+      }
+    },
+    "candidate_search": "deterministic_seeded_rejection_sampling_using_only_input_maps_and_milp_certificates",
+    "evaluator_safety_bounds": {
+      "battery_reserve_ratio": 0.25,
+      "initial_soc_strict_margin": 0.001,
+      "minimum_initial_soc": 0.251
+    },
+    "geometry_budget_compensation": {
+      "enabled": true,
+      "non_intended_resources_only": true,
+      "parameter_bounds": {
+        "distance_budget_scale": [
+          0.16,
+          2.2
+        ],
+        "initial_soc": [
+          0.251,
+          1.0
+        ],
+        "time_budget_scale": [
+          0.08,
+          2.2
+        ]
+      },
+      "quantile_matched_nominal_radius": true,
+      "radius_elasticity": 1.0,
+      "selection_uses_only_road_geometry": true,
+      "single_constraint_tasks_only": true
+    },
+    "geometry_feasibility": {
+      "deterministic_trials": 16,
+      "effective_range_width_m": 300.0,
+      "expansion_step_m": 100.0,
+      "maximum_radius_m": 3200.0,
+      "minimum_successes": 8,
+      "selection_uses_only_road_geometry": true
+    },
+    "maximum_candidate_attempts_per_task": 2000,
+    "minimum_depot_distance_m": 180.0,
+    "minimum_node_spacing_m": 120.0,
+    "mixed_budget_calibration": {
+      "adjust_only_second_most_utilized_resource": true,
+      "enabled": true,
+      "maximum_iterations": 2,
+      "parameter_bounds": {
+        "distance_budget_scale": [
+          0.16,
+          2.2
+        ],
+        "initial_soc": [
+          0.251,
+          1.0
+        ],
+        "time_budget_scale": [
+          0.08,
+          2.2
+        ]
+      },
+      "requires_incumbent_in_target_band": true,
+      "selection_uses_only_milp_certificate": true,
+      "target_gap_margin": 0.01
+    },
+    "mixed_node_budget_offsets": {
+      "16": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "20": [
+        0.04,
+        0.1,
+        0.03
+      ],
+      "24": [
+        0.08,
+        0.25,
+        0.04
+      ]
+    },
+    "mixed_threshold_certificate": {
+      "allow_only_one_monotone_budget_tightening": true,
+      "eligible_standard_reasons": [
+        "incumbent_outside_band",
+        "mixed_bottleneck_not_active"
+      ],
+      "enabled": true,
+      "low_route_must_be_safe_and_in_band": true,
+      "lower_time_limit_s": 60.0,
+      "maximum_incumbent_priority_shortfall": 1,
+      "proof_rule": "a safe route at or above the discrete lower-band threshold plus the standard MILP upper bound already inside the same band; if two bottlenecks are not yet active, tighten only the second-most-utilized budget and replay the same route, while the old upper bound remains valid because the feasible set can only shrink",
+      "requires_standard_upper_same_band": true,
+      "resource_order": [
+        "energy",
+        "distance",
+        "time"
+      ],
+      "reuse_mixed_budget_calibration_rule": true,
+      "selection_uses_only_milp_certificates": true,
+      "standard_incumbent_fast_path": true
+    },
+    "node_radius_offsets_m": {
+      "16": 0.0,
+      "20": 250.0,
+      "24": 500.0
+    },
+    "parallel_certification": {
+      "enabled": true,
+      "existing_serial_records_preserved": 42,
+      "full_post_merge_certificate_audit": true,
+      "merge_input_rule": "formal_merge_inputs_must_have_disjoint_task_ids; diagnostic_overlap_is_preserved_but_excluded",
+      "merge_requires_complete_expected_task_grid": true,
+      "parallel_shard_authoritative_from_map_index": 4,
+      "selection_uses_only_input_maps_and_milp_certificates": true,
+      "serial_merge_map_index_stop_exclusive": 4,
+      "serial_merge_records": 36,
+      "training_map_index_shards": [
+        [
+          4,
+          22
+        ],
+        [
+          22,
+          39
+        ],
+        [
+          39,
+          56
+        ],
+        [
+          56,
+          72
+        ]
+      ],
+      "worker_count": 4,
+      "worker_thread_limit": 1
+    },
+    "radius_base_ranges_m": {
+      "extreme": [
+        1300.0,
+        2200.0
+      ],
+      "hard": [
+        1100.0,
+        1800.0
+      ],
+      "moderate": [
+        900.0,
+        1400.0
+      ]
+    },
+    "resource_threshold_fallback": {
+      "eligible_constraint_types": [
+        "energy",
+        "distance",
+        "time"
+      ],
+      "enabled": true,
+      "lower_time_limit_s": 60.0,
+      "mixed_constraints_forbidden": true,
+      "non_intended_resource_relaxation": {
+        "enabled": true,
+        "maximum_iterations": 5,
+        "recalibrate_only_intended_resource": true,
+        "release_rule": "set_only_non_intended_resource_parameters_to_registered_upper_bounds",
+        "reset_to_raw_candidate_before_relaxation": true,
+        "selection_uses_only_milp_certificates": true,
+        "trigger_reason": "low_threshold_no_route"
+      },
+      "periodic_trigger_schedule": {
+        "enabled": true,
+        "first_attempt": 200,
+        "interval_attempts": 100,
+        "last_attempt": 1900
+      },
+      "proof_rule": "a safe route at or above the discrete lower-band threshold plus a minimum-resource primal or dual certificate proving the first discrete value above the upper band exceeds the actual intended-resource budget",
+      "selection_uses_only_milp_certificates": true,
+      "trigger_attempts": [
+        20,
+        40,
+        60,
+        80,
+        100,
+        200,
+        500,
+        1000
+      ],
+      "upper_time_limit_s": 300.0
+    },
+    "road_sampling_spacing_m": 90.0,
+    "selection_must_not_read_algorithm_results": true,
+    "single_constraint_budget_calibration": {
+      "above_band_target_utilization": 0.92,
+      "below_band_target_utilization": 0.85,
+      "enabled": true,
+      "maximum_iterations": 5,
+      "maximum_tighten_factor": 0.85,
+      "minimum_loosen_factor": 1.2,
+      "parameter_bounds": {
+        "distance_budget_scale": [
+          0.16,
+          2.2
+        ],
+        "initial_soc": [
+          0.251,
+          1.0
+        ],
+        "time_budget_scale": [
+          0.08,
+          2.2
+        ]
+      },
+      "requires_finite_safe_incumbent": true,
+      "selection_uses_only_milp_certificate": true,
+      "target_gap_margin": 0.01
+    }
+  },
+  "tasks_per_node_count_per_map": 3
+}

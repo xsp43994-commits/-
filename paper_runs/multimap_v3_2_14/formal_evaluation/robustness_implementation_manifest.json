@@ -1,0 +1,109 @@
+{
+  "algorithm_results_used_for_design": false,
+  "common_random_realizations_across_algorithms": true,
+  "common_random_seed_derivation": "little_endian_uint64(first_8_bytes(sha256(protocol_hash|task_hash|condition|v3_2_14)))",
+  "created_after_nominal_evaluation_started": true,
+  "factorial_combinations_forbidden": true,
+  "generator_sha256": "473a65bb4390c57704804299dc71126067e41a2bda7465d26e51e3564c077ed2",
+  "hidden_model_perception_mismatch": {
+    "observed_input_hash_differs_from_execution_truth_hash": true,
+    "route_locked_before_truth_evaluation": true,
+    "single_factor_only": true
+  },
+  "implementation_path": "C:\\Users\\xsp\\Desktop\\DRL代码\\v3_2_14_robustness_worker.py",
+  "implementation_sha256": "e85c4a778a0f9d260af47c154b65205496be4a839b42ead4590999f1d5564fec",
+  "known_domain_shift": {
+    "observed_input_hash_equals_execution_truth_hash": true,
+    "planner_and_execution_share_shifted_truth": true
+  },
+  "manifest_hash": "cdc5a40b6ac098e23e9f8cf9ba518b009ab8d1d6b741a748abc2eb9b8d7cf37e",
+  "matrix_sha256": "48a31ee9b58d41a617fff61acb6eba6a2d9a930767d7af15856f70a964686224",
+  "parent_protocol_hash": "2cff0a336a2f3aef49c5ca686bbdca168dd25937ad1918e7ed9e82b23f1f0647",
+  "perturbations": {
+    "dem_error": {
+      "boundary_mode": "reflect",
+      "correlation_length_m": 100.0,
+      "gaussian_filter_sigma_rule": "correlation_length_m/(sqrt(2)*coordinate_scale_m_per_unit)",
+      "generator": "seeded_standard_normal_then_scipy_gaussian_filter_and_exact_sample_std_normalization",
+      "observed_start_minimum_altitude_rule": "max(observed_start_z, observed_ground_z+0.01m)",
+      "sigma_m": 3.0,
+      "truth_uses_frozen_dsm": true
+    },
+    "localization": {
+      "distribution": "independent_zero_mean_gaussian",
+      "horizontal_coordinates_clipped_to_map": true,
+      "horizontal_sigma_m": 10.0,
+      "observed_points_use_flight_altitude_mode": true,
+      "observed_start_minimum_altitude_rule": "max(raw_noisy_start_z, observed_ground_z+0.01m)",
+      "truth_uses_frozen_coordinates": true,
+      "vertical_sigma_m": 3.0
+    },
+    "power_model": {
+      "coefficient_scale": 1.1
+    },
+    "wind": {
+      "rotation_deg": 15.0,
+      "speed_scale": 1.2,
+      "vertical_bias_mps": 0.5
+    }
+  },
+  "real_records_sha256": "ec4b587ceb775b75c689a0e7e1c6734759c385f6b0727ed1755a8e557209ce1a",
+  "reason_for_separate_manifest": "the frozen parent protocol registered robustness families, conditions, row counts, and visibility semantics but did not serialize every numerical perturbation implementation detail",
+  "revision_reason": "the pre-result hidden-DEM production probe showed that positive DEM error can also place the observed launch point below observed terrain; the v2 manifest and its 45 known-shift rows were archived, hidden rows were zero, and v3 applies the same 1 cm geometric-consistency floor to the observed launch altitude for every hidden condition while leaving the frozen execution-truth launch point unchanged",
+  "robustness_results_existing_at_freeze": 0,
+  "robustness_task_hashes": [
+    "66a32c755b703722edd3c7b32e259092a007086cdf3b3b9125d6afccc6c76b04",
+    "5c954da0726a1cd1d9d7784a8838fd66c652d37136ee29ffddf90829ab9b1653",
+    "99dc489cd862f42b01ccb5b4339cd7effa08c9e66986bebc6bbb74eb0498c086",
+    "92c07cc55e9032831f7f9167c735aac8d1f4eb7630c9078e2b4c2ea7afe7a3d3",
+    "42a4aac6732f3b760b1a3c305a4af3376e9a70b29e657fcc73f9b3d40618a7aa",
+    "89968de10e80ae9b1db81aa4c35eefd4e1966133b83b3b29b063439258b5bb19",
+    "16c63b6d3075c6b5d5fa0fa576725e8e3b1167832869d16fcae1518ba4b20ce9",
+    "83361d336add2fccd1c37b1b50453462c26927823aac36706fb23c4e2b49f42d",
+    "80bed5266199fd6452d9eb55121549dcb82a586ce41cda72e2419299acb8cb5e",
+    "4a2a2af8edd73e820ac8c086bc37b13925fbfaaf26d9f44ef111876458a69af1",
+    "2dccc1d71a82b22b096b8caa05c3ec3afbf21c1951c6832c623e36fa0552d78c",
+    "5d8b83b3a0daa03a2bbec8bb9d609765869d6861f566e28397dc716facd0b3e8",
+    "25db5d0be164bd2f018a5fb261ccce4a7cf577aca54eeb5edb3a8e76cf592ab2",
+    "109bbf8d35541f4cd0b6625d289cf987710ef60dbefc72eb77b395fd43bf3734",
+    "3a392cc0b4a88a5e754e51cf7f3aabbc37e96a94a025d6a707d5211445dd3874",
+    "76ba78e8837675b64d9ea4ccaed0aa262f05449610e543796b072f16a0f0135f",
+    "06b04cd7ddf3f4eb9d8442d694b1cbcfe03041ec146101fc47d3751de38a9903",
+    "6b6242e012aed7320956000d5760c43aff6d7a72ba75d9fc0003ae173593d5f9",
+    "37aa7a0e1296e1d6259190dad619848803dfbb4e5e879c1139e90234adfaf5d0",
+    "01a2d516f1915758dfbf36fab3d54d4be6b90207be9c28e27cdbf5f1a65ae688",
+    "1832a264d57b0f833d7394836f98227df5b4a5d1e40a6d2bf366c278143725af",
+    "126636abaec727caf66c041091fd5a1574d38e49aca033855b82f48013923bd3",
+    "5444f5bc87d9bd9acc26af35a31a44e2de9a7b85b9363001961df9f8c2cd8681",
+    "123cad737b69306fbb4cf72c38eb89ceb698263b97f4a3e864c15c6767a4b0ee"
+  ],
+  "robustness_task_ids": [
+    "real_test__cn_guizhou_karst__road_00__task_01",
+    "real_test__cn_guizhou_karst__road_01__task_04",
+    "real_test__cn_guizhou_karst__road_00__task_08",
+    "real_test__cn_hengduan__road_01__task_01",
+    "real_test__cn_hengduan__road_00__task_05",
+    "real_test__cn_hengduan__road_01__task_06",
+    "real_test__cn_qinling__road_00__task_02",
+    "real_test__cn_qinling__road_01__task_03",
+    "real_test__cn_qinling__road_00__task_08",
+    "real_test__cn_taihang__road_01__task_02",
+    "real_test__cn_taihang__road_00__task_03",
+    "real_test__cn_taihang__road_01__task_07",
+    "real_test__global_alps__road_00__task_02",
+    "real_test__global_alps__road_01__task_05",
+    "real_test__global_alps__road_00__task_06",
+    "real_test__global_colorado_rockies__road_01__task_00",
+    "real_test__global_colorado_rockies__road_00__task_03",
+    "real_test__global_colorado_rockies__road_01__task_06",
+    "real_test__global_peruvian_andes__road_00__task_02",
+    "real_test__global_peruvian_andes__road_01__task_04",
+    "real_test__global_peruvian_andes__road_00__task_07",
+    "real_test__global_southern_alps_nz__road_01__task_01",
+    "real_test__global_southern_alps_nz__road_00__task_04",
+    "real_test__global_southern_alps_nz__road_01__task_08"
+  ],
+  "same_magnitude_known_vs_hidden_rule": "wind and power use identical magnitudes; only observability and route-locking semantics differ",
+  "schema_version": 3,
+  "supersedes_archived_manifest_hash": "e999d2bc5aeb57952c66e65788774091de4c9dfcd41949556c1ac98485b46a4f"
+}

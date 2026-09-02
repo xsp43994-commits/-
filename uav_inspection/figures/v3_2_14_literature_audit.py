@@ -1,0 +1,201 @@
+"""第三轮制图的文献图形语法审计。
+
+这里只记录从原始论文图中学习到的证据组织方式，不复制论文图片、配色、
+字体或版面。`figure_count` 用于核验计划要求的“至少20篇、50幅图”。
+"""
+
+from __future__ import annotations
+
+from typing import Any
+
+
+LITERATURE_AUDIT: list[dict[str, Any]] = [
+    {
+        "paper_id": "L01", "title": "Deep Reinforcement Learning at the Edge of the Statistical Precipice",
+        "venue_year": "NeurIPS 2021", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "用区间估计、性能剖面和分布替代单一均值排名",
+        "visual_features": "直接标注效应、清晰基准线、低装饰密度",
+        "applied_to": "M01,M02,S01,S09", "backend_decision": "Python分布图；Origin水平效应图",
+        "do_not_copy": "不复制原图布局、字体、色值或算法命名",
+        "official_url": "https://proceedings.neurips.cc/paper/2021/hash/f514cec81cb148559cf475e7426eed5e-Abstract.html",
+    },
+    {
+        "paper_id": "L02", "title": "POMO: Policy Optimization with Multiple Optima for Reinforcement Learning",
+        "venue_year": "NeurIPS 2020", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "训练曲线同时讨论收敛速度、稳定性与解质量",
+        "visual_features": "共同训练预算横轴、方法曲线直接比较、简洁图例",
+        "applied_to": "M06,M07,S06", "backend_decision": "Python对齐3000回合；Origin点区间摘要",
+        "do_not_copy": "不复制其曲线数据、模型结构图或装饰元素",
+        "official_url": "https://proceedings.neurips.cc/paper_files/paper/2020/file/f231f2107df69eab0a3862d50018a9b2-Paper.pdf",
+    },
+    {
+        "paper_id": "L03", "title": "Leveraging Procedural Generation to Benchmark Reinforcement Learning",
+        "venue_year": "ICML 2020", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "训练环境与未见测试环境分离，泛化结论按测试分布组织",
+        "visual_features": "环境分组、训练规模与测试表现分开表达",
+        "applied_to": "M08,S04", "backend_decision": "Origin地图级区间；Python场景热力图",
+        "do_not_copy": "不将16/20/24误称未训练规模泛化",
+        "official_url": "https://proceedings.mlr.press/v119/cobbe20a.html",
+    },
+    {
+        "paper_id": "L04", "title": "Empirical Design in Reinforcement Learning",
+        "venue_year": "JMLR 2024", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "实验单位、重复运行和不确定性必须按层级解释",
+        "visual_features": "区间而非伪精确点值，明确实验层级与样本量",
+        "applied_to": "M01,M02,M08,M10", "backend_decision": "地图作为推断单位，任务点仅描述",
+        "do_not_copy": "不把任务或种子当独立地图扩大样本量",
+        "official_url": "https://www.jmlr.org/papers/v25/23-0183.html",
+    },
+    {
+        "paper_id": "L05", "title": "Attention, Learn to Solve Routing Problems!",
+        "venue_year": "ICLR 2019", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "解质量、推理代价和跨问题规模分别报告",
+        "visual_features": "算法颜色一致、路线示例与定量表证据分离",
+        "applied_to": "M05,S02,V01", "backend_decision": "Origin ECDF/Pareto；Python固定路线",
+        "do_not_copy": "不复制网络结构或路线实例",
+        "official_url": "https://openreview.net/forum?id=ByxBFsRqYm",
+    },
+    {
+        "paper_id": "L06", "title": "Reinforcement Learning for Solving the Vehicle Routing Problem",
+        "venue_year": "NeurIPS 2018", "figures_reviewed": "Fig. 2–4", "figure_count": 3,
+        "evidence_grammar": "性能分布、不同规模结果和运行时间共同支撑路线规划结论",
+        "visual_features": "分布图与规模曲线并用，时间轴明确单位",
+        "applied_to": "M01,M05,S04", "backend_decision": "Python半眼；Origin对数ECDF",
+        "do_not_copy": "不复制其任务坐标或默认调色板",
+        "official_url": "https://papers.nips.cc/paper_files/paper/2018/file/9fb4651c05b2ed70fba5afe0b039a550-Paper.pdf",
+    },
+    {
+        "paper_id": "L07", "title": "Neural Combinatorial Optimization with Reinforcement Learning",
+        "venue_year": "ICLR Workshop 2017", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "学习式求解器同时报告解质量、主动搜索过程和计算时间",
+        "visual_features": "学习轨迹与最终解示例分开，轴单位清晰",
+        "applied_to": "M06,S02,S03", "backend_decision": "Python训练曲线；Origin代价权衡",
+        "do_not_copy": "不复制其TSP样例或模型图",
+        "official_url": "https://research.google/pubs/neural-combinatorial-optimization-with-reinforcement-learning-2/",
+    },
+    {
+        "paper_id": "L08", "title": "NeuroLKH: Combining Deep Learning Model with Lin-Kernighan-Helsgaun Heuristic",
+        "venue_year": "NeurIPS 2021", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "学习模型与传统求解器以质量—时间权衡比较",
+        "visual_features": "方法流程、时间缩放与gap结果互补",
+        "applied_to": "S02,S03", "backend_decision": "Origin散点与区间，标签人工避让",
+        "do_not_copy": "不复制其求解器流程图或表格样式",
+        "official_url": "https://proceedings.nips.cc/paper_files/paper/2021/file/3d863b367aa379f71c7afc0c9cdca41d-Paper.pdf",
+    },
+    {
+        "paper_id": "L09", "title": "Sym-NCO: Leveraging Symmetricity for Neural Combinatorial Optimization",
+        "venue_year": "NeurIPS 2022", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "机制贡献通过主结果、泛化和消融分别闭环",
+        "visual_features": "相同颜色家族、模块消融与完整模型直接配对",
+        "applied_to": "M10,S06", "backend_decision": "Origin水平消融效应；Python完整训练过程",
+        "do_not_copy": "不复制其对称性示意或实验实例",
+        "official_url": "https://proceedings.neurips.cc/paper_files/paper/2022/hash/0cddb777d3441326544e21b67f41bdc8-Abstract-Conference.html",
+    },
+    {
+        "paper_id": "L10", "title": "DeepACO: Neural-enhanced Ant Systems for Combinatorial Optimization",
+        "venue_year": "NeurIPS 2023", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "学习方法与元启发式同时比较性能、时间和跨实例表现",
+        "visual_features": "散点权衡、分层任务结果、低饱和算法色",
+        "applied_to": "M05,S01,S02", "backend_decision": "Origin ECDF/Pareto；Python性能剖面",
+        "do_not_copy": "不复制蚁群流程图或特定颜色",
+        "official_url": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/883105b282fe15275991b411e6b200c5-Abstract-Conference.html",
+    },
+    {
+        "paper_id": "L11", "title": "Neural Multi-Objective Combinatorial Optimization with Diversity Enhancement",
+        "venue_year": "NeurIPS 2023", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "多目标结果用Pareto关系和多维指标组织，不压缩为雷达面积",
+        "visual_features": "非支配前沿、目标空间散点、明确参考方向",
+        "applied_to": "S02,S07,S08", "backend_decision": "Origin Pareto/点阵；Python敏感性热力图",
+        "do_not_copy": "不复制其Pareto数据、符号或算法标签",
+        "official_url": "https://proceedings.neurips.cc/paper_files/paper/2023/file/7b5ae891000049b91b3b62de596b1560-Paper-Conference.pdf",
+    },
+    {
+        "paper_id": "L12", "title": "BQ-NCO: Bisimulation Quotienting for Efficient Neural Combinatorial Optimization",
+        "venue_year": "NeurIPS 2023", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "效率改进与解质量必须同图或邻近证据解释",
+        "visual_features": "效率—质量散点、参数/规模分组、简洁注释",
+        "applied_to": "M05,S02", "backend_decision": "Origin对数时间轴与非支配标签",
+        "do_not_copy": "不复制其状态压缩示意",
+        "official_url": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/f445ba15f0f05c26e1d24f908ea78d60-Abstract-Conference.html",
+    },
+    {
+        "paper_id": "L13", "title": "Adaptive Multi-Distribution Knowledge Distillation for Neural Combinatorial Optimization",
+        "venue_year": "NeurIPS 2022", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "跨分布泛化与训练动态分开呈现，并用一致算法标识",
+        "visual_features": "分布分组、训练曲线、消融对照",
+        "applied_to": "M08,S06", "backend_decision": "Origin迁移区间；Python训练轨迹",
+        "do_not_copy": "不复制蒸馏结构或分布配色",
+        "official_url": "https://proceedings.neurips.cc/paper_files/paper/2022/file/ca70528fb11dc8086c6a623da9f3fee6-Paper-Conference.pdf",
+    },
+    {
+        "paper_id": "L14", "title": "Efficient Meta Neural Heuristic for Multi-Objective Combinatorial Optimization",
+        "venue_year": "NeurIPS 2023", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "多目标性能、适应效率和前沿质量分别展示",
+        "visual_features": "目标空间散点、效率曲线、分组比较",
+        "applied_to": "S02,S07,S08", "backend_decision": "Origin点阵/Pareto；Python连续敏感性图",
+        "do_not_copy": "不复制其元学习流程或前沿数据",
+        "official_url": "https://proceedings.neurips.cc/paper_files/paper/2023/hash/b1efde53be364a73914f58805a001731-Abstract-Conference.html",
+    },
+    {
+        "paper_id": "L15", "title": "Deep Reinforcement Learning for Zero-Shot Coverage Path Planning With Mobile Robots",
+        "venue_year": "IEEE/CAA JAS 2025", "figures_reviewed": "Fig. 1, 4, 9", "figure_count": 3,
+        "evidence_grammar": "未见地图、消融与固定地图路线共同解释零样本规划",
+        "visual_features": "地图语境、路线叠加、场景与统计证据分离",
+        "applied_to": "M08,V01,V02", "backend_decision": "Origin迁移效应；Python/MATLAB固定路线",
+        "do_not_copy": "不复制其栅格地图、路线、颜色或机器人任务定义",
+        "official_url": "https://www.ieee-jas.com/en/article/doi/10.1109/JAS.2024.125064",
+    },
+    {
+        "paper_id": "L16", "title": "PRIMAL: Pathfinding via Reinforcement and Imitation Multi-Agent Learning",
+        "venue_year": "IEEE RA-L 2019", "figures_reviewed": "Fig. 1, 3, 5", "figure_count": 3,
+        "evidence_grammar": "成功率、路径代价和场景规模以不同证据图回答",
+        "visual_features": "成功/失败编码、规模趋势、固定地图示例",
+        "applied_to": "M02,S04,S05", "backend_decision": "Origin安全效应；Python分层与失败热力图",
+        "do_not_copy": "不复制多智能体地图或图标",
+        "official_url": "https://publications.ri.cmu.edu/primal-pathfinding-via-reinforcement-and-imitation-multi-agent-learning",
+    },
+    {
+        "paper_id": "L17", "title": "Learning to Perform Local Rewriting for Combinatorial Optimization",
+        "venue_year": "NeurIPS 2019", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "迭代改进方法用性能轨迹、运行代价和最终解共同评价",
+        "visual_features": "时间/迭代横轴、方法曲线、实例路线示意",
+        "applied_to": "M05,S01,S03", "backend_decision": "Origin时间/证书；Python性能剖面",
+        "do_not_copy": "不复制局部重写示意或算例",
+        "official_url": "https://proceedings.neurips.cc/paper/2019/file/131f383b434fdf48079bff1e44e2d9a5-Paper.pdf",
+    },
+    {
+        "paper_id": "L18", "title": "Efficient Active Search for Combinatorial Optimization Problems",
+        "venue_year": "ICLR 2022", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "搜索过程、最终gap与计算预算同时呈现",
+        "visual_features": "预算横轴、质量曲线、跨实例分布",
+        "applied_to": "M05,S01,S03", "backend_decision": "Origin时间与regret；Python性能剖面",
+        "do_not_copy": "不复制搜索框架或实验数据",
+        "official_url": "https://openreview.net/forum?id=nO5caZwFwYu",
+    },
+    {
+        "paper_id": "L19", "title": "UDC: A Unified Neural Divide-and-Conquer Framework for Large-Scale Combinatorial Optimization Problems",
+        "venue_year": "NeurIPS 2024", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "大规模性能用规模、解质量和运行时间的互补证据组织",
+        "visual_features": "规模趋势、效率比较、统一算法颜色",
+        "applied_to": "M05,S02,S04", "backend_decision": "Origin时间/Pareto；Python规模热力图",
+        "do_not_copy": "不复制分治框架示意或版式",
+        "official_url": "https://proceedings.neurips.cc/paper_files/paper/2024/hash/0b8e4c8468273ee3bafb288229c0acbc-Abstract-Conference.html",
+    },
+    {
+        "paper_id": "L20", "title": "Learning to Delegate for Large-scale Vehicle Routing",
+        "venue_year": "NeurIPS 2021", "figures_reviewed": "Fig. 1–3", "figure_count": 3,
+        "evidence_grammar": "大规模路线规划同时解释架构、求解质量与计算扩展性",
+        "visual_features": "规模分组、运行时间轴、路线/区域解释",
+        "applied_to": "M05,S02,V01", "backend_decision": "Origin时间权衡；Python固定路线",
+        "do_not_copy": "不复制分区路线、网络结构或数据",
+        "official_url": "https://proceedings.neurips.cc/paper/2021/file/dc9fa5f217a1e57b8a6adeb065560b38-Paper.pdf",
+    },
+]
+
+
+def audit_summary() -> dict[str, int]:
+    """返回可被测试和manifest直接核验的文献审计规模。"""
+    return {
+        "paper_count": len(LITERATURE_AUDIT),
+        "figure_count": sum(int(row["figure_count"]) for row in LITERATURE_AUDIT),
+    }

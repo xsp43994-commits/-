@@ -1,0 +1,828 @@
+{
+  "schema_version": 2,
+  "prepared": "2026-08-09",
+  "source_version": "v3.2.14",
+  "facts": [
+    {
+      "fact_id": "F01",
+      "category": "frozen identity",
+      "statement": "Formal result count",
+      "value": "21648",
+      "unit": "routes/results rows",
+      "source": "formal_evaluation/results/final_results.jsonl",
+      "locator": "exact line count and final_audit_status.json",
+      "strength": "frozen",
+      "boundary": "Must remain unchanged"
+    },
+    {
+      "fact_id": "F02",
+      "category": "protocol",
+      "statement": "Confirmatory endpoint",
+      "value": "safe_weighted_coverage",
+      "unit": "ratio",
+      "source": "protocol.json",
+      "locator": "objective.confirmatory_metric",
+      "strength": "frozen",
+      "boundary": "Post-hoc scores cannot replace it"
+    },
+    {
+      "fact_id": "F03",
+      "category": "training",
+      "statement": "Paper-eligible learning models",
+      "value": "35",
+      "unit": "models",
+      "source": "protocol.json",
+      "locator": "formal_training.paper_eligible_model_count",
+      "strength": "frozen",
+      "boundary": "Excluded ppo_mlp is not paper evidence"
+    },
+    {
+      "fact_id": "F04",
+      "category": "training",
+      "statement": "Paper-eligible training episodes",
+      "value": "105000",
+      "unit": "episodes",
+      "source": "protocol.json",
+      "locator": "formal_training.paper_eligible_episode_count",
+      "strength": "frozen",
+      "boundary": "35 models x 3000 episodes"
+    },
+    {
+      "fact_id": "F05",
+      "category": "primary outcome",
+      "statement": "PPO-Pointer synthetic map mean",
+      "value": "0.4858",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=synthetic_main_algorithms; algorithm=full; n_maps=24",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F06",
+      "category": "primary outcome",
+      "statement": "A2C-Pointer synthetic map mean",
+      "value": "0.4850",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=synthetic_main_algorithms; algorithm=a2c_pointer; n_maps=24",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F07",
+      "category": "primary outcome",
+      "statement": "Flat-MLP PPO synthetic map mean",
+      "value": "0.2686",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=synthetic_main_algorithms; algorithm=traditional_ppo; n_maps=24",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F08",
+      "category": "primary outcome",
+      "statement": "ACO synthetic map mean",
+      "value": "0.5525",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=synthetic_main_algorithms; algorithm=aco; n_maps=24",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F09",
+      "category": "primary outcome",
+      "statement": "SA synthetic map mean",
+      "value": "0.5436",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=synthetic_main_algorithms; algorithm=sa; n_maps=24",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F10",
+      "category": "primary outcome",
+      "statement": "MILP synthetic map mean",
+      "value": "0.5711",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=synthetic_main_algorithms; algorithm=milp; n_maps=24",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F11",
+      "category": "primary outcome",
+      "statement": "PPO-Pointer DSM map mean",
+      "value": "0.5024",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=real_main_algorithms; algorithm=full; n_maps=8",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F12",
+      "category": "primary outcome",
+      "statement": "A2C-Pointer DSM map mean",
+      "value": "0.5025",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=real_main_algorithms; algorithm=a2c_pointer; n_maps=8",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F13",
+      "category": "primary outcome",
+      "statement": "Flat-MLP PPO DSM map mean",
+      "value": "0.2658",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=real_main_algorithms; algorithm=traditional_ppo; n_maps=8",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F14",
+      "category": "primary outcome",
+      "statement": "ACO DSM map mean",
+      "value": "0.5599",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=real_main_algorithms; algorithm=aco; n_maps=8",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F15",
+      "category": "primary outcome",
+      "statement": "MILP DSM map mean",
+      "value": "0.5829",
+      "unit": "safe weighted coverage",
+      "source": "analysis/pre_plot_statistics/algorithm_primary_summary.csv",
+      "locator": "statistical_family=real_main_algorithms; algorithm=milp; n_maps=8",
+      "strength": "confirmatory descriptive",
+      "boundary": "Map is the independent unit"
+    },
+    {
+      "fact_id": "F16",
+      "category": "paired inference",
+      "statement": "PPO-Pointer minus Flat-MLP PPO on synthetic maps",
+      "value": "mean diff 0.2172; 95% bootstrap CI [0.1958, 0.2393]; Holm p=9.54e-07",
+      "unit": "absolute coverage difference",
+      "source": "analysis/pre_plot_statistics/confirmatory_pairwise.csv",
+      "locator": "family=synthetic_main_algorithms; reference=full; comparator=traditional_ppo; n_maps=24",
+      "strength": "confirmatory inferential",
+      "boundary": "Non-significance is not equivalence"
+    },
+    {
+      "fact_id": "F17",
+      "category": "paired inference",
+      "statement": "PPO-Pointer minus A2C-Pointer on synthetic maps",
+      "value": "mean diff 0.0008; 95% bootstrap CI [-0.0057, 0.0069]; Holm p=0.845",
+      "unit": "absolute coverage difference",
+      "source": "analysis/pre_plot_statistics/confirmatory_pairwise.csv",
+      "locator": "family=synthetic_main_algorithms; reference=full; comparator=a2c_pointer; n_maps=24",
+      "strength": "confirmatory inferential",
+      "boundary": "Non-significance is not equivalence"
+    },
+    {
+      "fact_id": "F18",
+      "category": "paired inference",
+      "statement": "PPO-Pointer minus Flat-MLP PPO on DSM maps",
+      "value": "mean diff 0.2366; 95% bootstrap CI [0.2123, 0.2618]; Holm p=0.0469",
+      "unit": "absolute coverage difference",
+      "source": "analysis/pre_plot_statistics/confirmatory_pairwise.csv",
+      "locator": "family=real_main_algorithms; reference=full; comparator=traditional_ppo; n_maps=8",
+      "strength": "confirmatory inferential",
+      "boundary": "Non-significance is not equivalence"
+    },
+    {
+      "fact_id": "F19",
+      "category": "paired inference",
+      "statement": "PPO-Pointer minus A2C-Pointer on DSM maps",
+      "value": "mean diff -0.0000; 95% bootstrap CI [-0.0090, 0.0090]; Holm p=0.742",
+      "unit": "absolute coverage difference",
+      "source": "analysis/pre_plot_statistics/confirmatory_pairwise.csv",
+      "locator": "family=real_main_algorithms; reference=full; comparator=a2c_pointer; n_maps=8",
+      "strength": "confirmatory inferential",
+      "boundary": "Non-significance is not equivalence"
+    },
+    {
+      "fact_id": "F20",
+      "category": "paired inference",
+      "statement": "Return-reserve ablation difference on synthetic maps",
+      "value": "mean diff 0.3725; 95% bootstrap CI [0.3434, 0.4018]; Holm p=4.77e-07",
+      "unit": "absolute coverage difference",
+      "source": "analysis/pre_plot_statistics/confirmatory_pairwise.csv",
+      "locator": "family=synthetic_ablations; reference=full; comparator=no_return_reserve; n_maps=24",
+      "strength": "confirmatory inferential",
+      "boundary": "Non-significance is not equivalence"
+    },
+    {
+      "fact_id": "F21",
+      "category": "paired inference",
+      "statement": "Return-reserve ablation difference on DSM maps",
+      "value": "mean diff 0.3904; 95% bootstrap CI [0.3563, 0.4245]; Holm p=0.0312",
+      "unit": "absolute coverage difference",
+      "source": "analysis/pre_plot_statistics/confirmatory_pairwise.csv",
+      "locator": "family=real_ablations; reference=full; comparator=no_return_reserve; n_maps=8",
+      "strength": "confirmatory inferential",
+      "boundary": "Non-significance is not equivalence"
+    },
+    {
+      "fact_id": "F22",
+      "category": "paired inference",
+      "statement": "Return-reserve ablation difference under hidden mismatch",
+      "value": "mean diff 0.3174; 95% bootstrap CI [0.2460, 0.4042]; Holm p=0.0391",
+      "unit": "absolute coverage difference",
+      "source": "analysis/pre_plot_statistics/confirmatory_pairwise.csv",
+      "locator": "family=hidden_model_perception_mismatch; reference=full; comparator=no_return_reserve; n_maps=8",
+      "strength": "confirmatory inferential",
+      "boundary": "Non-significance is not equivalence"
+    },
+    {
+      "fact_id": "F23",
+      "category": "training",
+      "statement": "PPO-Pointer training stability score",
+      "value": "0.9860",
+      "unit": "normalised score",
+      "source": "analysis/manuscript_training_aware_v2/seven_dimension_scores.csv",
+      "locator": "model=full; dimension=D6",
+      "strength": "post-hoc dimension",
+      "boundary": "Report with definition and do not claim causal mechanism"
+    },
+    {
+      "fact_id": "F24",
+      "category": "training",
+      "statement": "A2C-Pointer training stability score",
+      "value": "0.9701",
+      "unit": "normalised score",
+      "source": "analysis/manuscript_training_aware_v2/seven_dimension_scores.csv",
+      "locator": "model=a2c_pointer; dimension=D6",
+      "strength": "post-hoc dimension",
+      "boundary": "Report with definition and do not claim causal mechanism"
+    },
+    {
+      "fact_id": "F25",
+      "category": "training",
+      "statement": "PPO-Pointer sample-efficiency score",
+      "value": "0.9654",
+      "unit": "normalised score",
+      "source": "analysis/manuscript_training_aware_v2/seven_dimension_scores.csv",
+      "locator": "model=full; dimension=D7",
+      "strength": "post-hoc dimension",
+      "boundary": "Report with definition and do not claim causal mechanism"
+    },
+    {
+      "fact_id": "F26",
+      "category": "training",
+      "statement": "A2C-Pointer sample-efficiency score",
+      "value": "0.9466",
+      "unit": "normalised score",
+      "source": "analysis/manuscript_training_aware_v2/seven_dimension_scores.csv",
+      "locator": "model=a2c_pointer; dimension=D7",
+      "strength": "post-hoc dimension",
+      "boundary": "Report with definition and do not claim causal mechanism"
+    },
+    {
+      "fact_id": "F27",
+      "category": "robustness",
+      "statement": "PPO-Pointer hidden-mismatch mean",
+      "value": "0.4295",
+      "unit": "safe_weighted_coverage",
+      "source": "analysis/pre_plot_statistics/descriptive_metrics.csv",
+      "locator": "result_family=hidden_model_perception_mismatch; algorithm=full; valid_runs=480",
+      "strength": "descriptive",
+      "boundary": "Hidden mismatch must remain separate from known shift"
+    },
+    {
+      "fact_id": "F28",
+      "category": "robustness",
+      "statement": "A2C-Pointer hidden-mismatch mean",
+      "value": "0.4181",
+      "unit": "safe_weighted_coverage",
+      "source": "analysis/pre_plot_statistics/descriptive_metrics.csv",
+      "locator": "result_family=hidden_model_perception_mismatch; algorithm=a2c_pointer; valid_runs=480",
+      "strength": "descriptive",
+      "boundary": "Hidden mismatch must remain separate from known shift"
+    },
+    {
+      "fact_id": "F29",
+      "category": "robustness",
+      "statement": "PPO-Pointer hidden-mismatch safe rate",
+      "value": "0.8875",
+      "unit": "safe_rate",
+      "source": "analysis/pre_plot_statistics/descriptive_metrics.csv",
+      "locator": "result_family=hidden_model_perception_mismatch; algorithm=full; valid_runs=480",
+      "strength": "descriptive",
+      "boundary": "Hidden mismatch must remain separate from known shift"
+    },
+    {
+      "fact_id": "F30",
+      "category": "online computation",
+      "statement": "PPO-Pointer synthetic planning time",
+      "value": "1.168",
+      "unit": "s",
+      "source": "analysis/pre_plot_statistics/descriptive_metrics.csv",
+      "locator": "result_family=synthetic_learning; algorithm=full; valid_runs=1080",
+      "strength": "descriptive",
+      "boundary": "Hardware/protocol-specific; MILP status and gap must also be disclosed"
+    },
+    {
+      "fact_id": "F31",
+      "category": "online computation",
+      "statement": "ACO synthetic planning time",
+      "value": "76.701",
+      "unit": "s",
+      "source": "analysis/pre_plot_statistics/descriptive_metrics.csv",
+      "locator": "result_family=synthetic_main_baselines; algorithm=aco; valid_runs=1080",
+      "strength": "descriptive",
+      "boundary": "Hardware/protocol-specific; MILP status and gap must also be disclosed"
+    },
+    {
+      "fact_id": "F32",
+      "category": "online computation",
+      "statement": "SA synthetic planning time",
+      "value": "3.832",
+      "unit": "s",
+      "source": "analysis/pre_plot_statistics/descriptive_metrics.csv",
+      "locator": "result_family=synthetic_main_baselines; algorithm=sa; valid_runs=1080",
+      "strength": "descriptive",
+      "boundary": "Hardware/protocol-specific; MILP status and gap must also be disclosed"
+    },
+    {
+      "fact_id": "F33",
+      "category": "online computation",
+      "statement": "MILP synthetic planning time",
+      "value": "20.807",
+      "unit": "s",
+      "source": "analysis/pre_plot_statistics/descriptive_metrics.csv",
+      "locator": "result_family=synthetic_main_baselines; algorithm=milp; valid_runs=216",
+      "strength": "descriptive",
+      "boundary": "Hardware/protocol-specific; MILP status and gap must also be disclosed"
+    }
+  ],
+  "claims": [
+    {
+      "claim_id": "K01",
+      "section": "Methods",
+      "claim": "The task selects a sequence of fixed, priority-labelled mountain-road inspection points under safe-return, energy, distance, time, terrain, wind and dynamics constraints.",
+      "support": "F02; protocol objective and task generation",
+      "max_strength": "definition",
+      "forbidden": "continuous road-coverage claim"
+    },
+    {
+      "claim_id": "K02",
+      "section": "Methods",
+      "claim": "The principal model combines PPO with a Pointer policy and a return-aware multi-resource feasibility mask.",
+      "support": "protocol claim_boundaries; implementation",
+      "max_strength": "implemented method",
+      "forbidden": "independent contribution of each mask component"
+    },
+    {
+      "claim_id": "K03",
+      "section": "Methods",
+      "claim": "Flat-MLP PPO removes Pointer, attention and node encoding while sharing the remaining frozen training and constraint protocol.",
+      "support": "HANDOFF 3.2; implementation class FlatMLPActorCritic",
+      "max_strength": "controlled architecture comparison",
+      "forbidden": "use of excluded ppo_mlp"
+    },
+    {
+      "claim_id": "K04",
+      "section": "Results",
+      "claim": "PPO-Pointer and A2C-Pointer achieved nearly identical final safe weighted coverage on unseen synthetic maps and DSM simulations.",
+      "support": "F05; F06; F11; F12; F17; F19",
+      "max_strength": "no detected difference",
+      "forbidden": "equivalence or PPO coverage superiority"
+    },
+    {
+      "claim_id": "K05",
+      "section": "Results",
+      "claim": "Both Pointer-based learners substantially exceeded Flat-MLP PPO in final safe weighted coverage.",
+      "support": "F07; F13; F16; F18",
+      "max_strength": "paired significant difference for full vs Flat-MLP",
+      "forbidden": "attribution solely to Pointer without broader architecture caveat"
+    },
+    {
+      "claim_id": "K06",
+      "section": "Results",
+      "claim": "ACO, SA and MILP attained higher safe weighted coverage than PPO-Pointer on the synthetic test; ACO and MILP also did so on DSM maps.",
+      "support": "F08-F10; F14-F15; confirmatory_pairwise.csv",
+      "max_strength": "paired observed advantage",
+      "forbidden": "concealment of traditional-planner coverage advantage"
+    },
+    {
+      "claim_id": "K07",
+      "section": "Results",
+      "claim": "The higher-coverage traditional planners incurred longer protocol-specific online planning times than PPO-Pointer.",
+      "support": "F30-F33",
+      "max_strength": "descriptive engineering trade-off",
+      "forbidden": "hardware-independent real-time guarantee"
+    },
+    {
+      "claim_id": "K08",
+      "section": "Results",
+      "claim": "The frozen post-hoc training dimensions favour PPO-Pointer over A2C-Pointer in stability and sample efficiency.",
+      "support": "F23-F26",
+      "max_strength": "post-hoc score comparison",
+      "forbidden": "causal proof of PPO clipping"
+    },
+    {
+      "claim_id": "K09",
+      "section": "Results",
+      "claim": "The return-reserve ablation produced the clearest and statistically supported deterioration across synthetic, DSM and hidden-mismatch families.",
+      "support": "F20-F22",
+      "max_strength": "composite mechanism contribution",
+      "forbidden": "independent claims for energy/distance/time/dynamics submasks"
+    },
+    {
+      "claim_id": "K10",
+      "section": "Results",
+      "claim": "Removing priority bias, domain randomisation or resource shaping yielded small and non-significant overall differences in the principal map-level comparisons.",
+      "support": "confirmatory_pairwise.csv synthetic_ablations and real_ablations",
+      "max_strength": "limited aggregate evidence",
+      "forbidden": "equivalence or universal irrelevance"
+    },
+    {
+      "claim_id": "K11",
+      "section": "Results",
+      "claim": "Under hidden model/perception mismatch, PPO-Pointer was directionally above A2C-Pointer, but the paired difference was not significant.",
+      "support": "F27-F29; hidden pairwise row",
+      "max_strength": "directional observation",
+      "forbidden": "robustness superiority"
+    },
+    {
+      "claim_id": "K12",
+      "section": "Discussion",
+      "claim": "PPO-Pointer offers an engineering balance rather than a universal single-metric optimum.",
+      "support": "K04-K11; figures M01-M10",
+      "max_strength": "evidence-bounded interpretation",
+      "forbidden": "best overall algorithm without explicit criterion"
+    },
+    {
+      "claim_id": "K13",
+      "section": "Discussion",
+      "claim": "DSM experiments represent zero-shot geographic simulation transfer across eight independent maps.",
+      "support": "protocol claim_boundaries; F11-F15",
+      "max_strength": "simulation transfer",
+      "forbidden": "real flight, deployment or safety certification"
+    },
+    {
+      "claim_id": "K14",
+      "section": "Discussion",
+      "claim": "Performance at 16, 20 and 24 nodes is within the trained size range.",
+      "support": "protocol node_counts; HANDOFF 4.1",
+      "max_strength": "within-range multi-scale performance",
+      "forbidden": "out-of-range scale generalisation"
+    },
+    {
+      "claim_id": "K15",
+      "section": "Discussion",
+      "claim": "The map is the statistical unit; routes, tasks and seeds are nested observations.",
+      "support": "analysis protocol; F16-F22 locators",
+      "max_strength": "statistical design",
+      "forbidden": "inflated task-level n"
+    },
+    {
+      "claim_id": "K16",
+      "section": "Supplement",
+      "claim": "The 100-point multiobjective score is a post-hoc sensitivity summary, not the confirmatory endpoint.",
+      "support": "F02; manuscript_preplot_closure_v5",
+      "max_strength": "diagnostic summary",
+      "forbidden": "abstract champion conclusion"
+    }
+  ],
+  "figure_storyline": [
+    {
+      "unit": "U1",
+      "assets": "non-generative method/evaluation schematic; M01/M02 inputs",
+      "purpose": "Task, method and frozen evaluation design",
+      "claim_ids": "K01-K03; K15",
+      "placement": "Methods",
+      "boundary": "Diagram only verifiable implementation and protocol facts"
+    },
+    {
+      "unit": "U2",
+      "assets": "M01 + M03",
+      "purpose": "Coverage distribution and priority strata",
+      "claim_ids": "K04-K06",
+      "placement": "Results 6.1",
+      "boundary": "Show traditional-planner advantages"
+    },
+    {
+      "unit": "U3",
+      "assets": "M02 + M04",
+      "purpose": "Safety/return and safe-route resource costs",
+      "claim_ids": "K05; K09",
+      "placement": "Results 6.2",
+      "boundary": "Resource metrics conditional on safe routes"
+    },
+    {
+      "unit": "U4",
+      "assets": "M05 + S02",
+      "purpose": "Planning-time ECDF and quality-time trade-off",
+      "claim_ids": "K06-K07; K12",
+      "placement": "Results 6.3",
+      "boundary": "Protocol/hardware-specific timing"
+    },
+    {
+      "unit": "U5",
+      "assets": "M06 + M07",
+      "purpose": "Training trajectories, stability and sample efficiency",
+      "claim_ids": "K08",
+      "placement": "Results 6.4",
+      "boundary": "Training curves are not test curves"
+    },
+    {
+      "unit": "U6",
+      "assets": "M08 + V01/V02 as non-inferential",
+      "purpose": "Unseen maps and DSM simulation transfer",
+      "claim_ids": "K04-K06; K13-K14",
+      "placement": "Results 6.5",
+      "boundary": "No flight or unseen-size claim"
+    },
+    {
+      "unit": "U7",
+      "assets": "M09",
+      "purpose": "Known shifts versus hidden mismatch",
+      "claim_ids": "K09-K11",
+      "placement": "Results 6.6",
+      "boundary": "Never merge perturbation semantics"
+    },
+    {
+      "unit": "U8",
+      "assets": "M10",
+      "purpose": "Four ablations",
+      "claim_ids": "K09-K10",
+      "placement": "Results 6.7",
+      "boundary": "Composite return mechanism only"
+    }
+  ],
+  "glossary": [
+    {
+      "term": "PPO-Pointer",
+      "definition": "PPO with Pointer policy",
+      "control": "Use for full; do not call coverage champion"
+    },
+    {
+      "term": "A2C-Pointer",
+      "definition": "A2C comparator with Pointer policy",
+      "control": "Final coverage is close to PPO-Pointer"
+    },
+    {
+      "term": "Flat-MLP PPO",
+      "definition": "traditional_ppo / FlatMLPActorCritic / flat_mlp_24",
+      "control": "Never use ppo_mlp"
+    },
+    {
+      "term": "SWC",
+      "definition": "safe weighted coverage",
+      "control": "Confirmatory endpoint; unsafe/violating routes score zero"
+    },
+    {
+      "term": "DSM",
+      "definition": "digital surface model",
+      "control": "Copernicus DEM GLO-30; simulation terrain input"
+    },
+    {
+      "term": "unseen synthetic maps",
+      "definition": "24 held-out procedural maps",
+      "control": "Not unseen node-count generalisation"
+    },
+    {
+      "term": "zero-shot DSM simulation transfer",
+      "definition": "Evaluation on 8 DSM maps without DSM-specific training",
+      "control": "Not real flight"
+    },
+    {
+      "term": "known domain shift",
+      "definition": "policy observes the shifted condition used for execution",
+      "control": "Wind or power coefficient shift"
+    },
+    {
+      "term": "hidden mismatch",
+      "definition": "planning observation/model differs from execution truth",
+      "control": "Keep separate from known shift"
+    },
+    {
+      "term": "return-aware multi-resource feasibility mask",
+      "definition": "composite return reserve mechanism",
+      "control": "No independent submask claim"
+    },
+    {
+      "term": "map-level pairing",
+      "definition": "task/seed aggregation within each map",
+      "control": "n=24 synthetic or n=8 DSM"
+    },
+    {
+      "term": "post-hoc 100-point score",
+      "definition": "multiobjective sensitivity summary",
+      "control": "Supplement only; not abstract evidence"
+    }
+  ],
+  "paragraph_plan": [
+    {
+      "section": "3.1",
+      "paragraphs": "P01-P03",
+      "function": "Define road corridors, fixed points, priorities, depot and resource-constrained objective",
+      "claims": "K01",
+      "evidence": "protocol; method schematic"
+    },
+    {
+      "section": "3.2",
+      "paragraphs": "P04-P06",
+      "function": "State, action, transition and confirmatory SWC objective",
+      "claims": "K01; K15",
+      "evidence": "F02; protocol"
+    },
+    {
+      "section": "4.1",
+      "paragraphs": "P07-P10",
+      "function": "Pointer encoder/decoder and PPO optimisation",
+      "claims": "K02",
+      "evidence": "implementation; R09-R13"
+    },
+    {
+      "section": "4.2",
+      "paragraphs": "P11-P13",
+      "function": "Return-aware feasibility evaluation and mask",
+      "claims": "K02; K09",
+      "evidence": "protocol; implementation"
+    },
+    {
+      "section": "4.3",
+      "paragraphs": "P14-P16",
+      "function": "Flat-MLP and A2C comparators plus four ablations",
+      "claims": "K03",
+      "evidence": "implementation; protocol"
+    },
+    {
+      "section": "5.1",
+      "paragraphs": "P17-P19",
+      "function": "Training/validation/test maps and task factorial design",
+      "claims": "K13-K15",
+      "evidence": "protocol"
+    },
+    {
+      "section": "5.2",
+      "paragraphs": "P20-P22",
+      "function": "Traditional baselines and MILP status/gap reporting",
+      "claims": "K06-K07",
+      "evidence": "protocol; R25-R30"
+    },
+    {
+      "section": "5.3",
+      "paragraphs": "P23-P25",
+      "function": "Known shifts and hidden mismatch",
+      "claims": "K11",
+      "evidence": "protocol"
+    },
+    {
+      "section": "5.4",
+      "paragraphs": "P26-P28",
+      "function": "Map-level statistics, bootstrap and multiplicity",
+      "claims": "K15",
+      "evidence": "F16-F22; R20-R23"
+    },
+    {
+      "section": "6.1",
+      "paragraphs": "P29-P32",
+      "function": "Synthetic and DSM SWC with honest algorithm ranking",
+      "claims": "K04-K06",
+      "evidence": "F05-F19; U2"
+    },
+    {
+      "section": "6.2",
+      "paragraphs": "P33-P35",
+      "function": "Safety, return and resource costs",
+      "claims": "K05; K09",
+      "evidence": "U3"
+    },
+    {
+      "section": "6.3",
+      "paragraphs": "P36-P38",
+      "function": "Planning time and quality-time trade-offs",
+      "claims": "K06-K07",
+      "evidence": "F30-F33; U4"
+    },
+    {
+      "section": "6.4",
+      "paragraphs": "P39-P41",
+      "function": "Training curves, stability and sample efficiency",
+      "claims": "K08",
+      "evidence": "F23-F26; U5"
+    },
+    {
+      "section": "6.5",
+      "paragraphs": "P42-P44",
+      "function": "Unseen-map and DSM simulation transfer",
+      "claims": "K13-K14",
+      "evidence": "U6"
+    },
+    {
+      "section": "6.6",
+      "paragraphs": "P45-P47",
+      "function": "Known shifts and hidden mismatch",
+      "claims": "K11",
+      "evidence": "F27-F29; U7"
+    },
+    {
+      "section": "6.7",
+      "paragraphs": "P48-P50",
+      "function": "Ablations, led by return reserve",
+      "claims": "K09-K10",
+      "evidence": "F20-F22; U8"
+    },
+    {
+      "section": "7",
+      "paragraphs": "P51-P57",
+      "function": "Interpret engineering balance, compare planners, state uncertainty and limitations",
+      "claims": "K12-K16",
+      "evidence": "all principal evidence"
+    },
+    {
+      "section": "1-2",
+      "paragraphs": "P58-P66",
+      "function": "Problem importance, mechanism-organised literature, gap and contributions",
+      "claims": "C01-C19; K01-K03",
+      "evidence": "verified full-text references"
+    },
+    {
+      "section": "8/Abstract",
+      "paragraphs": "P67-P70",
+      "function": "Bounded conclusions and <=250-word abstract",
+      "claims": "K04-K15",
+      "evidence": "principal evidence only"
+    }
+  ],
+  "author_verification_queue": [
+    {
+      "id": "AQ01",
+      "item": "Author names and order",
+      "location": "Title page; CRediT",
+      "placeholder": "[AUTHOR INPUT REQUIRED: names and order]",
+      "status": "open"
+    },
+    {
+      "id": "AQ02",
+      "item": "Affiliations and corresponding author",
+      "location": "Title page",
+      "placeholder": "[AUTHOR INPUT REQUIRED: affiliations, email, postal address]",
+      "status": "open"
+    },
+    {
+      "id": "AQ03",
+      "item": "Funding information",
+      "location": "Funding statement",
+      "placeholder": "[AUTHOR INPUT REQUIRED: funder and grant number, or none]",
+      "status": "open"
+    },
+    {
+      "id": "AQ04",
+      "item": "CRediT contributions",
+      "location": "Author contributions",
+      "placeholder": "[AUTHOR INPUT REQUIRED: role assignment]",
+      "status": "open"
+    },
+    {
+      "id": "AQ05",
+      "item": "Competing interests",
+      "location": "Declaration",
+      "placeholder": "[AUTHOR INPUT REQUIRED: conflicts or no conflict]",
+      "status": "open"
+    },
+    {
+      "id": "AQ06",
+      "item": "Acknowledgements",
+      "location": "End matter",
+      "placeholder": "[AUTHOR INPUT REQUIRED: acknowledgements or none]",
+      "status": "open"
+    },
+    {
+      "id": "AQ07",
+      "item": "Repository permanent identifier",
+      "location": "Data/code availability",
+      "placeholder": "[AUTHOR INPUT REQUIRED: DOI or permanent URL]",
+      "status": "open"
+    },
+    {
+      "id": "AQ08",
+      "item": "Copernicus region identifiers/asset reconstruction details",
+      "location": "Data availability; reproducibility",
+      "placeholder": "[AUTHOR INPUT REQUIRED: confirm public region identifiers]",
+      "status": "open"
+    },
+    {
+      "id": "AQ09",
+      "item": "AI-use disclosure wording and human verification",
+      "location": "Declaration",
+      "placeholder": "[AUTHOR INPUT REQUIRED: approve accurate disclosure before submission]",
+      "status": "open"
+    }
+  ]
+}

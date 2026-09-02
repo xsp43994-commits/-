@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "backend": "python_matplotlib",
+  "language": "zh-CN",
+  "target_style": [
+    "Nature",
+    "Nature Machine Intelligence",
+    "Nature Communications"
+  ],
+  "final_width_mm": 183,
+  "max_height_mm": 170,
+  "font_pt": {
+    "body_min": 5,
+    "body_max": 7,
+    "panel_label": 8
+  },
+  "figures": {
+    "figure_1": {
+      "claim": "PPO+Pointer在固定综合评价与权重扰动下是否稳健领先",
+      "archetype": "asymmetric_quantitative_grid",
+      "panels": {
+        "a": "raincloud_box_raw_points",
+        "b": "paired_effect_forest",
+        "c": "rank_acceptability_heatmap",
+        "d": "ternary_weight_winner_map"
+      }
+    },
+    "figure_2": {
+      "claim": "综合优势的组成与工程权衡",
+      "archetype": "quantitative_grid",
+      "panels": {
+        "a": "component_dot_heatmap",
+        "b": "rate_dot_interval",
+        "c": "aligned_cleveland_dot",
+        "d": "log_time_ecdf",
+        "e": "pareto_scatter_front"
+      }
+    },
+    "figure_3": {
+      "claim": "完整方法相对四项消融的损失与来源",
+      "archetype": "paired_effect_grid",
+      "panels": {
+        "a": "paired_effect_forest",
+        "b": "component_dumbbell",
+        "c": "priority_coverage_dot",
+        "d": "termination_delta_heatmap"
+      }
+    },
+    "figure_4": {
+      "claim": "困难工况与节点规模变化下的稳健性",
+      "archetype": "condition_change_grid",
+      "panels": {
+        "a": "id_stress_dumbbell_overall",
+        "b": "id_stress_dumbbell_safety",
+        "c": "scale_line_ci_overall",
+        "d": "scale_line_ci_effectiveness",
+        "e": "scale_log_time_line"
+      }
+    },
+    "figure_5": {
+      "claim": "统计优势对应的访问顺序、资源消耗与安全返航",
+      "archetype": "asymmetric_mixed_modality",
+      "panels": {
+        "a": "top_down_route",
+        "b": "altitude_distance_profile",
+        "c": "cumulative_budget_curves",
+        "d": "metric_dot_table"
+      }
+    },
+    "supplementary_figure_s1": {
+      "claim": "五训练种子下的学习稳定性与外部固定验证集收敛行为",
+      "archetype": "learning_curve_grid",
+      "panels": {
+        "a": "core_model_episode_return_median_iqr",
+        "b": "all_variant_validation_weighted_coverage_median_iqr",
+        "c": "all_variant_validation_return_rate_median_iqr"
+      },
+      "interpretation_boundary": "训练曲线仅说明优化过程和稳定性；最终算法优劣由冻结id_test决定。奖励定义发生变化的消融不比较原始回报绝对高低。"
+    }
+  },
+  "forbidden_primary_charts": [
+    "radar_area_ranking",
+    "pie_chart",
+    "mean_only_bar_chart",
+    "three_dimensional_bar_chart",
+    "rainbow_heatmap",
+    "perspective_route_grid"
+  ],
+  "exports": [
+    "svg",
+    "pdf",
+    "tiff_600dpi",
+    "png_preview",
+    "source_data_csv",
+    "caption_zh",
+    "figure_manifest_json"
+  ]
+}

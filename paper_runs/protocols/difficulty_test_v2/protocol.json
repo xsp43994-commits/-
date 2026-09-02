@@ -1,0 +1,230 @@
+{
+  "schema_version": 2,
+  "protocol_name": "difficulty_test_v2",
+  "protocol_hash": "3bbb3c3ec344ebbd047814285a5a5b0b345051597a0a07340adea9ea5e324d73",
+  "protocol_hash_method": "sha256_canonical_json_excluding_protocol_hash",
+  "parent_frozen_protocol_hash": "7a010c749881dd452c78a03602d42c797b32b14590637f63676a216cd34dce16",
+  "purpose": "correct ceiling-saturated mission modeling with solver-certified partial-coverage tasks",
+  "base_scenario_file": "scenario_data/mountain_road_16pt.npz",
+  "power_scale": 1.0,
+  "node_counts": [
+    16,
+    20,
+    24
+  ],
+  "difficulty_bands": {
+    "moderate": [
+      0.7,
+      0.85
+    ],
+    "hard": [
+      0.5,
+      0.7
+    ],
+    "extreme": [
+      0.3,
+      0.5
+    ]
+  },
+  "constraint_types": [
+    "energy",
+    "distance",
+    "time",
+    "mixed"
+  ],
+  "priority_layouts": [
+    "clustered",
+    "dispersed",
+    "far_high_conflict"
+  ],
+  "candidate_ranges": {
+    "radial_extent_fraction": [
+      0.6,
+      0.95
+    ],
+    "initial_soc": [
+      0.45,
+      0.85
+    ],
+    "distance_budget_scale": [
+      0.45,
+      0.8
+    ],
+    "time_budget_scale": [
+      0.45,
+      0.8
+    ],
+    "wind_scale": [
+      1.0,
+      1.2
+    ],
+    "wind_vertical_bias_mps": [
+      -1.0,
+      1.0
+    ]
+  },
+  "constraint_candidate_ranges": {
+    "energy": {
+      "initial_soc": [
+        0.45,
+        0.68
+      ],
+      "distance_budget_scale": [
+        0.7,
+        0.8
+      ],
+      "time_budget_scale": [
+        0.7,
+        0.8
+      ]
+    },
+    "distance": {
+      "initial_soc": [
+        0.75,
+        0.85
+      ],
+      "distance_budget_scale": [
+        0.45,
+        0.65
+      ],
+      "time_budget_scale": [
+        0.7,
+        0.8
+      ]
+    },
+    "time": {
+      "initial_soc": [
+        0.75,
+        0.85
+      ],
+      "distance_budget_scale": [
+        0.7,
+        0.8
+      ],
+      "time_budget_scale": [
+        0.45,
+        0.65
+      ]
+    },
+    "mixed": {
+      "initial_soc": [
+        0.55,
+        0.75
+      ],
+      "distance_budget_scale": [
+        0.55,
+        0.72
+      ],
+      "time_budget_scale": [
+        0.55,
+        0.72
+      ]
+    }
+  },
+  "split_design": {
+    "training_pool": {
+      "replicates_per_cell": 6,
+      "count": 648,
+      "seed": 2026072601
+    },
+    "validation": {
+      "replicates_per_cell": 1,
+      "count": 108,
+      "seed": 2026072602
+    },
+    "formal_test": {
+      "replicates_per_cell": 2,
+      "count": 216,
+      "seed": 2026072603,
+      "generation_deferred_until_training_freeze": true
+    }
+  },
+  "certification": {
+    "algorithm": "milp_weighted_coverage",
+    "time_limit_s": 60.0,
+    "mip_rel_gap": 0.01,
+    "full_coverage_upper_bound_max": 0.85,
+    "minimum_visited_count": 1,
+    "band_tolerance": 1e-09,
+    "bottleneck_utilization_min": 0.7,
+    "single_bottleneck_max_gap": 0.08,
+    "mixed_min_active_resources": 2,
+    "max_candidate_attempts_per_cell": 2000
+  },
+  "qualification": {
+    "core_variants": [
+      "full",
+      "ppo_mlp",
+      "a2c_pointer"
+    ],
+    "all_variants": [
+      "full",
+      "ppo_mlp",
+      "a2c_pointer",
+      "no_priority_bias",
+      "no_domain_randomization",
+      "no_resource_shaping",
+      "no_return_reserve"
+    ],
+    "training_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "core_safe_rate_min": 0.95,
+    "core_zero_visit_rate_max": 0.05,
+    "core_partial_return_rate_min": 0.8,
+    "core_median_visited_count_min": 2,
+    "core_median_safe_weighted_coverage": [
+      0.05,
+      0.95
+    ],
+    "decision": "all_keep_or_all_retrain"
+  },
+  "pilot_training": {
+    "variants": [
+      "full",
+      "ppo_mlp",
+      "a2c_pointer"
+    ],
+    "seed": 42,
+    "episodes": 600,
+    "monitor_episodes": [
+      100,
+      200,
+      400,
+      600
+    ],
+    "maximum_protocol_revisions": 3,
+    "ceiling_scene_share": 0.9,
+    "ceiling_oracle_gap": 0.01,
+    "floor_median_oracle_attainment": 0.2,
+    "floor_safe_rate": 0.8,
+    "zero_visit_warning_rate": 0.1
+  },
+  "formal_training": {
+    "episodes": 3000,
+    "variants": "all_7",
+    "seeds": "42-46",
+    "monitor_episodes": [
+      250,
+      500,
+      1000,
+      1500,
+      2000,
+      2500,
+      3000
+    ],
+    "restart_all_after_material_change": true
+  },
+  "primary_metric": "safe_weighted_coverage",
+  "forbidden": [
+    "selecting_scenarios_using_candidate_algorithm_results",
+    "partial_retraining",
+    "posthoc_weighted_champion_score",
+    "formal_test_generation_before_training_protocol_freeze",
+    "power_sensitivity"
+  ]
+}

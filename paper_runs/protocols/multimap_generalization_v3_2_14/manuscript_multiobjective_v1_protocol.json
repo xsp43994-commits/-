@@ -1,0 +1,124 @@
+{
+  "aggregation_methods": {
+    "primary_manuscript_composite": "weighted_geometric",
+    "sensitivity": "weighted_arithmetic"
+  },
+  "analysis_role": "post_result_manuscript_draft_revision",
+  "default_online_deadline_s": 10.0,
+  "default_overall_weights": {
+    "D1": 0.35,
+    "D2": 0.25,
+    "D3": 0.2,
+    "D4": 0.12,
+    "D5": 0.08
+  },
+  "dimensions": {
+    "D1": {
+      "high_priority_coverage": 0.25,
+      "oracle_attainment": 0.25,
+      "weighted_coverage": 0.5
+    },
+    "D2": {
+      "distance_efficiency": 0.25,
+      "energy_efficiency": 0.35,
+      "time_efficiency": 0.4
+    },
+    "D3": {
+      "constraint_free_rate": 0.2,
+      "return_rate": 0.2,
+      "safe_rate": 0.5,
+      "soc_utility": 0.1
+    },
+    "D4": {
+      "map_consistency": 0.1,
+      "mean_retention": 0.4,
+      "perturbed_safe_rate": 0.2,
+      "worst_retention": 0.3
+    },
+    "D5": {
+      "online_planning_efficiency": 0.7,
+      "scaling_efficiency": 0.3
+    }
+  },
+  "final_results_sha256": "4b620c21566c2e33c875f6bea2017b741b02a7d30d70aa50add60a6d06214a2c",
+  "frozen_at_utc": "2026-07-31T00:00:00Z",
+  "hierarchy": "repeat_mean_then_task_mean_then_map_mean",
+  "implementation_sha256": "fb9d17c03aee9681ef5895b783aa576c9cbbb8904f70e3e0e6329ca34e31e4a6",
+  "matrix_sha256": "48a31ee9b58d41a617fff61acb6eba6a2d9a930767d7af15856f70a964686224",
+  "online_deadline_sensitivity_s": [
+    1.0,
+    5.0,
+    10.0,
+    30.0,
+    60.0
+  ],
+  "parent_analysis_protocol_hash": "0b3cdcce77429875978c68fd9500c43de5de123d5fb7691847d4a6a1e6d93d22",
+  "plots_forbidden": true,
+  "protocol_hash": "79b51a403fa065d09516f3df8df4cf2f6b097f73fecfbafc85f99b952865ba35",
+  "raw_oracle_rule": "D1 uses weighted_coverage/oracle_upper, clipped to [0,1]",
+  "robustness_rule": "Six frozen perturbation conditions, paired to nominal task/model/seed; no missing-value imputation and no post-hoc condition selection.",
+  "scenario_weights": {
+    "balanced_default": {
+      "D1": 0.35,
+      "D2": 0.25,
+      "D3": 0.2,
+      "D4": 0.12,
+      "D5": 0.08
+    },
+    "mission_first": {
+      "D1": 0.5,
+      "D2": 0.2,
+      "D3": 0.15,
+      "D4": 0.1,
+      "D5": 0.05
+    },
+    "realtime_first": {
+      "D1": 0.3,
+      "D2": 0.2,
+      "D3": 0.2,
+      "D4": 0.1,
+      "D5": 0.2
+    },
+    "safety_first": {
+      "D1": 0.3,
+      "D2": 0.2,
+      "D3": 0.3,
+      "D4": 0.12,
+      "D5": 0.08
+    }
+  },
+  "schema_version": "manuscript_multiobjective_v1",
+  "scientific_boundary": "This analysis was specified after formal results existed. It is a versioned manuscript-stage multi-objective analysis, not the original preregistered confirmatory test, and all component metrics remain visible.",
+  "scopes": {
+    "core_learning_complete": "full,traditional_ppo,a2c_pointer; D1-D5",
+    "mechanism_robustness": "descriptive specialized comparisons only",
+    "real_all": "D1,D2,D3,D5; no D4 imputation",
+    "synthetic_all": "D1,D2,D3,D5; no D4 imputation"
+  },
+  "stopping_state": "ready_for_plot_plan",
+  "task_definition": "Visit fixed inspection points on two mountain national-highway corridors; continuous road coverage is not required; the airport lies at the road intersection; planning obeys energy, distance, time, wind, terrain, dynamics and forced-return constraints.",
+  "unsafe_cost_rule": "resource cost metrics use safe routes only; no-safe task utility is zero",
+  "weight_ranges": {
+    "D1": [
+      0.25,
+      0.5
+    ],
+    "D2": [
+      0.15,
+      0.35
+    ],
+    "D3": [
+      0.15,
+      0.35
+    ],
+    "D4": [
+      0.05,
+      0.2
+    ],
+    "D5": [
+      0.05,
+      0.2
+    ]
+  },
+  "weight_step": 0.05
+}

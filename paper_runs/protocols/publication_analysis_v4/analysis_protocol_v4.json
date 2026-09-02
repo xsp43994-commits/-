@@ -1,0 +1,325 @@
+{
+  "schema_version": 4,
+  "protocol_name": "publication_analysis_v4",
+  "created_at": "2026-07-25T19:00:00+08:00",
+  "created_after_experiment_completion": true,
+  "created_before_metric_aggregation_and_ranking": true,
+  "analysis_protocol_hash": "7ecc9db25d17c0a8e05c94eaaf0cdcaef5d4afed298771128dc9f6f2f14f71a7",
+  "analysis_protocol_hash_method": "sha256_canonical_json_excluding_analysis_protocol_hash",
+  "amends": {
+    "protocol_name": "frozen_test_v1",
+    "protocol_hash": "7a010c749881dd452c78a03602d42c797b32b14590637f63676a216cd34dce16",
+    "scope": "analysis_visualization_and_claim_language_only",
+    "replaced_clause": "forbidden_rankings.manual_composite_score",
+    "unchanged_assets": [
+      "models",
+      "checkpoints",
+      "training",
+      "scenarios",
+      "manifest",
+      "MissionEvaluator",
+      "raw_results",
+      "routes"
+    ]
+  },
+  "study_scope_cn": "复杂山区多约束无人机巡检仿真场景",
+  "primary_split": "id_test",
+  "power_scale": 1.0,
+  "statistical_unit": "scenario",
+  "within_scenario_reduction": "mean_over_training_or_planner_repeats",
+  "main_family": [
+    "full",
+    "ppo_mlp",
+    "a2c_pointer",
+    "nearest_feasible",
+    "priority_resource_greedy",
+    "aco",
+    "ga",
+    "sa",
+    "milp_orienteering"
+  ],
+  "reference_algorithm": "full",
+  "score": {
+    "name": "coverage_priority_overall_utility",
+    "range": [
+      0.0,
+      1.0
+    ],
+    "components": {
+      "E": "scenario mean safe_weighted_coverage",
+      "R": "scenario mean E_run*(1-mean energy/distance/time utilization); unsafe runs contribute zero",
+      "C": "E*q with inverse within-scenario median planning-time rank utility among the fixed nine main methods"
+    },
+    "time_rank": {
+      "aggregate": "median planning_time_s per algorithm-scenario",
+      "tie_method": "average",
+      "main_family_formula": "q=1-(rank-1)/(K-1)",
+      "non_main_projection": "piecewise-linear interpolation on log-time against fixed main-family anchors, clamped to [0,1]",
+      "K": 9
+    },
+    "fixed_weights": {
+      "E": 0.6,
+      "R": 0.25,
+      "C": 0.15
+    },
+    "formula": "S=0.60*E+0.25*R+0.15*C",
+    "missing_or_invalid_safe_resource_fields": "fail",
+    "unsafe_resource_contribution": 0.0
+  },
+  "confirmatory_sequence": [
+    "overall_utility_score",
+    "safe_weighted_coverage_if_composite_omnibus_passes"
+  ],
+  "statistics": {
+    "omnibus": "Friedman",
+    "pairwise": "paired two-sided Wilcoxon signed-rank against full",
+    "multiplicity": "Holm within family",
+    "alpha": 0.05,
+    "effect_sizes": [
+      "rank_biserial",
+      "Hodges_Lehmann"
+    ],
+    "bootstrap": {
+      "samples": 10000,
+      "confidence_level": 0.95,
+      "seed": 20260725,
+      "outer_unit": "paired_scenario",
+      "inner_unit": "independent_repeat_resampling_per_algorithm",
+      "time_rank_utility": "fixed_observed_algorithm_scenario_median_rank"
+    },
+    "families": {
+      "main": {
+        "status": "confirmatory",
+        "members": [
+          "full",
+          "ppo_mlp",
+          "a2c_pointer",
+          "nearest_feasible",
+          "priority_resource_greedy",
+          "aco",
+          "ga",
+          "sa",
+          "milp_orienteering"
+        ]
+      },
+      "ablation": {
+        "status": "confirmatory",
+        "members": [
+          "full",
+          "no_priority_bias",
+          "no_domain_randomization",
+          "no_resource_shaping",
+          "no_return_reserve"
+        ]
+      },
+      "supplementary": {
+        "status": "exploratory",
+        "members": [
+          "full",
+          "a_star",
+          "pso",
+          "exact_pareto_dp"
+        ]
+      }
+    }
+  },
+  "sensitivity": {
+    "sobol_samples": 100000,
+    "sobol_seed": 20260725,
+    "weight_bounds": {
+      "E": [
+        0.5,
+        0.75
+      ],
+      "R": [
+        0.15,
+        0.35
+      ],
+      "C": [
+        0.05,
+        0.2
+      ]
+    },
+    "weight_sum": 1.0,
+    "rank_acceptability": true,
+    "alternatives": [
+      "resource_max_utilization",
+      "online_empirical_repeat_percentile",
+      "drop_resource_and_renormalize",
+      "drop_online_and_renormalize",
+      "pareto_E_R_C"
+    ]
+  },
+  "winner_rule": {
+    "target": "full",
+    "all_required": true,
+    "rank1_acceptability_threshold": 0.8,
+    "conditions": [
+      "highest_fixed_weight_mean_score",
+      "friedman_p_below_alpha",
+      "all_eight_Holm_pairwise_p_below_alpha",
+      "all_Hodges_Lehmann_and_rank_biserial_directions_positive",
+      "all_bootstrap_intervals_strictly_above_zero",
+      "rank1_acceptability_at_least_0.80",
+      "not_pareto_dominated_on_mean_E_R_C"
+    ],
+    "claim_scope_cn": "当前复杂山区多约束无人机巡检仿真场景及冻结测试协议"
+  },
+  "secondary_analysis": {
+    "stress_test": "descriptive_only_no_new_confirmatory_tests",
+    "scale": "descriptive_only_no_new_confirmatory_tests",
+    "power_sensitivity": "cancelled_before_any_results"
+  },
+  "training_convergence": {
+    "training_runs": 35,
+    "episodes_per_run": 3000,
+    "seeds_per_variant": 5,
+    "rolling_window_episodes": 100,
+    "core_return_variants": [
+      "full",
+      "ppo_mlp",
+      "a2c_pointer"
+    ],
+    "validation_variants": [
+      "full",
+      "ppo_mlp",
+      "a2c_pointer",
+      "no_priority_bias",
+      "no_domain_randomization",
+      "no_resource_shaping",
+      "no_return_reserve"
+    ],
+    "validation_metrics": [
+      "weighted_coverage",
+      "return_rate"
+    ],
+    "summary": "five-seed median with interquartile band and faint seed traces",
+    "interaction_budget_panel": true,
+    "interpretation_boundary_cn": "训练曲线只说明收敛和种子稳定性；最终判优由冻结id_test完成；奖励定义改变的消融不比较原始回报绝对值。"
+  },
+  "seed_stability": {
+    "variants": [
+      "full",
+      "ppo_mlp",
+      "a2c_pointer",
+      "no_priority_bias",
+      "no_domain_randomization",
+      "no_resource_shaping",
+      "no_return_reserve"
+    ],
+    "training_seeds": [
+      42,
+      43,
+      44,
+      45,
+      46
+    ],
+    "metrics": [
+      "overall_utility_score",
+      "safe_weighted_coverage"
+    ]
+  },
+  "performance_profile": {
+    "definition": "regret_algorithm_scenario=max_main_score_scenario-score_algorithm_scenario",
+    "epsilon_zero_tolerance": 1e-12,
+    "status": "descriptive"
+  },
+  "showcase": {
+    "eligible_for_winner_evidence": false,
+    "representative_scenario": "id_test_034",
+    "terrain_route_wind": {
+      "elevation_deg": 28,
+      "azimuth_deg": -55,
+      "vertical_exaggeration": 2.0,
+      "display_algorithms": [
+        "full",
+        "priority_resource_greedy",
+        "aco",
+        "milp_orienteering"
+      ]
+    },
+    "alluvial": {
+      "unit": "algorithm_scenario",
+      "within_scenario_repeat_weight": "1/n_repeats",
+      "coverage_states": [
+        "safe_full",
+        "safe_partial",
+        "zero_effective",
+        "unsafe_or_violation"
+      ],
+      "termination_states": [
+        "returned_full",
+        "returned_partial",
+        "constraint_failure",
+        "stranded"
+      ]
+    },
+    "scenario_fingerprint": {
+      "split": "id_test",
+      "difficulty_formula": "mean(z(1-initial_soc),z(1-distance_budget_scale),z(1-time_budget_scale),z(wind_scale),z(abs(wind_vertical_bias_mps)))",
+      "tie_break": "scenario_id",
+      "performance_cell": "algorithm_score_minus_scenario_main_family_mean",
+      "difficulty_used_for_statistics": false
+    }
+  },
+  "representative_scenario": {
+    "scenario_id": "id_test_034",
+    "selection": "inherited_from_frozen_test_v1_before_results",
+    "display_algorithms": [
+      {
+        "algorithm": "full",
+        "training_seed": 42
+      },
+      {
+        "algorithm": "priority_resource_greedy",
+        "planner_seed": 42
+      },
+      {
+        "algorithm": "aco",
+        "planner_seed": 42
+      },
+      {
+        "algorithm": "milp_orienteering",
+        "planner_seed": 42
+      }
+    ]
+  },
+  "figure_sets": {
+    "main": [
+      "figure_1",
+      "figure_2",
+      "figure_3",
+      "figure_4",
+      "figure_5"
+    ],
+    "supplementary": [
+      "supplementary_s1",
+      "supplementary_s2",
+      "supplementary_s3",
+      "supplementary_s4",
+      "supplementary_s5",
+      "supplementary_s6"
+    ],
+    "showcase": [
+      "showcase_v1",
+      "showcase_v2",
+      "showcase_v3"
+    ]
+  },
+  "figure_contract_file": "paper_runs/protocols/publication_analysis_v4/figure_contract.json",
+  "figure_contract_sha256": "2b3d3bd32dd5f28de0fa2ce14fd54c9f47413d9f6e2892ffb8c77ba1d9b311b3",
+  "figure_type_review_file": "paper_runs/protocols/publication_analysis_v4/figure_type_review.md",
+  "figure_type_review_sha256": "9f65f66dd0bbc43c3c1da7b1703788599307051ef61ffd1ec434bb9c39a172e7",
+  "implementation_nonanalytic_correction": "figure_role vocabulary normalized to confirmatory/descriptive/showcase; scores, weights, tests, ordering and winner rules unchanged",
+  "backend": "Python/Matplotlib",
+  "language": "zh-CN_with_necessary_English",
+  "exports": [
+    "svg",
+    "pdf",
+    "tiff_600dpi",
+    "png_preview",
+    "source_data_csv",
+    "caption_cn",
+    "figure_manifest_json"
+  ]
+}

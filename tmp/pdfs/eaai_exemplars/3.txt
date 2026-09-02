@@ -1,0 +1,2174 @@
+
+
+===== PAGE 1 =====
+ 
+Contents lists available at ScienceDirect
+Engineering Applications of Artificial Intelligence
+journal homepage: www.elsevier.com/locate/engappai  
+Research paper
+Situation-aware deep reinforcement learning for unmanned aerial vehicle 
+swarm navigation in dynamic multi-obstacle environments
+Hongwei Zhao a, Ning Yu a, Yanyan Zhao a, Juan Feng b,∗, Yu Wang c
+a School of Electronics and Information, Northwestern Polytechnical University, Xi’an, Shaanxi, 710129, China
+b School of Aerospace Science and Technology, Xidian University, Xi’an, Shaanxi, 710071, China
+c Yangtze normal university, Fuling, Chongqi, 408100, China
+A R T I C L E  I N F O
+Keywords:
+Artificial intelligence implementation
+Autonomous navigation application
+Hybrid path planning framework
+Situation awareness
+Deep reinforcement learning
+ A B S T R A C T
+Autonomous navigation for unmanned aerial vehicle (UAV) swarms in dynamic, obstacle-rich environments 
+remains a significant challenge due to unpredictable obstacle movements and complex swarm coordination 
+requirements. Current approaches exhibit critical limitations: traditional algorithms suffer from high compu-
+tational complexity and poor adaptability, while reinforcement learning (RL) methods often converge to local 
+optima and require extensive training. To address these issues, this study proposes a hybrid AI framework 
+integrating Situation Awareness Path Optimization (SAPO) with an enhanced Deep Deterministic Policy 
+Gradient (DDPG), termed SAPO-DDPG. The SAPO module employs a channel-attention-enhanced CNN–LSTM 
+network for real-time spatiotemporal danger perception, directly tackling environmental unpredictability. 
+Concurrently, the enhanced DDPG incorporates adaptive multi-objective reward formulation and prioritized 
+experience replay to mitigate local optima convergence and accelerate training. Evaluated on realistic 
+simulation datasets, the proposed method consistently outperforms the state-of-the-art TSEB-DDPG baseline. It 
+achieves shorter path lengths (individual: 2.1%, swarm: 4.2% reduction) while guaranteeing near-zero collision 
+navigation, demonstrating robust autonomous operation for UAV swarms in complex, dynamic, and cluttered 
+environments.
+1. Introduction
+The application of unmanned aerial vehicle (UAV) swarms is rapidly 
+expanding into complex domains such as search and rescue, infrastruc-
+ture inspection, and precision agriculture. The global UAV market size 
+has grown from USD 9.3 billion in 2013 to nearly USD 60 billion in 
+2023, reflecting a compound annual growth rate of 20.43% (Insights, 
+2023). This growth underscores the critical need for robust autonomous 
+navigation systems capable of operating in dynamic, Global Positioning 
+System (GPS)-denied environments cluttered with moving obstacles. 
+However, achieving efficient, collision-free path planning for multiple 
+UAVs under these conditions remains a significant challenge, as tra-
+ditional reliance on pre-existing maps or direct human control proves 
+inadequate due to signal limitations, limited fields of view, and slow 
+response times (Hu et al., 2024a; Jiang and Huang, 2023; Huang et al., 
+2024; Shao et al., 2025; Sulieman et al., 2024; Rao et al., 2023; Fan 
+et al., 2022).
+Existing UAV swarm path planning methodologies can be broadly 
+categorized, yet each exhibits critical limitations in dynamic set-
+tings (Hu et al., 2024a; Jiang and Huang, 2023; Huang et al., 2024; 
+∗ Corresponding author.
+E-mail addresses: hongvi_zhao@126.com (H. Zhao), yuning715@mail.nwpu.edu.cn (N. Yu), zhaoyanyan@mail.nwpu.edu.cn (Y. Zhao), fengj@xidian.edu.cn 
+(J. Feng), wangyu_827@foxmail.com (Y. Wang).
+Shao et al., 2025; Sulieman et al., 2024; Rao et al., 2023; Fan et al., 
+2022; Yu et al., 2023a; Tu et al., 2024; Pang et al., 2024; Wang et al., 
+2024; Wen et al., 2023; Tang et al., 2024b; Hu et al., 2025; Zhong 
+et al., 2025; Boulares et al., 2024; Zhou et al., 2024; Xu et al., 2023b; 
+Zhang et al., 2024; Tang et al., 2024a; Bo et al., 2024; Fan, 2023; 
+Zhang et al., 2023; Saeed et al., 2024; Ajith and Jolly, 2023; Zhu and 
+Ye, 2025). Traditional algorithms (e.g., A*, Rapidly-exploring Random 
+Trees (RRT), Artificial Potential Field (APF)), while effective in static 
+environments, suffer from high computational complexity and inherent 
+rigidity. For instance, improved A variants reduce computation time 
+but fail to address nonlinear robustness degradation at high path 
+costs (Hu et al., 2024b). Goal-biased RRT accelerates initial path 
+discovery but lacks real-time dynamic obstacle response (Liu et al., 
+2023), and bidirectional APF-RRT* exhibits weaknesses in multi-
+objective coordination and dynamic avoidance (Xu et al., 2023a). 
+Intelligent optimization techniques (e.g., Genetic Algorithm (GA), 
+Particle Swarm Optimization (PSO), Ant Colony Optimization (ACO)) 
+support multi-objective optimization (Yu et al., 2023a; Tu et al., 
+https://doi.org/10.1016/j.engappai.2025.113518
+Received 10 May 2025; Received in revised form 13 October 2025; Accepted 8 December 2025
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+Available online 13 December 2025 
+0952-1976/© 2025 Elsevier Ltd. All rights are reserved, including those for text and data mining, AI training, and similar technologies. 
+
+===== PAGE 2 =====
+H. Zhao et al.
+Table 1
+The performance comparison and applicability analysis of various methods.
+ Methodologies Algorithm Dynamic 
+response
+Multi-objective 
+optimization
+Computational 
+efficiency
+Global Map 
+Required
+Application scenario  
+ Traditional 
+methods
+Graph search(e.g. A*) Low Single-Objective Low Yes Static small-scale environment  
+ Sampling(e.g. RRT) Medium Local optimization Medium No 3D exploration in unknown spaces 
+ Artificial potential field Medium Local optimization High No Real-time collision avoidance  
+ Intelligent
+optimization
+techniques
+Genetic algorithm Low Multi-objective Medium No Offline multi-constraint planning  
+ Particle swarm 
+optimization
+Medium Multi-objective High No Fast planning in static obstacles  
+ Ant colony 
+optimization
+Medium Multi-objective Low No Multi-obstacle environment  
+ Deep reinforcement
+learning
+DQN High Partial Support Low (training) No Dynamic unknown environments  
+ PPO High Multi-Objective High (execution) No High-dynamic swarm coordination 
+2024; Pang et al., 2024; Wang et al., 2024; Wen et al., 2023; 
+Tang et al., 2024b; Hu et al., 2025; Zhong et al., 2025) but incur 
+prohibitive computational overhead. Methods like the Expert GA (Fan 
+et al., 2024) introduce decision instability, while ACO variants often 
+neglect dynamic obstacles, creating safety vulnerabilities (Yu et al., 
+2023b). Deep Reinforcement Learning (DRL) methods (Boulares et al., 
+2024; Zhou et al., 2024; Xu et al., 2023b; Zhang et al., 2024; 
+Tang et al., 2024a; Bo et al., 2024) enable adaptive planning but 
+face unresolved challenges. Models based on Deep Q-Network and 
+Artificial Potential Field (B-APFDQN) (Kong et al., 2023) improve 
+training efficiency but suffer from ‘‘black-box’’ interpretability, and 
+while recent algorithms like Soft Actor–Critic (SAC) (Zhao et al., 
+2024; Zhong et al., 2024) and Twin Delayed Deep Deterministic 
+policy gradient (TD3) (Luo et al., 2024) show promise, they often 
+lack validation in dynamic swarm settings. The Three-Step Experience 
+Buffer (TSEB) Deep Deterministic Policy Gradient (DDPG) model (Tian 
+et al., 2024), though advanced, demonstrates severe generalization 
+limitations. Collectively, these limitations manifest as three core 
+deficiencies: weak real-time performance, inadequate global planning 
+capability, and insufficient robustness in dynamic obstacle avoidance.
+The characteristics and application scenarios associated with these 
+methods are detailed in Table  1.
+To overcome these limitations, this paper proposes a hybrid 
+framework that integrates Situation Awareness Path Optimization 
+(SAPO) (Yu et al., 2024) with an enhanced Deep Deterministic Policy 
+Gradient (DDPG) algorithm, called SAPO-DDPG. The framework’s 
+components are designed to address the specific shortcomings of 
+prior works. First, a Situation Assessment Module eliminates global 
+map dependency by constructing real-time spatiotemporal danger 
+models through a channel-attention-enhanced Convolutional Neural 
+Network with Long Short-Term Memory networks (CNN–LSTM) (Ku-
+mar et al., 2024), directly enhancing real-time responsiveness. 
+Second, a Multi-objective Reward Formulation combined with SAPO’s 
+path optimization reconciles conflicting objectives (safety, efficiency, 
+smoothness, swarm coordination), significantly boosting global plan-
+ning capability. Third, Prioritized Experience Replay (Schaul et al., 
+2016) and our novel Adaptive Harmonic Analysis of NDVI Time-Series 
+(HANTs) Filtering (AHF) algorithm—an enhancement of the HANTs 
+filter (Aliabad et al., 2024; Zhao et al., 2025)? — accelerate DDPG 
+convergence and improve sample efficiency. For instance, in simulated 
+tests within a 500 m × 300 m dynamic environment, this synergy 
+enabled a 5-UAV swarm to achieve a mean path length of 1619.5 m 
+with near-zero collision probability, outperforming the TSEB-DDPG 
+baseline.
+The main contributions of this work are summarized as follows:
+We propose a novel hybrid architecture (SAPO-DDPG) that syner-
+gistically combines real-time spatiotemporal perception with adaptive 
+decision-making, actively preventing local optima convergence and 
+ensuring globally smooth paths via integrated curve optimization.
+We introduce a key algorithmic innovation by categorizing envi-
+ronmental states before policy training, enabling dynamic model inte-
+gration and continuous fine-tuning during deployment without costly 
+policy network reinitialization.
+Table 2
+Table of notations in Section 2.
+ Symbol Description  
+ 𝑥[𝑛] Original time series data  
+ ̂ 𝑥[𝑛] Reconstructed time series after filtering  
+ 𝑥′[𝑛] Updated sequence after outlier replacement  
+ 𝑋(𝑒𝑗𝜔 ) Frequency domain representation after DTFT  
+ 𝐾 Error threshold for outlier detection  
+ 𝑁𝑒 Maximum number of deletion points per iteration  
+ 𝑓𝑛 Number of low-frequency components for reconstruction 
+ 𝐿(𝑥[𝑛]) Reconstruction loss function (Mean Squared Error)  
+ 𝑀 Maximum value of the sequence 𝑥[𝑛] (for normalization) 
+ 𝑁𝐼 Number of iterations until convergence  
+ 𝐿𝑓𝑛
+Minimum loss value for frequency number 𝑓𝑛  
+ 𝛩 AHF parameter set: 𝛩 = [𝐾, 𝑁𝑒, 𝑓𝑛]  
+ ∇𝛩𝐿 Gradient of loss with respect to AHF parameters  
+We develop the novel Adaptive HANTs Filtering algorithm, which 
+dynamically adjusts filtering parameters via iterative loss minimization, 
+significantly boosting the accuracy of environmental state classification 
+for safer path planning.
+The remainder of this article is organized as follows. Section 2 
+presents the structure of the AHF model. In Section 3, we discuss the 
+underlying principles of the SAPO model and the DDPG algorithm. 
+Section 4 outlines the hybrid path planning model for UAV swarms 
+based on the SAPO-DDPG. Experiments and results are detailed in 
+Section 5, while conclusions are provided in Section 6.
+2. The structure of the AHF model
+The notations used in this section are shown in Table  2.
+The HANTs (Aliabad et al., 2024) is a filtering algorithm grounded 
+in the harmonic analysis of time series, which combining smooth-
+ing and filtering. This approach leverages the temporal and spatial 
+characteristics of sensor data, connecting spatial distribution patterns 
+with temporal variations. The core of the algorithm employs Fourier 
+transform and least-squares fitting to decompose time-series data into 
+a superposition of sinusoidal and cosine curves with distinct phases, 
+frequencies, and amplitudes. A subset of these curves, which accurately 
+captures the essential features of the original series, is selected to 
+reconstruct the filtered time-series data.
+As an enhancement of the Fast Fourier Transform (FFT), the HANTs 
+algorithm can eliminate high-frequency noise and accommodates non-
+uniformly sampled time-series data. Additionally, it serves three key 
+functions: (1) gap-filling and reconstruction of missing data, (2) data 
+compression, and (3) smoothing of irregular time-series.
+The specific implementation process of the algorithm is outlined as 
+follows:
+i. A Fourier transform 𝐷𝑇 𝐹 𝑇{𝑥[𝑛]} is applied to the time series of 
+each pixel point. As shown in Eq.  (1): 
+𝑋(𝑒𝑗𝜔 ) = 𝐷𝑇 𝐹 𝑇{𝑥[𝑛]} =
+∞∑
+𝑛=−∞
+𝑥[𝑛]𝑒−𝑗𝜔𝑛 (1)
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+2 
+
+===== PAGE 3 =====
+H. Zhao et al.
+Fig. 1. The algorithm flow chart of the HANTs filter model.
+Table 3
+Filtering algorithms comparison.
+ Algorithm Advantages Disadvantages  
+ Moving Average – Simple implementation 
+– Low computation cost
+– Causes phase lag 
+– Poor step response
+ 
+ Exponential Smoothing – Weighted for recent data 
+– Computationally efficient
+– Parameter tuning needed 
+– Lag for abrupt changes
+ 
+ Kalman Filter – Optimal linear estimation 
+– Combines prediction/update
+– Needs accurate model 
+– Degrades for nonlinear systems
+ 
+ Wavelet Filter – Time–frequency localization 
+– Preserves signal features
+– Basis selection critical 
+– Computationally intensive
+ 
+ HANTS Filter – Handles non-uniform sampling 
+– Reconstructs missing data
+– Parameter setting sensitive 
+– Computationally heavy
+ 
+ Particle Filter – Handles nonlinear systems 
+– Suitable for complex distributions
+– Very high computation cost 
+– Particle degeneracy problem
+ 
+ Median Filter – Excellent for impulse noise 
+– Preserves signal edges
+– Ineffective for Gaussian noise 
+– Causes signal distortion
+ 
+ii. Several low-frequency components are selected for inverse
+Fourier transform 𝐼𝐷𝑇 𝐹 𝑇 {𝑋(𝑒𝑗𝜔 )}, which produces a new sequence. As 
+shown in Eq.  (2). The contribution coefficients of each sine or cosine 
+function in the reconstructed original data set are obtained through 
+least squares curve fitting. 
+∧
+𝑥[𝑛] = 𝐼𝐷𝑇 𝐹 𝑇 {𝑋(𝑒𝑗𝜔 )} = 1
+2𝜋 ∫ 𝜋
+−𝜋 𝑋(𝑒𝑗𝜔 )𝑒𝑗𝜔𝑛 𝑑𝜔 (2)
+iii. The difference between the original time series 𝑥[𝑛] and the 
+reconstructed series 
+∧
+𝑥[𝑛] is then calculated. If this difference exceeds 
+a predetermined threshold 𝐾, the point is identified as an outlier, re-
+moved from the original sequence, and replaced with the corresponding 
+value from the new sequence. As shown in Eq.  (3). 
+𝑥′[𝑛] =
+⎧
+⎪
+⎨
+⎪⎩
+∧
+𝑥[𝑛], if | 𝑥[𝑛] −
+∧
+𝑥[𝑛]| > 𝐾
+𝑥[𝑛], if | 𝑥[𝑛] −
+∧
+𝑥[𝑛]| < 𝐾
+(3)
+iv. This process is repeated for the original sequence of changes until 
+no cloud-contaminated points remain or a predetermined end condition 
+is met.
+These equations form the HANTs filtering core: Equation (1) per-
+forms spectral decomposition, Eq. (2) reconstructs from low frequen-
+cies, and Eq.  (3) detects and replaces outliers. This iterative process 
+removes noise while preserving essential signal features.
+The algorithm flowchart is shown in Fig.  1. Conceptually, HANTs 
+effectively approximates the original data using a limited set of low-
+frequency components, achieving a balance between eliminating sig-
+nificant noise and preserving essential features.
+Table  3 shows the advantages and disadvantages of the commonly 
+used filtering algorithms at present (Zhao et al., 2025).
+The HANTs filter belongs to harmonic analysis-based smoothing 
+techniques and differs from conventional static filters (e.g., moving 
+average) in three key aspects::
+• Non-uniform sampling: Unlike Fourier transforms requiring
+equidistant intervals, HANTs handles irregular time-series data 
+through least-squares fitting, critical for UAVs with intermittent 
+sensor updates.
+• Feature preservation: While static low-pass filters indiscrimi-
+nately suppress high frequencies, HANTs selectively reconstructs 
+components through harmonic superposition, preserving abrupt 
+environmental changes.
+• Data imputation: HANTs inherently repairs missing data (com-
+mon in GPS-denied areas) by replacing outliers with fitted values, 
+whereas static filters require separate preprocessing.
+A limitation of the standard HANTs filter is its reliance on fixed 
+parameters during iteration, which demands accurate initial settings 
+and cannot adapt to varying filtering requirements across different 
+processing stages. To address this, we propose the Adaptive HANTs Fil-
+tering (AHF) model, which enhances dynamic adjustment and iteration 
+efficiency by replacing static parameters with adaptive, functionally 
+determined equivalents.
+First, we introduce a loss function to calculate the difference be-
+tween the sequence before and after the iteration. As shown in Eq.  (4): 
+𝐿(𝑥[𝑛]) = 1
+𝑛
+𝑛∑
+𝑖=1
+(𝑥′[𝑖] − 𝑥[𝑖])2 (4)
+From this, the error threshold 𝐾𝑖 can be defined as shown in Eq.  (5): 
+𝐾 = 1
+𝑀
+√
+𝐿(𝑥[𝑛]) (5)
+where 𝑀 is the maximum value of the sequence 𝑥[𝑛]. The maximum 
+number of deletion points 𝑁𝑒 can be obtained by calculating the 
+difference between the loss function in two successive iterations, as 
+shown in Eq.  (6): 
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+3 
+
+===== PAGE 4 =====
+H. Zhao et al.
+𝑁𝑒𝑖 =
+𝐿𝑖−1(𝑥[𝑛])𝑁𝑒(𝑖−1)
+𝐿𝑖(𝑥[𝑛]) (6)
+where 𝑁𝑒𝑖 is the maximum number of deletion points in the 𝑖th iter-
+ation, 𝐿𝑖(𝑥[𝑛]) is the loss function in the 𝑖th iteration, 𝑁𝑒(𝑖−1) is the 
+maximum number of deletion points in the (𝑖 − 1) th iteration, and 
+𝐿𝑖−1(𝑥[𝑛]) is the loss function in the (𝑖 − 1) th iteration. Finally, the 
+low frequency number 𝑓𝑛 can be updated based on the trend of the 
+reconstruction loss, as shown in Eq.  (7): 
+𝑓𝑛+ =
+⎧
+⎪
+⎨
+⎪⎩
+0, if 𝐿𝑖−1(𝑥[𝑛])−𝐿𝑖(𝑥[𝑛])
+𝐿𝑖−2(𝑥[𝑛])−𝐿𝑖−1(𝑥[𝑛]) > 0
+−1, if 𝐿𝑖−1(𝑥[𝑛])−𝐿𝑖(𝑥[𝑛])
+𝐿𝑖−2(𝑥[𝑛])−𝐿𝑖−1(𝑥[𝑛]) ≤ 0
+(7)
+When 𝑓𝑛 changes, the minimum loss function of the optimal se-
+quence corresponding to 𝑓𝑛 compared with the original sequence will 
+be recorded and recorded as 𝐿𝑓𝑛 . When 𝐿𝑓𝑛 cannot obtain the minimum 
+value when 𝑓𝑛 changes, the iteration ends, and the optimal sequence 
+corresponding to the minimum value of 𝐿𝑓𝑛 is taken as the output 
+result.
+The AHF enhancement introduces dynamic parameter adaptation. 
+Eqs. (5)–(7) automatically adjust filtering parameters based on re-
+construction loss, eliminating manual tuning while balancing noise 
+suppression and feature preservation across processing stages.
+This method satisfies optimization equivalence.
+The parameter update rules (Eq. (5)–(7)) implement stochastic gra-
+dient descent (Eq. (8)): 
+∇𝛩𝐿 =
+[
+𝜕𝐿
+𝜕𝐾 , 𝜕𝐿
+𝜕𝑁𝑒
+, 𝜕𝐿
+𝜕𝑓𝑛
+] 𝑇
+, 𝛩 = [𝐾, 𝑁𝑒, 𝑓𝑛] (8)
+Minimizing reconstruction loss 𝐿(𝑥[𝑛]) (Eq. (4)) ensures AHF converges 
+to the optimal filter configuration.
+The relationship between the parameters is shown in Fig.  2.
+In comparison to the original algorithm, the AHF model enhances 
+iteration by gradually updating parameters throughout the process. 
+This not only allows for the preservation of more feature information 
+during the initial iterations but also accelerates the convergence speed 
+of the iterations. Additionally, it minimizes the impact of human factors 
+on the model.
+The proposed AHF model eliminates manual tuning by introduc-
+ing dynamic parameter adaptation, contrasting with existing adaptive 
+filters:
+• Vs. Kalman variants: While adaptive Kalman filters adjust noise 
+covariance matrices, they assume linear dynamics (violated by 
+UAV maneuvers). AHF’s loss-driven updates are model-agnostic.
+• Vs. wavelet denoising: Wavelet methods adapt thresholds per 
+frequency band but cannot impute missing data. AHF jointly 
+optimizes smoothing and gap-filling.
+• Vs. RL-based filters: Reinforcement learning adapters incur high 
+latency. AHF’s closed-form updates ensure real-time operation 
+(< 1 ms per iteration).
+Therefore, the AHF model can serve as an independent and versatile 
+module suitable for a broader range of time-series smoothing and 
+filtering applications.
+3. The SAPO model and the DDPG algorithm
+The notations used in this section are shown in Tables  4 and 5.
+3.1. The improved SAPO model
+The SAPO model is a path optimization method that leverages 
+situation awareness and assessment techniques to integrate information 
+effectively. It evaluates path quality through spatio-temporal analysis 
+and ultimately employs a curve fitting method to optimize the path. 
+This approach challenges the conventional shorter-path-better notion 
+Fig. 2. The relationship between parameters in AHF model.
+Table 4
+Table of notations in Section 3.1.
+ Symbol Description  
+ 𝐹𝑐 , 𝐹𝑠, 𝐹 ′
+𝑐 Feature maps in channel attention mechanism  
+ 𝐶, 𝑆 Channel dimension and reduced dimension in attention  
+ 𝑓 (𝑥) Gaussian probability density function for danger field  
+ 𝐿(𝜇, 𝜎2) Likelihood function for parameter estimation  
+ 𝑙(𝜇, 𝜎2) Log-likelihood function  
+ ̂ 𝜇, ̂ 𝜎2 Maximum likelihood estimates of Gaussian parameters  
+ 𝐹 Path quality evaluation function  
+ 𝑙 Path length in quality evaluation  
+ 𝑁 Number of break points along the path  
+ 𝜃𝑥 Turning angle at break point 𝑥  
+ 𝜌 Path feasibility probability  
+ 𝐷(𝑣) Variance of average passing speed  
+ 𝑛𝑢 Minimum number of feasible cross sections  
+ 𝑚′ Number of UAV members in swarm subset  
+ 𝜔𝑗 Weight parameters in path quality function  
+ 𝑍 Path quality evaluation coefficient for multi-bend scenarios 
+ 𝑣0 Initial speed at area entry  
+ 𝑣𝑚 Maximum UAV flight speed  
+ 𝑟 Maximum radius of curvature  
+ 𝜑 Endpoint tangent angle  
+ 𝑘 Curvature (𝑘 = 1∕𝑟)  
+ 𝐿 Curve length in cyclotron curve  
+ 𝐴 Constant in cyclotron curve equation 𝑘𝐿 = 𝐴2  
+by considering multiple objectives including path length, smoothness, 
+passage time, and maximum turning angle. Additionally, the method 
+facilitates the integration of multi-source information, allowing data 
+from different sensors to be cohesively combined, thereby providing 
+more comprehensive support for path planning.
+The SAPO model consists of two primary components: the situ-
+ational assessment module, which is responsible for the integration 
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+4 
+
+===== PAGE 5 =====
+H. Zhao et al.
+Table 5
+Table of notations in Section 3.2.
+ Symbol Description  
+ 𝜋(𝑠| 𝜃𝜋 ) Actor policy network  
+ 𝑄(𝑠, 𝑎| 𝜃𝑄) Critic value network  
+ 𝜋′(𝑠| 𝜃𝜋′
+) Target actor network  
+ 𝑄′(𝑠, 𝑎| 𝜃𝑄′
+) Target critic network  
+ 𝜃𝜋 , 𝜃𝑄 Online network parameters  
+ 𝜃𝜋′
+, 𝜃𝑄′
+Target network parameters  
+ 𝛼 Learning rate  
+ 𝛾 Discount factor  
+ 𝑁 Number of training samples in batch  
+ 𝐿𝑐 Critic loss function  
+ 𝑦𝑖 Target Q-value  
+ 𝑅 Overall reward function  
+ 𝑅𝑖 Sub-objective reward functions  
+ 𝜔𝑖 Weight parameters in reward function  
+ 𝛿𝑗 TD-error for experience 𝑗  
+ 𝑃𝑗 Sampling probability in prioritized experience replay 
+of information, and the path optimization module, which focuses on 
+optimizing processes. Each of these components is detailed in the 
+subsequent sections.
+3.1.1. Situation assessment module
+Situation assessment encompasses three essential components: sit-
+uational awareness, situational understanding, and situational predic-
+tion. Situational awareness involves gathering environmental infor-
+mation, such as maps and location data, through various sensors. 
+Situational understanding focuses on analyzing this data and moni-
+toring movement patterns. Finally, situational prediction merges this 
+understanding with the capability to foresee future changes, applying 
+constraints to maintain stability and safety.
+Among them, situational awareness and understanding encompasses 
+three primary components: information acquisition, target recognition, 
+and target localization. Information acquisition primarily relies on vi-
+sual input, leveraging multi-source fusion to generate a comprehensive 
+map and location data essential for target recognition. Target recogni-
+tion involves matching features such as contours and textures in image 
+data to identify targets once a predetermined matching threshold is 
+achieved. Finally, target localization employs multiple sensors to ascer-
+tain the target’s position and movement by integrating map information 
+with positional data.
+The original model employs a CNN–LSTM architecture (Kumar 
+et al., 2024) for feature extraction and processing. This hybrid network 
+synergistically combines the CNN’s strength in extracting local spatial 
+features with the LSTM’s proficiency in modeling temporal dependen-
+cies and managing long-term memory in time-series data. To enhance 
+the efficiency of feature extraction, we have refined the original model 
+by introducing a channel attention mechanism following the LSTM. 
+This enhancement allows the network to focus on and learn more 
+relevant features. The specific structure of the CNN–LSTM model is 
+illustrated in Fig.  3.
+The CNN component comprises input normalization (Eq.  (9)), con-
+volutional layers with ReLU activation (Eq.  (10)), pooling layers for 
+dimensionality reduction, and fully connected layers for feature inte-
+gration. As illustrated in Fig.  4, after undergoing several convolution 
+operations, the amount of information extracted from a single element 
+in the data significantly increases. 
+𝑥′
+𝑖𝑗 =
+𝑥𝑖𝑗
+max {𝑥11, … , 𝑥1𝑛, 𝑥21, … , 𝑥𝑛𝑛} (9)
+𝑥𝑖𝑗 is the original data and 𝑥′
+𝑖𝑗 is the normalized data. 
+ReLU(𝑥𝑖𝑗 ) =
+{
+0, if 𝑥𝑖𝑗 < 0
+𝑥𝑖𝑗 , if 𝑥𝑖𝑗 ≥ 0
+(10)
+The LSTM network (Fig.  5) processes temporal sequences through 
+gate mechanisms (input, forget, output gates) to capture essential long-
+term dependencies in sequences.
+Recognizing that different features contribute differently to the 
+model’s performance, we incorporate a channel attention mechanism 
+to enhance the network’s ability to focus on and learn more relevant 
+features. This module is illustrated in Fig.  6. Initially, a feature map 
+𝐹𝑐 = 𝐶 ×1× 1 is generated using global mean pooling. Subsequently, we 
+derive the feature 𝐹𝑠 = 𝑆 ×1 by reducing the dimensionality of 𝐹𝑐 . Once 
+we have the two-dimensional feature map, we apply convolutional 
+dependencies to capture the interactions among each channel and its 
+neighbors, resulting in the transformed feature map 𝐹 ′
+𝑐 = 𝐶 × 1 ×
+1. Finally, we obtain the weight of each channel using the Sigmoid 
+function.
+The CNN–LSTM model is effective to achieve situational awareness 
+and comprehension of the surrounding environment. Building on the 
+perceived outcomes, further development of situation prediction is 
+essential. This process primarily encompasses a classification problem 
+and the resolution of a probability distribution issue. The environment 
+can be categorized into three areas: safe, dangerous, and unknown. The 
+safe zone represents areas that can be traversed freely, whereas the dan-
+gerous zone indicates regions that are obstructed or lack the conditions 
+for passage. Due to observational limitations, certain areas cannot be 
+definitively classified as safe, leading to their designation as unknown 
+areas. To quantify the reliability of these unknown regions, we can 
+define the security level of each point within them using a probability 
+density function. Additionally, the passability of the unknown regions 
+can be represented through a probability distribution function.
+There is a clear relationship between the safety level of the un-
+known zone and its distance from the danger zone. As this distance 
+increases, the likelihood of encountering danger diminishes gradually. 
+Consequently, it can be assumed that the probability of danger and the 
+corresponding distance are normally distributed, as illustrated in Eq. 
+(11): 
+𝑓 (𝑥) = 1√
+2𝜋𝜎
+𝑒
+− (𝑥−𝜇)2
+2𝜎2 (11)
+where 𝜎 is the scale parameter and 𝜇 is the positional parameter. 
+This Gaussian model probabilistically represents danger distribution 
+around obstacles. Parameters 𝜇 and 𝜎 control the danger concentra-
+tion and spatial decay, creating smooth gradients that facilitate stable 
+optimization rather than binary constraints.
+However, the impact of various obstacles on the surrounding envi-
+ronment varies, indicating that the parameters within the probability 
+density function are not uniform. Therefore, it is essential to estimate 
+these parameters based on available information in order to derive the 
+appropriate probability distribution function. We employ the maximum 
+likelihood estimation method for parameter estimation. Initially, we 
+formulate the maximum likelihood function, as illustrated in Eq.  (12): 
+𝐿(𝜇, 𝜎2) =
+𝑛∏
+𝑖−1
+1√
+2𝜋𝜎
+𝑒
+− (𝑥𝑖 −𝜇)2
+2𝜎2 (12)
+Then take the logarithm of the likelihood function to get the log-
+likelihood function 𝑙(𝜇, 𝜎2) and take the derivative of it, as shown in Eq. 
+(13)–(14): 
+𝜕𝑙(𝜇, 𝜎2)
+𝜕𝜇 = 𝜕 ln 𝐿(𝜇, 𝜎2)
+𝜕𝜇 = 1
+𝜎2
+𝑛∑
+𝑖−1
+(𝑥𝑖 − 𝜇) (13)
+𝜕𝑙(𝜇, 𝜎2)
+𝜕𝜎 2 = 𝜕 ln 𝐿(𝜇, 𝜎2)
+𝜕𝜎 2 = − 𝑛
+2𝜎2 + 1
+2(𝜎2)2
+𝑛∑
+𝑖−1
+(𝑥𝑖 − 𝜇)2 (14)
+Set the derivative of the log-likelihood function to 0 to obtain the 
+sample mean 
+∧
+𝜇 and sample variance 
+∧
+𝜎2, as shown in Eq.  (15): 
+⎧
+⎪
+⎪
+⎨
+⎪
+⎪⎩
+∧
+𝜇 = ̄ 𝑥= 1
+𝑛
+∑𝑛
+𝑖=1 𝑥𝑖
+∧
+𝜎2 = 1
+𝑛
+∑𝑛
+𝑖=1(𝑥𝑖 − ̄ 𝑥)2
+(15)
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+5 
+
+===== PAGE 6 =====
+H. Zhao et al.
+Fig. 3. The structure of the CNN–LSTM model with the attention mechanism.
+Fig. 4. Performing multiple convolution operations on the data.
+By following the aforementioned steps, the target parameters can 
+be estimated from the sample data, allowing for the derivation of 
+the corresponding probability density function. This enables the as-
+sessment of safety levels at various locations within the region, lead-
+ing to a comprehensive prediction and analysis of the environmental 
+conditions.
+3.1.2. Path optimization module
+In the path optimization problem, two of the most common chal-
+lenges are the multi-path problem and the multi-bend problem. The 
+former requires a comprehensive evaluation of various paths to identify 
+the optimal route, while the latter involves determining the most suit-
+able bending angle and bending time. Both of these challenges typically 
+represent multi-objective optimization problems, where there can be 
+inherent conflicts among the objectives. As a result, path optimization 
+demands high-performance standards. These two problems will be 
+discussed separately in the following paragraphs.
+In order to quantify the path quality of different paths, we propose 
+different path quality evaluation functions for different problems.
+In a multi-path scenario, the efficiency of a UAV swarm navigating 
+through a path is generally influenced by several factors. These include 
+the path length 𝑙, the number of break points 𝑁 along the path, the 
+angles at each break point 𝜃𝑥 (where 𝑥 = 1 , 2, 3, … , 𝑁), the path 
+feasibility 𝜌, the variance 𝐷(𝑣) of the average passing speed 𝑣 of the 
+UAVs, and the minimum number of feasible cross sections of the UAV, 
+denoted as 𝑛𝑢, within the path feasibility region. Therefore, for a UAV 
+swarm consisting of 𝑚′ members, the quality evaluation function of the 
+path can be expressed as shown in Eq.  (16): 
+𝐹 = 𝜔1𝑒−𝑙 − 𝜔2
+𝑁∑
+𝑖=1
+| 𝜃𝑖| − 𝜔3𝜌 − 𝜔4𝐷(𝑣) − 𝜔5( 𝑚′
+𝑛𝑢
+)2 (16)
+where 𝜌 is the probability of being in the danger zone; 𝜔𝑗 , 𝑗 = 1, 2, 3, 4, 5
+are the weight parameters, which are related to the characteristics of 
+the UAV and flight requirements and are non-negative real numbers. 
+This multi-objective function 𝐹 integrates five critical navigation as-
+pects: path length, turning smoothness, safety, speed consistency, and 
+swarm coordination. The weights 𝜔𝑗 reflect Pareto-optimal tradeoffs 
+among these competing objectives. Therefore, the passage efficiency 
+of different paths is analyzed according to the path quality evaluation 
+function.
+For a UAV swarm that operates as a unified entity along a des-
+ignated path, path optimization involves assessing the optimization 
+degree of each path at the current scale and selecting the one with 
+the highest optimization degree. In the case of a decentralized UAV 
+swarm, the journey from the starting point to the endpoint can be 
+represented as a connected graph comprising multiple nodes. The 
+optimal extremum 𝐹𝑘 between each node, along with the corresponding 
+maximum passable number 𝑛𝑘 (where 𝑘 = 1 , 2, … , 𝑀, and 𝑀 denotes 
+the total number of subsets), is calculated to determine the maximum 
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+6 
+
+===== PAGE 7 =====
+H. Zhao et al.
+Fig. 5. The mathematical model of LSTM.
+Fig. 6. The structure of the channel attention mechanism.
+value of the optimization function, as illustrated in Eq.  (17): 
+max 1
+𝑛
+𝑀∑
+𝑘=1
+𝑁𝑘𝐹𝑘
+s.t.
+⎧
+⎪
+⎪
+⎪
+⎨
+⎪
+⎪
+⎪⎩
+∑𝑀
+𝑘=1 𝑛𝑘 = 𝑛𝑢
+𝑀 ≤ 𝑛𝑢
+𝑛𝑘 is a positive integer.
+(17)
+In the calculation process, whenever a set of {𝐹𝑘, 𝑛𝑘} is established, 
+it is essential to disconnect the corresponding limit path. Subsequently, 
+a new optimal combination {𝐹𝑘+1, 𝑛𝑘+1} must be recalculated until 
+the condition ∑𝑀
+𝑘=1 𝑛𝑘 = 𝑛𝑢 is met, or until there is no feasible path 
+between the starting point and the endpoint. If the latter occurs, we 
+must determine the total traffic 𝑛𝑚𝑎𝑥, after completing a round of 
+optimal calculations. From there, we can compute the remainder 𝑛′
+𝑢 =
+𝑚𝑜𝑑(𝑛𝑢, 𝑛𝑚𝑎𝑥), ultimately allowing us to calculate the optimal planning 
+when 𝑛𝑢 = 𝑛′
+𝑢.
+In a multi-bend scenario, the path of a UAV can be categorized 
+into two segments: the turning area path and the straight area path. 
+Typically, the straight area path does not require optimization, which 
+means the focus is primarily on optimizing the turning area path. For 
+a specific turning area, the goal is to develop an optimized path that 
+outperforms the existing one. To facilitate the evaluation of the degree 
+of path optimization, we define a quality evaluation coefficient 𝑍 for 
+a path of length 𝑙, as expressed in Eq.  (18): 
+⎧
+⎪
+⎨
+⎪⎩
+𝑍 = 𝐹𝑙(𝜌)(𝑙𝑒−𝑙 − 𝜔1𝑣0 sin 𝜃𝑧 − 𝜔2
+𝑣2
+𝑚
+𝑟 − 𝜔3 sin 𝜑)
+𝐹𝑙(𝜌) < 1
+(18)
+The function 𝐹𝑙(𝜌), which is given by the situation assessment 
+model, represents the probability of a path with length 𝑙 within the 
+constrained domain. The weight parameters are denoted as 𝜔𝑗 , 𝑗 =
+1, 2, 3. The variable 𝑣0 indicates the initial speed at which the UAV 
+enters the area; this speed is influenced by factors related to the UAV 
+swarm and flight requirements, and is defined as a non-negative real 
+number. Meanwhile, 𝑣𝑚 represents the maximum flight speed of the 
+UAV. The angle 𝜃𝑧 denotes the angle between the tangent line at the 
+start of the path and the initial direction of the UAV’s velocity. The 
+maximum radius of curvature for the path is represented by 𝑟, and 𝜑
+is the angle between the tangent line at the end of one path section 
+and the tangent line at the beginning of the subsequent section. By 
+calculating the quality evaluation coefficient for the path, we can assess 
+whether it has been optimized effectively.
+Upon examining the expression, it is evident that in order for 𝑍
+to reach its maximum value, the path length 𝑙, the tangent angle 
+𝜃𝑧, and the endpoint angle 𝜑 must be minimized. Additionally, the 
+maximum radius of curvature should be maximized. Clearly, achieving 
+an included angle of 0◦ can be accomplished relatively easily. However, 
+optimizing the curvature radius and path length is more complex, as 
+they are inherently tied to the specific shape of the curve. To address 
+this challenge, a cyclotron curve has been introduced to approximate 
+the curve. This type of curve features a curvature that is proportional 
+to the distance traversed along it, and its equation can be expressed 
+as Eq.  (19): 
+𝑘𝐿 = 𝐴2 (19)
+where 𝑘 represent the curvature, defined as 𝑘 = 1∕ 𝑟, where 𝑟 is the 
+radius of curvature. The length of the curve is denoted as 𝐿, and ‘‘A’’ is 
+a constant. This cyclotron curve relation 𝑘𝐿 = 𝐴2 links curvature and 
+path length for turning optimization. It enables analytical derivation 
+of optimal bend geometry, balancing path shortness and navigability. 
+Consequently, the length of the curve can be related to the radius of 
+curvature, allowing the quality evaluation coefficient to be streamlined 
+into Eq.  (20): 
+𝑍 = 𝑙𝑒−𝑙 − 𝜔2
+𝑣2
+𝑚
+𝐴2 𝑙 (20)
+Taking the derivative of both sides of the equation with respect to 
+𝑙, and setting the derivative equal to 0, yields Eq.  (21): 
+𝑍′ = (1 − 𝑙)𝑒−𝑙 − 𝜔2
+𝑣2
+𝑚
+𝐴2 = 0 (21)
+According to this equation, we can determine the value of 𝑙. If 
+𝑙 does not have a solution, it indicates that the optimal path is the 
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+7 
+
+===== PAGE 8 =====
+H. Zhao et al.
+one with the largest angle in the turning region. Conversely, if 𝑙 has 
+a solution, the function 𝑓 (𝑙) = (1 − 𝑙)𝑒−𝑙 is strictly monotone, and 
+the solution corresponds to the maximum point. Thus, the cyclotron 
+curve associated with 𝑙 represents the desired optimal path. From this 
+analysis, each turning region can be optimized individually to derive 
+the final optimization path.
+Combining the above two kinds of optimization methods, the path 
+optimization task of different scenarios can be completed.
+3.2. The DDPG algorithm
+The DDPG algorithm is an actor–critic method designed for contin-
+uous state and action spaces. When compared to similar reinforcement 
+learning algorithms, DDPG exhibits lower sample requirements and 
+demonstrates superior performance in scenarios with limited data, 
+when contrasted with the PPO algorithm. Although the DDPG al-
+gorithm has less exploration capability than the SAC algorithm, it 
+converges more rapidly, making it particularly suitable for situations 
+where timeliness is prioritized over precision. The following sections 
+will delve into the algorithm from four key perspectives: the actor, the 
+critic, the reward function, and the experience replay mechanism.
+3.2.1. Actor
+The actor is utilized to define the policy function, which primarily 
+focuses on generating the output action 𝑎𝑡 based on the current state 
+𝑠𝑡. This involves both the target policy network and the online policy 
+network, which are updated alternately. Initially, the parameters 𝜃𝑢 and 
+𝜃𝑢′
+ are set to be equal. The update process for the parameters of the 
+online policy network is illustrated in Eq.  (22): 
+▽𝜃𝑢 𝐽 ≈ 1
+𝑁
+∑
+𝑖
+▽𝑎𝑄(𝑠, 𝑎| 𝜃𝑄)▽𝜃𝑢 𝑢(𝑠| 𝜃𝑢)| 𝑠=𝑠𝑖,𝑎=𝑢(𝑠𝑖) (22)
+where 𝑁 is the number of single training samples and 𝑄 is the function 
+of state action value; 𝜃𝑄 is the online Q network parameter; 𝜃𝑢 is the 
+online policy network parameter. The target policy network is updated 
+at regular intervals, as shown in Eq.  (23): 
+𝜃𝑢′
+= 𝛼𝜃 𝑢 + (1 − 𝛼)𝜃𝑢′
+(23)
+where 𝛼 is the learning rate.
+3.2.2. Critic
+The critic is employed to approximate the state–action value func-
+tion, which encompasses both the target Q network and the online 
+Q network that are updated alternately. Initially, the parameters 𝜃𝑄
+and 𝜃𝑄′
+ are set to be equal. Once experience samples (𝑠𝑖, 𝑎𝑖, 𝑟𝑖, 𝑠𝑖+1) are 
+obtained from the experience buffer, the online Q network is updated 
+by minimizing the loss value 𝐿𝑐. The method for calculating 𝐿𝑐 is 
+detailed in Eq.  (24): 
+𝐿𝑐 = 1
+𝑁
+∑
+𝑖
+(𝑦𝑖 − 𝑄(𝑠𝑖, 𝑎𝑖| 𝜃𝑄))2 (24)
+The calculation method of 𝑦𝑖 is shown in Eq.  (25): 
+𝑦𝑖 = 𝑟𝑖 + 𝛾𝑄 ′(𝑠𝑖+1, 𝑢′(𝑠𝑖+1| 𝜃𝑢′
+)| 𝜃𝑄′
+) (25)
+Among them, 𝑟𝑖 is the single step reward value; 𝛾 is the discount factor; 
+𝑄′ is the target state action value function; 𝑢′ is the target strategy 
+function; 𝜃𝑢′
+ is the network parameter of the target strategy; 𝜃𝑄′
+ is the 
+target Q network parameter. Similarly, the target Q network is updated 
+every once in a while, as shown in Eq.  (26): 
+𝜃𝑄′
+= 𝛼𝜃 𝑄 + (1 − 𝛼)𝜃𝑄′
+(26)
+The actor network and the critic network alternate and iterate, 
+thereby gradually improving the decision-making performance of the 
+model.
+3.2.3. Reward function
+The reward function is a crucial component in reinforcement learn-
+ing tasks, as it guides the updating of network parameters for both 
+actors and critics. However, designing an effective reward function 
+poses significant challenges. A well-structured reward function can 
+enhance model performance, while a poorly conceived one may result 
+in subpar outcomes or even prevent the model from converging, ulti-
+mately wasting computational resources. This challenge is particularly 
+evident in multi-objective optimization problems, where it is essential 
+not only to create an appropriate reward function for each objective but 
+also to assess the relative importance of each objective in the overall 
+framework.
+To create an appropriate reward function for a multi-objective 
+optimization problem, it is typically effective to first establish a reward 
+function for a single objective. Following this, a weighted integration 
+of the single objective reward function can be used to develop the 
+comprehensive reward function. In this process, the weight values 
+often require determination through experimentation and analysis. The 
+overall structure of the reward function 𝑅 is represented in Eq.  (27): 
+𝑅 =
+𝑛∑
+𝑖=1
+𝜔𝑖𝑅𝑖 (27)
+where 𝑛 is the number of targets; 𝜔𝑖 are the weight parameters; 𝑅𝑖 are 
+the reward functions for sub-objective.
+3.2.4. Experience replay mechanism
+The experience replay mechanism utilizes a fixed-size memory space 
+to store past experiences, randomly selecting a predetermined number 
+of these experiences at a time to update the network. This approach has 
+the effect of significantly diminishing the temporal correlation between 
+the experiences in replay, as it blends both old and new experiences 
+for network updates. Despite this, the mechanism operates under the 
+premise that all experiences in the pool are equally significant, al-
+lowing for an even training of the network through sampling from 
+the experience pool. However, this assumption does not align with 
+the principles of human learning. In human learning, experiences that 
+are successful or associated with substantial losses tend to provide 
+more valuable lessons. With this perspective in mind, we modified the 
+original uniform random replay mechanism to employ a priority replay 
+mechanism. When an experience 𝑗 is acquired, we can calculate its time 
+difference error (TD-error) 𝛿𝑗 , as detailed in Eq.  (28): 
+𝛿𝑗 = 𝑟(𝑠𝑡, 𝑎𝑡) + 𝛾𝑄 ′(𝑠𝑡+𝑎, 𝑎𝑡+1, 𝑤) − 𝑄(𝑠𝑡, 𝑎𝑡, 𝑤) (28)
+where 𝑄′(𝑠𝑡+𝑎, 𝑎𝑡+1, 𝑤) is the target action-value network parameterized 
+by 𝑤. The TD-error 𝛿𝑗 quantifies prediction surprise in our prioritized 
+replay. High-error experiences indicate greater learning potential, al-
+lowing focused training on the most informative samples to accelerate 
+convergence. Based on this, the reply probability of every experience 
+can be expressed as Eq.  (29): 
+𝑃𝑗 =
+| 𝛿𝑗 |
+∑
+𝑘 | 𝛿𝑘| (29)
+By establishing varying priorities, it becomes possible to replay 
+more beneficial experiences with greater frequency. This approach 
+enhances training efficiency and accelerates the convergence process.
+4. The hybrid path planning model for UAV swarms based on the 
+SAPO-DDPG
+The notations used in this section are shown in Table  6.
+To address the path planning challenge for UAV swarms in dy-
+namic multi-obstacle environments, we propose the SAPO-DDPG hybrid 
+model. This framework integrates the DDPG algorithm as the core 
+decision-maker, the SAPO model for situational information fusion and 
+path refinement, and the AHF algorithm for sensor data preprocessing.
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+8 
+
+===== PAGE 9 =====
+H. Zhao et al.
+Table 6
+Table of notations in Section 4.
+ Symbol Description  
+ 𝑆𝑡 Raw sensor data stream at time 𝑡  
+ 𝑝𝑠, 𝑝𝑔 Start and goal positions  
+ 𝑈 UAV swarm: 𝑈 = {𝑢1, 𝑢2, … , 𝑢𝑁 }  
+ 𝑃 ∗ Optimized paths: 𝑃 ∗ = {𝑃 ∗
+1 , 𝑃 ∗
+2 , … , 𝑃 ∗
+𝑁 }  
+ 𝑅1 Safety reward function  
+ 𝑅2 Motion stability reward function  
+ 𝑅3 Traffic efficiency reward function  
+ 𝑅4 Swarm coordination reward function  
+ 𝐷𝑖 Shortest distance between UAV 𝑖 and danger area  
+ 𝐷𝑠 Safety distance threshold: 𝐷𝑠 =
+𝑣2
+max
+2𝑎 + 𝐷𝑐  
+ 𝐷𝑐 Collision threshold (based on sensor accuracy)  
+ | 𝑎𝑡| Acceleration magnitude at time 𝑡  
+ 𝜃𝑣𝑎𝑡 Angle between velocity and acceleration vectors  
+ 𝑇 Time spent in the mission area  
+ 𝐿 Path length  
+ 𝐰 Gaussian noise vector: 𝐰 = [𝑤𝑥, 𝑤𝑦, 𝑤𝜃 ]𝑇 ∼  (0, 𝛴𝑑 ) 
+ 𝛴𝑑 Noise covariance matrix: diag(0.12, 0.12, 0.052)  
+ 𝜏 Yaw response time constant (0.5s)  
+ 𝐅wind Wind disturbance force  
+ 𝐰(𝑡) Wind velocity vector  
+ 𝐰𝑏 Base wind component  
+ 𝐰𝑔,𝑘 Wind gust components  
+ 𝑁𝑔 (𝑡) Poisson process for gust frequency (𝜆 = 0.1 Hz )  
+ 𝜼𝑡 Obstacle intent uncertainty noise  
+ 𝐉 Obstacle inertia tensor  
+ 𝜎𝑜 Obstacle intent uncertainty parameter (1.5 m/s2)  
+ 𝑉 (𝑘) Lyapunov function at iteration 𝑘  
+ 𝐹 ∗ Optimal path evaluation value  
+ 𝛥𝑉 (𝑘) Difference in Lyapunov function  
+ 𝛼, 𝛽 Convergence rate coefficients  
+ 𝜂 Optimization step size  
+ 𝐿 Lipschitz constant of ∇𝐹  
+ 𝜖max Upper bound of environmental uncertainty  
+The proposed hybrid model operates through four synchronized 
+phases:
+(1) Real-time Perception: Raw sensor data undergoes adaptive noise 
+filtering via AHF, where dynamic parameter updates (𝐾, 𝑁𝑒, 𝑓𝑛) are 
+computed using iterative loss minimization.
+(2) Situation Assessment : Filtered data feeds into the channel-
+attention-enhanced CNN–LSTM for spatiotemporal feature extraction. 
+The output constructs a Gaussian danger field whose parameters (𝜇, 𝜎) 
+are estimated via maximum likelihood.
+(3) Policy Generation: The DDPG agent receives the danger proba-
+bility map and feasible domain constraints. Its actor network outputs 
+continuous actions using prioritized experience replay, while the critic 
+evaluates multi-objective rewards.
+(4) Path Refinement : Raw trajectories from DDPG are optimized 
+using SAPO’s breakpoint-curvature tradeoff and multi-path evaluation. 
+This closed-loop process repeats at 10 Hz.
+The structure of this model is illustrated in Fig.  7.
+The execution pipeline is illustrated in Fig.  7 and detailed in Algo-
+rithm 1.
+As illustrated in Fig.  7, when the input is received, the data un-
+dergoes initial preprocessing to perform denoising and smoothing op-
+erations using the AHF algorithm. Subsequently, the processed data is 
+input into the CNN and LSTM for the extraction of spatial and temporal 
+features, with a channel attention mechanism employed to enhance the 
+focus on significant features. Following the feature extraction and anal-
+ysis, the situation assessment model constructs a probability density 
+function based on the results and utilizes existing data for parameter es-
+timation, leading to the probability distribution that indicates whether 
+each point in the environment is safe and feasible. This probability 
+distribution enables the determination of the feasible domain for its 
+own state and actions, after which the DDPG algorithm can be applied 
+to train the strategy model. Once the strategy model is developed, 
+optimal decision-making can be swiftly achieved via the state. To 
+Algorithm 1 SAPO-DDPG Hybrid Path Planning Framework
+Require: Sensor stream 𝑆𝑡, Start position 𝑝𝑠, Goal position 𝑝𝑔, UAV swarm 
+𝑈 = {𝑢1, 𝑢2, ..., 𝑢𝑁 }
+Ensure: Optimized collision-free paths 𝑃 ∗ = {𝑃 ∗
+1 , 𝑃 ∗
+2 , ..., 𝑃 ∗
+𝑁 } for all UAVs
+1: Initialize: 
+2: Actor network 𝜋(𝑠| 𝜃𝜋 ), Critic network 𝑄(𝑠, 𝑎| 𝜃𝑄), Target networks 𝜋′(𝑠| 𝜃𝜋′
+), 
+𝑄′(𝑠, 𝑎| 𝜃𝑄′
+) with 𝜃𝜋′
+← 𝜃𝜋 , 𝜃𝑄′
+← 𝜃𝑄, Replay buffer 𝐵 with capacity 
+𝐶, SAPO modules (AHF filter, CNN–LSTM-Attention network), Situation 
+assessment parameters 𝛩SAPO
+3: for episode = 1 to 𝑀 do 
+4: Reset environment, receive initial state 𝑠0 for all UAVs 𝑢 ∈ 𝑈
+5: for 𝑡 = 1 to 𝑇 do 
+6: Phase 1: Real-time Perception 
+7: for each UAV 𝑢 ∈ 𝑈 do 
+8: ̃𝑆𝑢
+𝑡 ← AHF(𝑆 𝑢
+𝑡 ) {Apply Adaptive HANTs Filter}
+9: end for
+10: Phase 2: Situation Assessment 
+11: 𝐹𝑡 ← CNN–LSTM-Attention({ ̃𝑆 𝑢
+𝑡 | 𝑢 ∈ 𝑈 })
+12: Estimate Gaussian parameters: ̂ 𝜇, ̂ 𝜎2 ← MLE(𝐹𝑡)
+13: Construct danger probability map : 
+14: for each grid cell (𝑖, 𝑗) in environment do 
+15: 𝑑𝑖𝑗 ← min(Euclidean distance to all obstacle centroids)
+16: 𝑖𝑗 ← 1√
+2𝜋 ̂ 𝜎2
+exp
+(
+−
+(𝑑𝑖𝑗 − ̂ 𝜇)2
+2 ̂ 𝜎2
+)
+ {Gaussian danger field}
+17: end for
+18: Phase 3: Policy Generation & Execution 
+19: for each UAV 𝑢 ∈ 𝑈 do 
+20: Observe current state 𝑠𝑢
+𝑡 = [pose𝑢, , swarm_states]
+21: Select action: 𝑎𝑢
+𝑡 ← 𝜋(𝑠𝑢
+𝑡 | 𝜃𝜋 ) + 𝑡 {Add exploration noise} 
+22: Execute action 𝑎𝑢
+𝑡 , observe reward 𝑟𝑢
+𝑡 and next state 𝑠𝑢
+𝑡+1
+23: Store transition (𝑠𝑢
+𝑡 , 𝑎𝑢
+𝑡 , 𝑟𝑢
+𝑡 , 𝑠𝑢
+𝑡+1) in replay buffer 𝐵
+24: end for
+25: Phase 4: Path Refinement 
+26: 𝑃raw ← Trajectory from executed actions {𝑎𝑢
+𝑡 | 𝑢 ∈ 𝑈 }
+27: 𝑃 ∗ ← SAPO-Optimize(𝑃raw) {Curvature-breakpoint optimization}
+28: Model Learning (Prioritized Experience Replay) 
+29: if | 𝐵| > batch_size then 
+30: Sample mini-batch of 𝐾 transitions from 𝐵 with probability 𝑃 (𝑗) =
+| 𝛿𝑗 |
+∑
+𝑘 | 𝛿𝑘|
+31: for each sampled transition 𝑗 do 
+32: Compute target value: 𝑦𝑗 = 𝑟𝑗 + 𝛾𝑄 ′(𝑠𝑗+1, 𝜋′(𝑠𝑗+1| 𝜃𝜋′
+)| 𝜃𝑄′
+)
+33: Compute TD-error: 𝛿𝑗 = 𝑦𝑗 − 𝑄(𝑠𝑗 , 𝑎𝑗 | 𝜃𝑄)
+34: Update priority: 𝑝𝑗 ← | 𝛿𝑗 | + 𝜖
+35: end for
+36: Update critic by minimizing: 𝐿 = 1
+𝐾
+∑
+𝑗 (𝑦𝑗 − 𝑄(𝑠𝑗 , 𝑎𝑗 | 𝜃𝑄))2
+37: Update actor using policy gradient: ∇𝜃𝜋 𝐽 ≈
+1
+𝐾
+∑
+𝑗 ∇𝑎𝑄(𝑠, 𝑎| 𝜃𝑄)| 𝑠=𝑠𝑗 ,𝑎=𝜋(𝑠𝑗 )∇𝜃𝜋 𝜋(𝑠| 𝜃𝜋 )| 𝑠𝑗
+38: Update target networks: 𝜃𝑄′
+← 𝜏𝜃 𝑄 + (1 −𝜏)𝜃𝑄′
+𝜃𝜋′
+← 𝜏𝜃 𝜋 + (1 −𝜏)𝜃𝜋′
+39: end if
+40: end for
+41: end for
+42: return 𝑃 ∗
+comprehensively address the needs of various targets and mitigate the 
+risk of reinforcement learning algorithms becoming trapped in local 
+optima, the AHF algorithm is again employed to smooth the sequence 
+of decision actions, followed by a path optimization method to finalize 
+the optimization of details.
+To establish the model, it is crucial to determine the appropriate 
+weighting coefficients for the reward function in the DDPG model, as 
+well as for the path quality evaluation function in the path optimization 
+model, in relation to the specific objectives of the problem at hand. 
+Meanwhile, the uncertainty modeling and management methods are 
+presented at the end of this section.
+4.1. Design of reward function
+The reward function for the DDPG agent is designed to balance 
+four critical objectives: safety 𝑅1, motion stability 𝑅2, traffic efficiency 
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+9 
+
+===== PAGE 10 =====
+H. Zhao et al.
+Fig. 7. The SAPO-DDPG execution pipeline: (a) Input preprocessing via AHF, (b) Spatiotemporal encoding through attention-weighted CNN–LSTM, (c) DDPG 
+decision-making within SAPO-derived action constraints, (d) Path smoothing via curvature optimization.
+𝑅3, and swarm coordination 𝑅4.To achieve this, a distinct reward 
+function is designed for each of these four goals. These sub-objective re-
+ward functions are then weighted and combined to form an integrated 
+approach.
+The multi-objective reward function integrates four components, 
+each addressing a critical navigation requirement:
+Safety: Penalizes proximity to obstacles based on distance thresh-
+olds.
+Motion Stability: Rewards smooth acceleration and directional
+alignment.
+Traffic Efficiency: Encourages timely path completion.
+Swarm Coordination: Prevents inter-agent collisions.
+The safety reward (Eq. (30)) penalizes actions where the minimum 
+distance min𝑖{𝐷𝑖} between any UAV and a danger area is less than 
+the safety threshold 𝐷𝑠. The penalty is inversely proportional to the 
+distance 𝐷𝑖, 𝑖 = 1 , 2, … , 𝑛, imposing a higher cost for closer proximity 
+to obstacles. The safety distance 𝐷𝑠 (Eq.  (31)) is derived from the UAV’s 
+kinematics and sensor accuracy. 
+𝑅1 =
+⎧
+⎪
+⎨
+⎪⎩
+− ∑𝑛
+𝑖=1
+𝐷𝑠
+𝐷𝑖
+if min𝑖{𝐷𝑖} ≤ 𝐷𝑠
+0 if min𝑖{𝐷𝑖} > 𝐷 𝑠
+(30)
+where 𝑛 is the number of the UAVs in the swarm. 
+𝐷𝑠 =
+𝑣2
+𝑚𝑎𝑥
+2𝑎 + 𝐷𝑐 (31)
+where 𝐷𝑐 is the collision threshold, which is determined by twice the 
+on-board RTK-GPS positioning error.
+Motion stability encompasses two primary aspects. First, the rate 
+of change in speed should not be excessive, meaning that acceleration 
+should be minimized as much as possible. Second, the trajectory of 
+movement should be smooth to prevent sharp turns from adversely 
+affecting the stable posture of the body of the UAV; this entails keeping 
+the angle between speed and acceleration as small as possible. By 
+integrating these two considerations, we can conclude that a smaller 
+absolute value of acceleration leads to a higher reward value, while a 
+smaller angle between acceleration and velocity also results in a greater 
+reward value. Therefore, the reward function 𝑅2 for motion stability 
+can be defined as outlined in Eq.  (32): 
+𝑅2 = 3 − | 𝑎𝑡| + 1
+cos 𝜃𝑣𝑎𝑡
+(32)
+where | 𝑎𝑡|  is the acceleration at the moment 𝑡; 𝜃𝑣𝑎𝑡 is the angle between 
+speed and acceleration at the moment 𝑡.
+Traffic efficiency primarily focuses on measuring the time it takes 
+for an entire UAV swarm to traverse a specific area. Consequently, 
+the reward function for traffic efficiency should be a dynamic, time-
+dependent function. As time progresses, this function progressively 
+increases the penalty value to encourage the model to reach its target 
+as swiftly as possible. Therefore, the reward function 𝑅3 for traffic 
+efficiency can be represented as outlined in Eq.  (33): 
+𝑅3 =
+⎧
+⎪
+⎨
+⎪⎩
+0 if 𝑇 ≤ 2𝐿
+𝑣max
+− 𝐷𝑒
+20𝑣𝑚𝑎𝑥
+if 𝑇 > 2𝐿
+𝑣max
+(33)
+where 𝑇 is the time in the area; 𝐿 is the path length; 𝑣max is the 
+maximum speed of the UAV; 𝐷𝑒 is distance from the exit. Considering 
+that it is impossible for the UAV to keep a constant maximum speed 
+and fly in a straight line, a 100% margin is given.
+Finally, the purpose of the internal order of the UAV swarm is to 
+avoid internal collisions, so the reward function 𝑅4 is shown as Eq. 
+(34): 
+𝑅4 =
+⎧
+⎪
+⎨
+⎪⎩
+−9999 if UAVs  collide
+0 if UAVs  do not collide
+(34)
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+10 
+
+===== PAGE 11 =====
+H. Zhao et al.
+These reward components address core navigation requirements: 
+𝑅1 ensures safety through distance penalties, 𝑅2 promotes motion 
+stability, 𝑅3 encourages timely completion, and 𝑅4 prevents inter-
+agent collisions. Their weighted combination guides multi-objective 
+optimization.
+Rewards are computed at 100 Hz intervals:
+- Safety reward 𝑅1 (Eq. (30)) uses Euclidean distance 𝐷𝑖 from UAV 
+to nearest obstacle cluster centroid (updated via onboard LiDAR).
+- Motion stability 𝑅2 (Eq. (32)) derives 𝜃𝑣𝑎𝑡 from IMU-based pose 
+estimation.
+- Traffic efficiency 𝑅3 (Eq. (33)) starts timing (𝑇 ) when the lead 
+UAV enters a sector.
+- Collision checks 𝑅4 (Eq. (34)) use axis-aligned bounding boxes 
+with ±𝐷𝑐 tolerance.
+Upon establishing the reward function for the subitem, it is essential 
+to ascertain the appropriate weight for each reward function. In the 
+forthcoming experiment, various weights will be assigned to identify 
+the optimal weighting configuration.
+4.2. Determination of weighting coefficient
+In the path optimization model, we define a path quality evalua-
+tion function, as presented in Eqs.  (16) and (18), to differentiate the 
+optimization levels of various paths. However, the weights in these 
+functions must be tailored to meet the specific requirements of the 
+problem at hand. In the context of UAV swarm path planning within a 
+dynamic multi-obstacle environment, when confronted with the multi-
+path issue, our focus primarily lies on the safety and traffic efficiency 
+of the paths, while we place less emphasis on traffic flow limits and the 
+number of turns. Consequently, we can assign zero values to weights 
+𝜔2 and 𝜔5. Additionally, given that safety takes precedence over traffic 
+efficiency, and that the variance in path length serves as a better 
+indicator of traffic efficiency than speed, we set the weights as follows: 
+𝜔1 = 0.3, 𝜔2 = 0, 𝜔3 = 0.5, 𝜔4 = 0.1, 𝜔5 = 0. The resulting path quality 
+function is illustrated in Eq.  (35): 
+𝐹 = 0.3𝑒−𝑙 − 0.5𝜌 − 0.1𝐷(𝑣) (35)
+The theoretical basis for weight selection is given below:
+The weight parameters 𝜔𝑗 in Eq.  (16) embody Pareto-optimal trade-
+offs among conflicting objectives:
+• Safety priority: 𝜔3 > 𝜔 1 (path risk 𝜌 dominates path length 𝑙)
+• Swarm coordination: 𝜔5 penalizes bottleneck formation (𝑚′∕𝑛𝑢)
+This aligns with UAV kinematic constraints and swarm dynamics. 
+The specific values in Eq.  (35) derive from experimental Pareto-front 
+analysis.
+In the context of a multi-bend scenario, centripetal acceleration 
+serves as an indicator of both the smoothness of the path and the quality 
+of traffic flow. The initial and final angles, representing the starting 
+and ending points of the reaction path, are not only disregarded in the 
+calculation of the extreme value but also have minimal impact on the 
+overall optimization of the path. Accordingly, the following parameters 
+have been established: 𝜔1 = 𝜔3 = 0.01 and 𝜔2 = 0.98. The final function 
+is represented in Eq.  (36): 
+⎧
+⎪
+⎨
+⎪⎩
+𝑍 = 𝐹𝑙(𝜌)(𝑙𝑒−𝑙 − 0.01𝑣0 sin 𝜃𝑧 − 0.98
+𝑣2
+𝑚
+𝑟 − 0.01 sin 𝜑)
+𝐹𝑙(𝜌) < 1
+(36)
+After simplification, the above objective function can be more easily 
+differentiated and extreme points can be found, thereby obtaining an 
+optimized scheme.
+Table 7
+Sensor uncertainty parameters and compensation strategies.
+ Sensor Latency (ms) Noise (𝜎) Compensation method  
+ LiDAR 50 0.25 m AHF temporal smoothing 
+ IMU 20 0.1 m/s2 Kalman filtering  
+ GPS 100 0.5 m Dead reckoning fusion  
+4.3. Uncertainty modeling and management
+The SAPO-DDPG framework explicitly addresses four sources of 
+uncertainty.
+4.3.1. Dubins vehicle dynamics with noise
+The UAV kinematics follow modified Dubins model with Gaussian 
+noise as shown in Section 4.3.1. 
+⎧
+⎪
+⎨
+⎪⎩
+̇ 𝑥= 𝑣 cos 𝜃 + 𝑤𝑥
+̇ 𝑦= 𝑣 sin 𝜃 + 𝑤𝑦
+̇𝜃 = 𝑢
+𝜏 + 𝑤𝜃
+where 𝐰 = [𝑤𝑥, 𝑤𝑦, 𝑤𝜃]𝑇 ∼  (0, 𝛴𝑑 ) (37)
+Here 𝜏 = 0 .5s represents the yaw response time constant, and 𝛴𝑑 =
+diag(0.12, 0.12, 0.052) captures translational (𝑥, 𝑦) and rotational (𝜃) dis-
+turbance covariance. This modified Dubins model incorporates Gaus-
+sian noise to account for real-world UAV dynamics uncertainties. The 
+covariance matrix 𝛴𝑑 captures different noise characteristics in trans-
+lational and rotational dimensions. This models real-world control 
+surface imperfections and atmospheric micro-turbulence.
+4.3.2. Wind gust disturbances
+Wind effects combine steady flow and stochastic gusts as shown 
+in Eq.  (38). 
+𝐅wind = 1
+2 𝜌𝐶𝑑 𝐴‖𝐯uav − 𝐰(𝑡)‖(𝐰(𝑡) − 𝐯uav) (38)
+where 𝐰(𝑡) = 𝐰𝑏 +∑𝑁𝑔 (𝑡)
+𝑘=1 𝐰𝑔,𝑘 ⋅I[𝑡𝑘,𝑡𝑘+𝛥𝑡𝑘]. The base wind 𝐰𝑏 ∼  (0, 5) m∕s
+is uniformly distributed, while gusts follow Poisson process 𝑁𝑔(𝑡) ∼
+Poisson(𝜆 = 0.1Hz) with exponential magnitude ‖𝐰𝑔,𝑘‖ ∼ Exp(0.2).
+4.3.3. Sensor imperfections
+Table  7 quantifies the key sensor limitations:
+4.3.4. Obstacle motion uncertainty
+Dynamic obstacles follow stochastic dynamics as shown in Eq.  (39). 
+𝐯obs(𝑡 + 𝛥𝑡) = 𝐯obs(𝑡) + 𝜼𝑡
+⏟ ⏟ ⏟
+intent noise
++ 𝐉𝐰𝑡
+⏟ ⏟ ⏟
+wind effect
+(39)
+where 𝜼𝑡 ∼  (0, 𝜎2
+𝑜 𝐈) models intent uncertainty (𝜎𝑜 = 1 .5 𝑚∕𝑠2), and 
+𝐉 is the obstacle’s inertia tensor. The CNN–LSTM predictor learns to 
+estimate E[𝜼𝑡] from historical observations.
+4.4. Convergence proofs
+To establish the theoretical robustness of SAPO-DDPG, we provide 
+convergence analysis for both the SAPO optimization and the DDPG 
+training process.
+Convergence of SAPO Path Optimization.
+Under Lipschitz-continuous environmental dynamics (Khalil, 2002), 
+the SAPO path evaluation function 𝐹 (Eq. (15)) converges to a local 
+optimum. Consider the Lyapunov function: (Eq. (40)) 
+𝑉 (𝑘) = 𝐹 (𝑘) − 𝐹 ∗ (40)
+where 𝐹 ∗ is the optimal value. The difference 𝛥𝑉 (𝑘) = 𝑉 (𝑘+1) − 𝑉 (𝑘)
+satisfies (Eq. (41)): 
+𝛥𝑉 (𝑘) ≤ −𝛼 ‖‖‖∇𝐹 (𝑘)‖‖‖
+2
++ 𝛽𝜖max (41)
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+11 
+
+===== PAGE 12 =====
+H. Zhao et al.
+Table 8
+Table of notations in Section 5 with values.
+ Parameter Description Subsection Value  
+ 𝐾 Error threshold for filtering 5.2, 5.4–5.5 = 10  
+ 𝑁𝑒 Maximum deletion points 5.2, 5.4–5.5 = 20  
+ 𝑓𝑛 Low-frequency component count 5.2, 5.4–5.5 = 9  
+ 𝐷𝑠 Safety distance threshold 5.1,5.3–5.5 ≈ 10 m  
+ 𝐷𝑐 Collision threshold 5.1,5.3–5.5 = 0.5 m  
+ 𝑣max Maximum UAV flight speed 5.1,5.3–5.5 = 15 m∕s  
+ 𝑎 Acceleration range 5.1,5.3–5.5 ∈ [−12, 12] 𝑚∕𝑠2  
+ 𝑇𝑠 Sampling rate 5.1,5.3–5.5 = 0.1 s−1  
+ 𝑁 Number of UAVs in swarm 5.1,5.3–5.5 = 5  
+ 𝐿𝑠𝑙 Straight-line distance 5.1,5.3–5.5 =
+√
+34 × 102 m  
+ 𝛼 Learning rate of DDPG 5.1,5.3–5.5 = 0.99  
+ 𝛾 Discount factor of DDPG 5.1,5.3–5.5 = 0.8  
+ 𝜏 Yaw response time constant 5.5.3 = 1.0 s  
+ 𝜆 Wind gust Poisson frequency 5.5.3 = 0.1 Hz  
+ 𝜎𝑜 Obstacle intent uncertainty 5.5.3 = 3.0 𝑚∕𝑠2  
+ Network width The size of the convolutional neural network 5.4–5.5 5-3-3-1(4-layers) 
+ Seed Random seed 5.1,5.3–5.5 42-51(10 trials)  
+where: 𝛼 = 𝜂(2 − 𝜂𝐿) > 0 is the convergence rate coefficient, with 𝜂 as 
+the optimization step size and 𝐿 as the Lipschitz constant of ∇𝐹 . 𝛽 > 0
+is the uncertainty scaling facto, bounded by the maximum curvature of 
+𝐹 . 𝜖max is the upper bound of environmental uncertainty (wind, sensor 
+noise, etc.). For 𝜖max < 𝛼 ‖∇𝐹 ‖2∕𝛽, 𝛥𝑉 (𝑘) < 0 guarantees monotonic 
+convergence.
+Variance Reduction in DDPG.
+Prioritized experience replay (Eq. (28)) reduces policy gradient vari-
+ance by (1∕
+√
+𝑁) (Schaul et al., 2016) versus uniform sampling. The 
+TD-error prioritization minimizes Kullback–Leibler divergence between 
+optimal and sampled distributions, tightening the bound in policy 
+gradient updates as Eq.  (42): 
+Var(∇𝜃𝑢 𝐽 )Prioritized ≤ Var(∇𝜃𝑢 𝐽 )Uniform
+√
+𝑁
+(42)
+These convergence proofs establish theoretical foundations: Eqs. 
+(40)–(41) guarantee SAPO optimization convergence under environ-
+mental uncertainty, while Equation (42) demonstrates prioritized re-
+play’s variance reduction for stable DDPG training.
+5. Experiment and analysis
+To assess the effectiveness of the algorithm, this paper undertakes a 
+series of experiments as follows: Experiment 1 involves varying weight 
+coefficients to identify the optimal combination for the reward func-
+tion. In Experiment 2, the AHF model is compared to the original model 
+to determine whether improvements in filtering and smoothing effects 
+are evident. Experiment 3 evaluates the enhanced DDPG model against 
+the original model to examine potential gains in training efficiency and 
+decision-making performance. Experiment 4 contrasts the mixed path 
+planning model with the current advanced path planning model to ana-
+lyze the performance of each test model across different environments. 
+Lastly, Experiment 5 conducted supplementary experiments, including 
+ablation experiments, scalability verification, and extreme condition 
+testing, to comprehensively examine the overall performance of the 
+model. The experimental summary will be provided at the end of the 
+experimental section.
+All the important experimental parameters presented in Section 5, 
+along with their application scopes and values, are shown in Table  8.
+5.1. Reward function weight value selection
+The experiment was conducted with the following parameters: max-
+imum flight speed 𝑣max = 15 m∕s , acceleration range 𝑎 ∈ [−12, 12] 𝑚∕𝑠2, 
+collision threshold 𝐷𝑐 = 0 .5 m, safety distance 𝐷𝑠 ≈ 10 m, swarm size 
+𝑁 = 5, sampling rate 𝑇𝑠 = 0.1 s−1, straight-line distance 𝐿𝑠𝑙 =
+√
+34×10 2
+m, DDPG learning rate 𝛼 = 0.99, and discount factor 𝛾 = 0.8.
+The training and test scenes (Figs.  8 and 9) consisted of rectangular 
+areas (500 m × 300 m). All models were trained in the training scene 
+and evaluated in the test scene. To ensure comparability, we employed 
+an early termination criterion: if the total path length exceeded 8000 m, 
+the planning was terminated. We conducted 10 Monte Carlo runs per 
+weight configuration and evaluated four key metrics: path length 𝐿, 
+completion time 𝑇 , average absolute acceleration | ̄ 𝑎| , and minimum 
+obstacle distance 𝑑min.
+The experimental results are shown in Table  9.
+Table  9 presents the experimental results. The weight ratio 𝜔1 ∶ 𝜔2 ∶
+𝜔3 ∶ 𝜔4 = 1 ∶ 15 ∶ 20 ∶ 1  achieved the best performance, yielding the 
+shortest path length (1619.5 ± 6 .8 m) and near-optimal other metrics. 
+The final reward function is defined as Eq.  (43): 
+𝑅 = 𝑅1 + 15𝑅2 + 20𝑅3 + 𝑅4 (43)
+Note that this weight combination is specific to our experimental 
+scenarios and should be recalibrated for different environments or task 
+requirements.
+5.2. Comparative experiment of filtering algorithms
+This experiment evaluates the filtering performance of our pro-
+posed AHF method against the standard HANTs approach. We used 
+acceleration time-series data collected during a 5-minute UAV flight.
+The AHF model was initialized with 𝐾0 = 10, 𝑁𝑒0 = 20, and 𝑓0 = 9, 
+while the HANTs parameters were set to 𝐾 = 2, 𝑁𝑒 = 10, and 𝑓 = 3. We 
+compared the number of iterations (𝑁𝐼 ), time mean square deviation 
+(𝑇 𝑀𝑆𝐷 ), and smoothing rate (𝑆𝑅), calculated as Eq.  (44)–(45): 
+𝑇 𝑀𝑆𝐷 =
+∑𝑁
+𝑘=1(𝑥𝑜𝑘 − 𝑥𝑖𝑘)2
+𝑁 (44)
+𝑆𝑅 = 𝐴𝑖 − 𝐴𝑜
+𝐴𝑖
+(45)
+where 𝑥𝑖𝑘 is the 𝑘th data before filtering, 𝑥𝑜𝑘 is the 𝑘th data after 
+filtering, 𝐴𝑖 is the amplitude of the data before filtering, and 𝐴𝑜 is the 
+amplitude of the data after filtering.
+Figs.  10–12 illustrates the distribution of the three groups of original 
+data alongside the waveforms that have been filtered using the two 
+methodologies. Additionally, Table  10 presents a comparative analysis 
+of the performance of the two methods across these three distinct 
+datasets.
+According to the data presented in Figs.  10–12, we can see that 
+the AHF model demonstrates superior performance in filtering and 
+smoothing effects among the three groups of experimental data. It 
+is clear that the AHF model more accurately reflects the distribution 
+characteristics and trends of the data when compared to the HANTs 
+model.
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+12 
+
+===== PAGE 13 =====
+H. Zhao et al.
+Fig. 8. The setting of the training scene.
+Fig. 9. The setting of the test scene.
+Table 9
+The path planning performance with different weight values (mean ± std).
+ 𝜔1 ∶ 𝜔2 ∶ 𝜔3 ∶ 𝜔4 𝐿(𝑚) 𝑇 (𝑠) | ̄ 𝑎| (𝑚∕𝑠2) 𝑑min(𝑚)  
+ 1:1:1:1 > 8000 – – –  
+ 1:5:5:1 > 8000 – – –  
+ 1:10:10:1 5816.1 ± 23.6 721.8 ± 12.9 1.08 ± 0.11 10.04 ± 0.07 
+ 1:15:15:1 1829.7 ± 9.7 296.8 ± 7.8 0.85 ± 0.05 10.15 ± 0.05 
+ 1:20:20:1 > 8000 – – –  
+ 1:20:15:1 > 8000 – – –  
+ 1:15:20:1 1619.5 ± 6.8 282.4 ± 5.9 0.88 ± 0.06 10.13 ± 0.03 
+ 1:15:25:1 > 8000 – – –  
+ 1:15:19:1 1650.9 ± 7.2 281.9 ± 5.7 0.88 ± 0.06 10.12 ± 0.03 
+ 1:15:21:1 1688.7 ± 7.1 307.7 ± 6.1 0.92 ± 0.06 10.13 ± 0.03 
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+13 
+
+===== PAGE 14 =====
+H. Zhao et al.
+Fig. 10. The first set of original data and its filtered waveform.
+Fig. 11. The second set of original data and its filtered waveform.
+Fig. 12. The third set of original data and its filtered waveform.
+As indicated in Table  10, in the first data set, the smoothing rate 𝑆𝑅
+of both models is nearly identical. However, the AHF model exhibits a 
+significant advantage in terms of time mean square deviation 𝑇 𝑀𝑆𝐷 . 
+In the subsequent two sets of data, the AHF model continues to show 
+stronger performance in both 𝑆𝑅 and 𝑇 𝑀𝑆𝐷 metrics. This enhanced 
+performance can be attributed to the AHF model’s ability to  adjust 
+Table 10
+The performance comparison and analysis of two methods on three sets of data.
+ Group 
+number
+𝑁 AHF model HANTs model
+ 𝑁𝐼 𝑇 𝑀𝑆𝐷 𝑆𝑅 𝑁𝐼 𝑇 𝑀𝑆𝐷 𝑆𝑅  
+ 1 62 56 0.322 27.1% 42 0.506 27.5% 
+ 2 65 64 0.062 37.0% 53 0.129 32.7% 
+ 3 59 49 0.037 40.8% 43 0.041 35.8% 
+the number of frequencies fitted to the waveform, selecting the subset 
+of results with the least loss from the original data for output. This 
+approach mitigates the impact of artificially set parameters on model 
+performance. Nevertheless, due to the requirement of selecting the 
+optimal results from the best options, the AHF model does not excel 
+in the number of iterations 𝑁𝐼 . In comparison to the HANTs model, 
+the AHF model necessitates a greater number of iterations to achieve 
+convergence.
+The purpose of this experiment is to verify whether the addition 
+of an adaptive mechanism has a positive effect on the filtering per-
+formance. It can be seen from the experimental results that through 
+improvement, the performance of the AHF model has indeed surpassed 
+that of the HANTs model. However, this does not mean that the AHF 
+model can completely replace the HANTs model. Compared with the 
+AHF model, the HANTs model has a simpler structure. Moreover, for 
+experienced users, the HANTs model theoretically has performance 
+close to that of the AHF model under excellent initial parameters. For 
+the dynamic and complex scenarios targeted by this research, due to 
+the complexity and uncertainty of the original data, it is difficult to 
+determine effective initial parameters through experience. Therefore, 
+the AHF model is more suitable to be used as the filtering model.
+5.3. Comparative experiment of DDPG model training
+To evaluate the effectiveness of our enhanced DDPG algorithm, 
+we conducted comparative experiments by training both the original 
+algorithm model and our proposed improved model. The experimental 
+setup is illustrated in Fig.  8, with the relevant parameter settings 
+consistent with those used in the previous reward function weight 
+value selection experiment. We employed the same reward function as 
+described in Eq.  (43). A total of 300 training episodes were carried out, 
+each lasting 3 min. Throughout the experiment, we recorded the cumu-
+lative reward value for each training episode. By analyzing the trend of 
+the cumulative reward values, we can compare the convergence rates 
+of the two models.
+As illustrated in Fig.  13, the original model reaches the optimal path 
+after approximately 130 episodes, with the cumulative reward stabi-
+lizing around 250 episodes. In contrast, the improved model achieves 
+the optimal path in about 100 episodes, with cumulative rewards 
+converging around 210 episodes. This demonstrates that enhancements 
+to the experience reply mechanism significantly accelerate the conver-
+gence speed of the DDPG model, allowing it to identify the optimal 
+decision-making strategy more quickly and efficiently.
+The significance of this experiment lies in comparing the differences 
+in training efficiency between the DDPG models before and after im-
+provement. It can be seen that the improved DDPG model, compared 
+with the original model, has 23% fewer episodes approaching the 
+reward peak and 16% fewer episodes completing convergence. This 
+indicates that the improved DDPG model has indeed enhanced the 
+training efficiency and has a beneficial effect on the overall training 
+speed of the model to a certain extent.
+5.4. Comparative experiment of several path planning models
+To evaluate the effectiveness of the algorithm, we compared the 
+trained SAPO-DDPG model with several established models, includ-
+ing APF-RRT* (Xu et al., 2023a), GA-RRT (Fan et al., 2024), B-
+APFDQN (Kong et al., 2023), and TSEB-DDPG (Tian et al., 2024). The 
+testing scene is illustrated in Fig.  9.
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+14 
+
+===== PAGE 15 =====
+H. Zhao et al.
+Fig. 13. The trend of total reward value during training.
+Table 11
+The experimental results of single UAV path planning (mean ± std).
+ Algorithm 𝑇𝑡 𝐿𝑝(𝑚) 𝑇𝑐 (𝑠) 𝑛𝑐  
+ APF-RRT* 278.4 ± 9.7 s 2461.2 ± 37.2 278.4 ± 9.7 3.3 ± 1.49 
+ GA-RRT 203.2 ± 14.2 s 2170.4 ± 21.4 203.2 ± 14.2 1.2 ± 0.78 
+ B-APFDQN 15.8 ± 0.2 h 2001.4 ± 18.7 137.8 ± 11.1 0.7 ± 0.82 
+ TSEB-DDPG 23.8 ± 0.2 h 1860.3 ± 15.5 121 ± 8.7 0  
+ SAPO-DDPG 29.4 ± 0.2 h 1821.4 ± 13.4 103 ± 8.9 0  
+In this experiment, a 4-layer convolutional network with a 5-3-3-
+1 structure is used. The convolutional kernels used in the first layer 
+are 5 × 5 convolutional kernels, which are used for extracting features 
+over a wide range. This not only effectively reduces parameters but 
+also does not generate a large amount of computation. The subsequent 
+two layers adopt 3 × 3 convolutional kernels, which can control the 
+number of parameters and reduce the complexity of the operation at 
+the same time. The last layer adopts a 1 × 1 convolutional kernel, which 
+is equivalent to a fully connected layer.
+Our experiments encompassed two main components: the path plan-
+ning for a single UAV and the path planning for a UAV swarm. For the 
+single UAV path planning, we focused on several key metrics, including 
+training time 𝑇𝑡, path length 𝐿𝑝, completion time 𝑇𝑐, collision frequency 
+𝑛𝑐, and the shape of the path generated by different algorithms. In the 
+UAV swarm path planning test, we primarily assessed the total path 
+length of the swarm 𝐿𝑡, the maximum time difference in completion 
+𝑇𝑑 , and the number of collisions 𝑁𝑐 encountered.
+Figs.  14–15 shows the planned paths of the five models in a cer-
+tain run of experiments. Table  11 shows the data comparison of the 
+corresponding indicators of these models.
+The APF-RRT* and GA-RRT models do not incorporate a neural 
+network structure, which means they do not require pre-training; their 
+training time aligns with their overall completion time. As illustrated 
+in Table  11, the iteration time for the SAPO-DDPG algorithm is longer 
+than that of the other algorithms, primarily due to SAPO-DDPG’s more 
+complex architecture. While the convergence speed of the DDPG model 
+is enhanced, the training time paradoxically increases because of the 
+secondary optimization introduced by the SAPO algorithm. In terms of 
+path length, completion time, and collision frequency, the SAPO-DDPG 
+algorithm exhibits distinct advantages. This can be attributed to its ap-
+proach of multiple optimization policies, which not only preserves the 
+efficient decision-making capabilities of reinforcement learning but also 
+enhances path optimization through the secondary adjustment of SAPO. 
+It can be seen that the optimization quality of the path in the SAPO-
+DDPG algorithm surpasses that of other algorithms. Furthermore, it is 
+worth noting that, from the perspective of planning trajectories, unlike 
+Table 12
+The experimental results of UAV swarm path planning (mean ± std).
+ Algorithm 𝐿𝑡(𝑚) 𝑇𝑑 (𝑠) 𝑁𝑐  
+ APF-RRT* 14932.5 ± 1429.6 26.4 ± 3.28 16.3 ± 5.44 
+ GA-RRT 12315.3 ± 1017.3 21.3 ± 5.31 5.9 ± 4.31  
+ B-APFDQN 10897.4 ± 831.72 23.2 ± 4.72 3.3 ± 4.40  
+ TSEB-DDPG 10115.8 ± 759.38 21.1 ± 4.53 0.4 ± 0.89  
+ SAPO-DDPG 9691.6 ± 314.65 16.2 ± 3.65 0.2 ± 0.67  
+other reinforcement learning models, the SAPO-DDPG model notices 
+the differences between the test scenarios and the training scenarios 
+and selects a more optimized route, which indicates that it has certain 
+advantages in detail processing. Therefore, the SAPO-DDPG model 
+demonstrates stronger competitiveness compared to similar algorithms 
+in the context of single UAV path planning.
+In our UAV swarm path planning experiment, we utilize a swarm of 
+five UAVs to simulate collective behavior. Each UAV in the swarm is 
+treated as a dynamic obstacle to the others, allowing for greater adapt-
+ability. To enhance the flexibility of the cluster, we intentionally do not 
+incorporate any specific formation for the swarm in this experiment. 
+The performance of each model used in the experiment is detailed in 
+Table  12.
+Due to the significant overlap in paths among multiple UAVs, 
+traditional path superposition fails to adequately represent the relative 
+positional relationships between UAVs at different time nodes. Con-
+sequently, this study shifts focus from comparing path morphology 
+to three key metrics: total path length, maximum completion time 
+difference, and number of collisions. As shown in Table  12, the SAPO-
+DDPG model demonstrates distinct advantages in these three metrics 
+compared to other models in swarm path planning. This superiority 
+arises not only from the method’s consideration of the UAV swarm’s 
+focus during path planning but also from the SAPO approach’s treat-
+ment of each UAV as an individual entity rather than as part of a 
+whole. This individual-centric dynamic optimization allows for the 
+formulation of a globally optimal solution. As a result, the SAPO-DDPG 
+model significantly enhances individual flexibility and alleviates certain 
+path traffic constraints, leading to its superior performance in UAV 
+swarm path planning compared to similar algorithms.
+To verify whether the improvement of the algorithm compared with 
+the existing algorithms is significant, we conducted significance tests 
+on the experimental results of the two models, SAPO-DDPG and TSEB-
+DDPG. The inspection objectives are the four indicators 𝐿𝑝, 𝑇𝑐 , 𝐿𝑡 and 
+𝑇𝑑 , and the adopted method is Welch t-tests.
+Among them, the statistics to be obtained include: 𝑡-value, degrees 
+of freedom 𝑑𝑓 , 𝑝-value and effect size Cohen’s d 𝑑. The 𝑝-value can be 
+obtained by looking up the table, and the calculation methods of the 
+other three statistics are shown in Eqs. (46)–(48). 
+𝑡 =
+̄𝑋1 − ̄𝑋2√
+𝑠2
+1
+𝑛1
++
+𝑠2
+2
+𝑛2
+(46)
+𝑑𝑓 =
+(
+𝑠2
+1
+𝑛1
++
+𝑠2
+2
+𝑛2
+)2
+(𝑠2
+1∕𝑛1
+)2
+𝑛1 − 1 +
+(𝑠2
+2∕𝑛2
+)2
+𝑛2 − 1
+(47)
+𝑑 =
+̄𝑋1 − ̄𝑋2√
+(𝑛1 − 1)𝑠2
+1 + (𝑛2 − 1)𝑠2
+2
+𝑛1 + 𝑛2 − 2
+(48)
+where ̄𝑋𝑖, 𝑖 = 1 , 2 is the sample means of group 𝑖; 𝑠2
+𝑖 , 𝑖 = 1 , 2 is the 
+unbiased sample variances of group 𝑖; 𝑛𝑖, 𝑖 = 1 , 2 is the sample sizes 
+of group 𝑖. For the effect size 𝑑, 0.2 < | 𝑑| < 0.5 means small effect, 
+0.5 < | 𝑑| < 0.8 means medium effect and | 𝑑| ≥ 0.8 means large 
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+15 
+
+===== PAGE 16 =====
+H. Zhao et al.
+ 
+(a) APF-RRT*
+  
+(b) GA-RRT
+ 
+ 
+(c) B-APFDQN
+  
+(d) TSEB-DDPG
+ 
+ 
+(e) SAPO-DDPG
+ 
+Fig. 14. The path planning results for five models.
+Fig. 15. The path results are overlaid on the test scene.
+effect. These equations define our statistical validation framework: 
+Eqs. (46) computes the t-statistic, Eqs. (47) adjusts degrees of freedom, 
+and Eqs. (48) determines effect size. This provides both statistical 
+significance and practical importance assessment.
+The test results are shown in Table  13.
+the results of the Welch’s t-test presented in Table  13 provide robust 
+statistical evidence for evaluating the performance improvements of 
+SAPO-DDPG over the TSEB-DDPG baseline. In the single-UAV scenario, 
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+16 
+
+===== PAGE 17 =====
+H. Zhao et al.
+Table 13
+Significance test of the experimental data of SAPO-DDPG and TSEB-DDPG.
+ Statistical magnitude 𝐿𝑝 𝑇𝑐 𝐿𝑡 𝑇𝑑  
+ 𝑡 −6.01 −4.574 −1.632 −2.665 
+ 𝑑𝑓 17 18 12 17  
+ 𝑝 < 0.001 < 0.001 0.128 < 0.05 
+ 𝑑 −2.68 −2.05 −0.73 −1.19  
+the extremely small p-values (𝑝 < 0.001) for both path length (𝐿𝑝) and 
+completion time (𝑇𝑐 ) allow us to confidently reject the null hypothesis, 
+confirming that the observed performance superiority is statistically 
+significant and not attributable to random chance. More critically, the 
+large effect sizes (Cohen’s 𝑑 > 2.0) for both metrics demonstrate that the 
+magnitude of improvement possesses substantial practical significance 
+in real-world applications, far exceeding the conventional threshold for 
+a ‘large’ effect (𝑑 > 0.8).
+For swarm navigation, the statistical analysis reveals more nuanced 
+but equally meaningful insights. The non-significant result for total 
+path length (𝐿𝑡, 𝑝 = 0 .128) is accompanied by a medium effect size 
+(𝑑 = 0 .73). This pattern suggests that while the reduction in total 
+distance traveled across the swarm exhibits variability that prevents 
+reaching conventional statistical significance thresholds across all ex-
+perimental runs, there exists a consistent and meaningful trend toward 
+more efficient global routing. The medium effect size indicates that this 
+improvement is nevertheless practically relevant.
+Conversely, the statistically significant reduction in maximum time 
+difference (𝑇𝑑 , 𝑝 < 0.05) with a large effect size (𝑑 = 1 .19) pro-
+vides definitive evidence that SAPO-DDPG achieves superior swarm 
+coordination and synchronization. This metric is particularly critical 
+for mission success in applications where the simultaneous arrival or 
+coordinated operation of all UAVs is operationally essential, such as 
+in coordinated surveillance, formation flying, or simultaneous payload 
+delivery scenarios.
+The statistical evidence collectively indicates that SAPO-DDPG not 
+only produces statistically significant improvements in individual UAV 
+performance metrics but also delivers practically meaningful enhance-
+ments in swarm coordination under dynamic multi-obstacle environ-
+ments. The combination of statistical testing with effect size analysis 
+provides a comprehensive validation of our method’s effectiveness 
+across both individual and collective performance dimensions.
+The experiment of this subsection is to verify whether the proposed 
+SAPO-DDPG model has a positive performance improvement compared 
+with other existing advanced hybrid models. The test scenarios used 
+in the experiment were obtained by making minor modifications to 
+the training scenarios. The experimental results show that the SAPO-
+DDPG model has achieved a significant improvement in performance 
+compared with other existing models, which reflects the innovation of 
+this study.
+5.5. Supplementary experiment
+5.5.1. Ablation study
+To rigorously evaluate the necessity of our key design choices, 
+we conducted a controlled ablation experiment comparing four model 
+variants in a dynamic multi-obstacle environment (500 m × 300 m 
+with 10 moving obstacles). All tests used single UAV with randomized 
+start-goal pairs, averaged over 10 Monte Carlo trials.
+Four model configurations were tested:
+• Full model: Our complete model (AHF + SAPO + DDPG).
+• No AHF: Replaced AHF with adaptive Kalman filters (AKF).
+• No AM: Removed attention mechanism(AM), retaining only CNN–
+LSTM.
+• No SAPO: Removed SAPO’s situation assessment, retaining only 
+DDPG.
+Table 14
+Ablation study results (mean ± std).
+ Model Path Length (m) Collisions Training time (h) Time (s)  
+ Full model 1821.4 ± 13.4 0 29.4 ± 0.2 103 ± 8.9  
+ No AHF 1975.8 ± 17.6 3 ± 1 29.2 ± 0.2 121 ± 9.4  
+ No AM 2017.4 ± 19.1 3 ± 1 28.3 ± 0.2 127 ± 9.1  
+ No SAPO 2155.4 ± 22.3 5 ± 2 21.7 ± 0.1 152 ± 10.2 
+Table 15
+Performance metrics for different swarm sizes.
+ Size Time (s) Communication overhead (KB/s) 
+ 1 103 ± 8.9 –  
+ 5 172 ± 16.3 15.6 ± 2.1  
+ 10 246 ± 25.7 32.4 ± 3.5  
+ 25 278 ± 35.4 79.9 ± 5.7  
+ 50 331 ± 47.9 172.3 ± 12.6  
+We evaluated four key metrics:
+1. Path length (m): Total trajectory distance per UAV.
+2. Collisions: Sum of UAV-obstacle impacts.
+3. Training time (h): Mean The time consumed by the model 
+during training.
+4. Time (s): Duration from start to last UAV’s arrival.
+As shown in Table  14, removing AHF, AM, SAPO degraded perfor-
+mance significantly.
+• AHF’s Role: AKF (No AHF) increased collisions by 300% and re-
+duced safety margins by 21%, confirming that dynamic parameter 
+adaptation is critical for handling unpredictable noise.
+• AM’s Role: In the absence of an attention mechanism, due to the 
+lack of attention to important features, the path was extended 
+by 10.76%, and the collision rate also increased significantly, 
+proving the necessity of the attention mechanism for the model.
+• SAPO’s Role: Without SAPO, paths lengthened by 18.33% due 
+to poor global awareness, while collisions rose sharply (5 vs. 0), 
+proving its necessity for spatiotemporal reasoning.
+This experiment verified the necessity of each key module in SAPO-
+DDPG and confirmed that each sub-model used was beneficial and 
+indispensable.
+5.5.2. Scalability verification
+To evaluate the computational scalability and communication over-
+head of SAPO-DDPG, we conducted additional experiments with UAV 
+swarm sizes ranging from 1 to 50 agents. In this experiment, we 
+examined the completion time (from the start to the last UAV leaving 
+the exit) and the communication overhead. The results are summarized 
+in Table  15.
+The results show that SAPO-DDPG can maintain a high planning 
+efficiency even in a large group. For the same scenario, after the cluster 
+size was expanded tenfold, the total completion time only increased by 
+about 92% (less than 100%). Meanwhile, as each UAV needs to share 
+basic state information with its surrounding neighbors, the communi-
+cation overhead approximately increases linearly. The above indicates 
+that in larger-scale UAV swarms, this model still has good planning 
+performance.
+This experiment verified the performance changes of the model 
+under a larger cluster scale. The results show that as the scale expands, 
+both the task completion time and the communication load show an 
+upward trend, but they are both within an acceptable range. Therefore, 
+this model has the scalability to meet the requirements of different 
+cluster scales.
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+17 
+
+===== PAGE 18 =====
+H. Zhao et al.
+Table 16
+Comparative performance under extreme conditions.
+ 500 m × 300 m Environment 1000 m × 600 m Environment
+ Metric Scenario 1 Scenario 2 Scenario 3 Scenario 1 Scenario 2 Scenario 3 
+ SAPO-DDPG
+ Path increase (%) 12.3 ± 2.1 8.7 ± 1.8 15.7 ± 2.9 14.2 ± 2.4 11.3 ± 2.1 18.5 ± 3.2  
+ Success rate (%) 100 95 90 94 88 85  
+ TSEB-DDPG
+ Path increase (%) 18.7 ± 3.5 14.2 ± 2.9 24.6 ± 4.1 23.5 ± 4.2 19.8 ± 3.7 31.2 ± 5.3  
+ Success rate (%) 78 68 58 72 63 51  
+5.5.3. Extreme condition testing
+To rigorously evaluate the robustness of SAPO-DDPG under diverse 
+adverse conditions, we conducted comprehensive testing across two 
+distinct environmental scales: (1) the standard 500 m × 300 m  scene 
+from Section 5.1, and (2) an expanded 1000 m × 600 m  scene with 
+higher obstacle density. Three progressively challenging scenarios were 
+executed at each scale, with TSEB-DDPG (Tian et al., 2024) serving as 
+the primary baseline for comparative analysis. Scenario 1 simulated 
+high wind gusts modeled through Dryden turbulence spectra (𝐿𝑤 =
+50 m , 𝜎𝑤 = 3m∕s). Scenario 2 introduced sensor degradation including 
+LiDAR range reduction (50 m), GPS packet loss (20%), and IMU drift 
+(0.1m∕s2/min). Scenario 3 combined these adversities with actuator lag 
+(𝜏 = 1.0s) and erratic obstacle motion (𝜎𝑜 = 3.0m∕s2).
+As systematically quantified in Table  16, SAPO-DDPG consistently 
+outperformed the baseline across all test configurations. The proposed 
+framework maintained success rates above 90% even in Scenario 3 
+of the standard environment, compared to TSEB-DDPG’s deteriora-
+tion to 58%. This performance advantage extended to the expanded 
+scene, where SAPO-DDPG achieved 85% success under worst-case 
+conditions—a 34% relative improvement over the baseline.
+The expanded environment testing revealed two notable trends: 
+First, environmental scale amplified performance differences, with 
+SAPO-DDPG’s success rate advantage increasing from 32% to 34% in 
+Scenario 3. Second, wind effects exhibited greater impact in larger 
+spaces, contributing to the 3.8% additional path length increase ob-
+served in Scenario 1. Meanwhile, when scaled to a larger scene, the 
+path increment of SAPO-DDPG is smaller compared to the baseline 
+model. This is mainly attributed to the processing of extended spatial 
+features by the CNN–LSTM module, enabling the model to adapt 
+to obstacles of different sizes. These results collectively validate the 
+framework’s scalability while demonstrating consistent superiority in 
+preserving operational integrity under conditions exceeding typical 
+uncertainty thresholds.
+The purpose of the extreme condition test is to examine the per-
+formance differences between the proposed model and the baseline 
+model by increasing the degree of environmental chaos, thereby ver-
+ifying the environmental adaptability of the SAPO-DDPG model. The 
+experimental results show that with the increase of chaos and site scale, 
+the advantages of the SAPO-DDPG model gradually expand compared 
+with the baseline model. This indicates that SAPO-DDPG has better 
+environmental adaptability, which verifies the advancement of this 
+method.
+5.6. Experimental summary
+The experimental analysis demonstrates that:
+(1) AHF provides superior smoothing and accuracy, particularly in 
+dynamic environments with complex data distributions;
+(2) The enhanced DDPG achieves faster convergence and improved 
+multi-objective optimization;
+(3) SAPO-DDPG significantly outperforms state-of-the-art methods 
+in dynamic environments, with advantages amplifying as environmen-
+tal complexity increases.
+Table  17 summarizes the characteristics and suitable application 
+scenarios of the evaluated algorithms. While SAPO-DDPG exhibits 
+longer training times due to its sophisticated architecture, it deliv-
+ers robust performance in highly chaotic dynamic scenes, making 
+it particularly suitable for mission-critical applications in complex 
+environments.
+6. Conclusion
+This paper presents SAPO-DDPG, a novel hybrid path planning 
+framework designed to address the complex challenges of UAV swarm 
+navigation in dynamic environments with multiple obstacles. The
+framework integrates an Adaptive HANTs Filter (AHF), a Situation 
+Assessment Path Optimizer (SAPO), and an enhanced Deep Deter-
+ministic Policy Gradient (DDPG) algorithm. This synergistic approach 
+effectively tackles the core difficulties of cluster dynamic path planning 
+under dynamic interference and multi-objective optimization require-
+ments.
+Our core theoretical contributions lie in three key innovations. 
+Firstly, the AHF model significantly advances the original HANTs filter 
+by introducing functional relationships to dynamically update critical 
+parameters (error threshold 𝐾, maximum deletion points 𝑁𝑒, low-
+frequency number 𝑓𝑛) during iteration, eliminating reliance on static 
+manual settings. This substantially enhances filtering robustness and 
+trajectory smoothing performance. Secondly, the SAPO model leverages 
+a CNN–LSTM architecture augmented with a channel attention mech-
+anism (placed after the LSTM) to prioritize valuable spatiotemporal 
+features from sensor data for superior situational awareness. It further 
+introduces novel path quality evaluation functions and optimization 
+methods specifically addressing multi-path and multi-bend challenges. 
+Thirdly, we innovate the DDPG algorithm by designing a comprehen-
+sive multi-objective reward function (safety, motion stability, traffic 
+efficiency, swarm order) with optimized weights (1:15:20:1) and imple-
+menting a prioritized experience replay mechanism based on TD-error, 
+accelerating convergence and improving decision-making in complex 
+scenarios.
+These contributions translate into significant practical advantages. 
+Comprehensive experimental results, including rigorous testing under 
+diverse adverse conditions, demonstrate that SAPO-DDPG consistently 
+outperforms state-of-the-art UAV path planning algorithms (including 
+APF-RRT*, GA-RRT, B-APFDQN, and TSEB-DDPG) across critical met-
+rics. Key advantages include: achieving shortest path lengths (individ-
+ual: 2.1% shorter than TSEB-DDPG, swarm: 4.2% reduced), near-zero 
+collision navigation, and enabling faster mission completion times. The 
+AHF’s adaptive filtering and SAPO’s attention-driven feature extrac-
+tion enhance robustness in unpredictable environments (e.g., urban 
+canyons), reducing dependency on pre-mapped global data. The opti-
+mized DDPG experience replay supports efficient swarm coordination 
+with manageable communication overhead.
+However, the research acknowledges current limitations. The pri-
+mary constraint is the model’s computational complexity, stemming 
+from the CNN-LSTM-Attention structure within SAPO and multi-agent 
+DDPG training. This results in longer training times (approximately 
+29.4 h in experiments) and imposes higher hardware demands for 
+onboard inference, posing challenges for real-time deployment on 
+resource-constrained or lightweight UAV platforms.
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+18 
+
+===== PAGE 19 =====
+H. Zhao et al.
+Table 17
+The characteristics and application scenarios of several hybrid algorithms.
+ Algorithm Dynamic response Multi-objective optimization Training efficiency Application scenario  
+ APF-RRT* Low Low N/A Static scenes  
+ GA-RRT Medium Medium N/A Dynamic scenes with regular motion 
+ B-APFDQN High High Medium Simple and irregular dynamic scene  
+ TSEB-DDPG High High Low Moderately random dynamic scene  
+ SAPO-DDPG High Dynamic Very low Highly chaotic dynamic scenes  
+Future research will focus on addressing these limitations and ex-
+panding applicability. Key directions include:
+(1) Model lightweighting and acceleration: Exploring techniques 
+like neural network pruning, quantization, or knowledge distillation, 
+or investigating alternative architectures like Spiking Neural Networks 
+(SNNs) to reduce the computational footprint of the SAPO component 
+for edge deployment. Pre-train SAPO independently, share weights 
+among group agents, or adopt course and transfer learning strategies. 
+Use more advanced reinforcement learning algorithms such as SAC and 
+Multi-agent DDPG.
+(2) Enhanced sim-to-real transfer: Developing robust transfer learn-
+ing frameworks incorporating domain randomization to minimize real 
+training time and improve generalization to unseen, highly dynamic 
+environments.
+(3) Heterogeneous swarm management: Extending the framework 
+to coordinate mixed teams of UAVs and Unmanned Ground Vehicles 
+(UGVs) with diverse dynamics and objectives, potentially leveraging 
+hierarchical reinforcement learning strategies. These efforts aim to 
+refine SAPO-DDPG for broader autonomous systems applications.
+CRediT authorship contribution statement
+Hongwei Zhao: Writing – review & editing, Methodology, For-
+mal analysis, Supervision, Project administration. Ning Yu: Writing 
+– review & editing, Writing – original draft, Validation, Software, 
+Methodology, Formal analysis, Data curation. Yanyan Zhao: Writing – 
+review & editing, Software, Formal analysis, Data curation. Juan Feng: 
+Writing – review & editing, Resources, Investigation. Yu Wang: Writing 
+– review & editing, Visualization, Data curation.
+Declaration of competing interest
+The authors declare that they have no known competing finan-
+cial interests or personal relationships that could have appeared to 
+influence the work reported in this paper.
+Acknowledgments
+We thank the reviewers for their helpful suggestions, which signif-
+icantly improved the presentation of this paper.
+This research was funded by the Fundamental Research Funds for 
+the Central Universities.
+Data availability
+Data will be made available on request.
+References
+Ajith, V.S., Jolly, K.G., 2023. Hybrid optimization based multi-objective path planning 
+framework for unmanned aerial vehicles. Cybern. Syst. 54 (8), 1397–1423. http:
+//dx.doi.org/10.1080/01969722.2022.2157607.
+Aliabad, F.A., Shojaei, S., Zare, M., Malamiri, H.G., 2024. Investigating the capability 
+of the harmonic analysis of time series (HANTS) algorithm in reconstructing time 
+series images of daytime and nighttime land surface temperature from the MODIS 
+sensor. Spat. Inf. Res. 32, 425–439. http://dx.doi.org/10.1007/s41324-023-00569-
+3.
+Bo, L., Zhang, T., Zhang, H., Hong, J., Liu, M., Zhang, C., Liu, B., 2024. 3D UAV path 
+planning in unknown environment: A transfer reinforcement learning method based 
+on low-rank adaption. Adv. Eng. Informatics 62 (4), 102920. http://dx.doi.org/10.
+1016/j.aei.2024.102920.
+Boulares, M., Fehri, A., Jemni, M., 2024. UAV path planning algorithm based on deep 
+Q-learning to search for a floating lost target in the ocean. Robot. Auton. Syst. 179 
+(1), 1–15. http://dx.doi.org/10.1016/j.ins.2024.121714.
+Fan, L., 2023. Agricultural uav crop spraying path planning based on pso-a* algorithm, 
+inmateh -. Agric. Eng. 71 (3), 625–636. http://dx.doi.org/10.35633/inmateh-71-54.
+Fan, J., Chen, X., Liang, X., 2024. ERRT-GA: Expert genetic algorithm with rapidly 
+exploring random tree initialization for multi-UAV path planning. Expert Syst. Appl. 
+8 (8), 1–26. http://dx.doi.org/10.3390/drones8080367.
+Fan, Jiaming., Chen, Xia., Wang, Yu., Chen, Xiangmin., 2022. UAV trajectory planning 
+in cluttered environments based on PF-rrt* algorithm with goal-biased strategy. 
+Eng. Appl. Artif. Intell. 114, 105182. http://dx.doi.org/10.1016/j.engappai.2022.
+105182.
+Hu, G., Huang, F., Shu, B., Wei, G., 2025. MAHACO: Multi-algorithm hybrid ant colony 
+optimizer for 3D path planning of a group of UAVs. Inform. Sci. 694 (1), 1–39.
+Hu, M., Li, X., Ren, Z., Zeng, S., 2024a. UAV 3D path planning based on a* algorithm 
+with improved heuristic function. Acta Armamentarii 45 (S1), 302–307. http:
+//dx.doi.org/10.12382/bgxb.2024.0540.
+Hu, M., Li, X., Ren, Z., Zeng, S., 2024b. UAV 3D path planning based on a* algorithm 
+with improved heuristic function. Binggong Xuebao / Acta Armamentarii 45 (1), 
+302–307. http://dx.doi.org/10.12382/bgxb.2024.0540.
+Huang, T., Fan, K., Sun, W., 2024. Density gradient-RRT: An improved rapidly exploring 
+random tree algorithm for UAV path planning. Expert Syst. Appl. 252 (2), 1–11. 
+http://dx.doi.org/10.1016/j.eswa.2024.124121.
+Insights, Fortune Business, 2023. Unmanned aerial vehicle market. https://www.
+fortunebusinessinsights.com/industry-reports/ unmanned-aerial-vehicle-uav-market-
+101603. (Accessed 22 March 2025).
+Jiang, X., Huang, B., 2023. Global path planning of fixed-wing UAV based on improved 
+rrt* algorithm. J. Appl. Sci. Eng. 26 (10), 1441–1450. http://dx.doi.org/10.6180/
+jase.202310_26(10).0009.
+Khalil, H.K., 2002. Nonlinear Systems, third ed. Prentice Hall, http://dx.doi.org/10.
+1007/978-3-319-57870-1.
+Kong, F., Wang, Q., Gao, S., Yu, H., 2023. B-APFDQN: A UAV path planning 
+algorithm based on deep Q-network and artificial potential field. IEEE Access 11, 
+44051–44064. http://dx.doi.org/10.1109/ACCESS.2023.3273164.
+Kumar, A., Wang, S., Shaikh, A.M., Bilal, H., Lu, B., Song, S., 2024. Building on 
+prior lightweight CNN model combined with LSTM-AM framework to guide fault 
+detection in fixed-wing UAVs. Int. J. Mach. Learn. Cybern. 15, 4175–4191. http:
+//dx.doi.org/10.1007/s13042-024-02141-3.
+Liu, H., Chen, J., Feng, J., Zhao, H., 2023. An improved RRT uav formation path 
+planning algorithm based on goal bias and node rejection strategy. Unmanned Syst. 
+11 (4), 317–326. http://dx.doi.org/10.1142/S2301385023500140.
+Luo, X., Wang, Q., Gong, H., Tang, C., 2024. UAV path planning based on the average 
+TD3 algorithm with prioritized experience replay. IEEE Access 12, 38017–38029. 
+http://dx.doi.org/10.1109/ACCESS.2024.3375083.
+Pang, S., Chai, Q., Liu, N., Zheng, W., 2024. A multi-objective cat swarm optimization 
+algorithm based on two-archive mechanism for UAV 3D path planning problem. 
+Appl. Soft Comput. 167 (2), 1–19. http://dx.doi.org/10.1016/j.asoc.2024.112306.
+Rao, J., Xiang, C., Xi, J., Chen, J., Lei, J., Giernacki, W., Liu, M., 2023. Path planning 
+for dual UAVs cooperative suspension transport based on artificial potential field-
+A* algorithm. Knowl.-Based Syst. 277 (2023), 1–20. http://dx.doi.org/10.1016/j.
+knosys.2023.110797.
+Saeed, R.A., Ali, E.S., Abdelhaq, M., Alsaqour, R., Ahmed, F.R.A., Saad, A.M.E., 2024. 
+Energy efficient path planning scheme for unmanned aerial vehicle using hybrid 
+generic algorithm-based Q-learning optimization. IEEE Access 12, 13400–13417. 
+http://dx.doi.org/10.1109/ACCESS.2023.3344455.
+Schaul, T., Quan, J., Antonoglou, I., Silver, D., 2016. Prioritized experience replay. In: 
+Proceedings of the International Conference on Learning Representations. ICLR, San 
+Juan, Puerto rico, http://dx.doi.org/10.48550/arXiv.1511.05952.
+Shao, M., Liu, X., Xiao, C., Zhang, T., Yuan, H., 2025. Research on UAV trajectory 
+planning algorithm based on adaptive potential field. Drones 9 (2), 79. http:
+//dx.doi.org/10.3390/drones9020079.
+Sulieman, M.H., Liu, M., Gursoy, M.C., Kong, F., 2024. Path planning for UAVs 
+under GPS permanent faults. ACM Trans. Cyber-Physical Syst. 8 (3), 1–23. http:
+//dx.doi.org/10.1145/3653074.
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+19 
+
+===== PAGE 20 =====
+H. Zhao et al.
+Tang, J., Liang, Y., Li, K., 2024a. Dynamic scene path planning of UAVs based 
+on deep reinforcement learning. Drones 8 (2), 60. http://dx.doi.org/10.3390/
+drones8020060.
+Tang, G., Xiao, T., Du, P., Zhang, P., Liu, K., Tan, L., 2024b. Improved PSO-based two-
+phase logistics UAV path planning under dynamic demand and wind conditions. 
+Drones 8 (8), 356. http://dx.doi.org/10.3390/drones8080356.
+Tian, S., Li, Y., Zhang, X., Zheng, L., Cheng, L., She, W., Xie, W., 2024. Fast UAV path 
+planning in urban environments based on three-step experience buffer sampling 
+DDPG. Digit. Commun. Netw. 10 (4), 813–826. http://dx.doi.org/10.1016/j.dcan.
+2023.02.016.
+Tu, B., Wang, F., Han, X., 2024. 3D path planning for UAV based on a hybrid algorithm 
+of marine predators algorithm with quasi-oppositional learning and differential 
+evolution. Egypt. Informatics J. 28 (1), 1–15. http://dx.doi.org/10.1016/j.eij.2024.
+100556.
+Wang, W., Ye, C., Tian, J., 2024. A 3D UAV path planning method based on multi-
+strategy improved artificial rabbit optimization algorithm. Acta Electron. Sin. 52 
+(11), 3780–3797. http://dx.doi.org/10.12263/DZXB.20230382.
+Wen, C., Dong, H., Xie, W., et al., 2023. Multi-UAVs 3D cooperative curve path 
+planning method based on CEA-GA. J. Beijing Univ. Aeronaut. Astronaut. 49 (11), 
+3086–3099. http://dx.doi.org/10.13700/j.bh.1001-5965.2021.0787.
+Xu, H., Niu, Z., Jiang, B., Zhang, Y., Chen, S., Li, Z., Gao, M., Zhu, M., 2023a. UAV 
+trajectory planning based on bi-directional APF-rrt* algorithm with goal-biased. 
+Drones 213 (1), 1–12. http://dx.doi.org/10.1016/j.eswa.2022.119137.
+Xu, Y., Wei, Y., Wang, D., Jiang, K., Deng, H., 2023b. Multi-UAV path planning in GPS 
+and communication denial environment. Sensors 23 (6), 1–15. http://dx.doi.org/
+10.3390/s23062997.
+Yu, X., Jiang, N., Wang, X., Li, M., 2023a. A hybrid algorithm based on grey wolf 
+optimizer and differential evolution for UAV path planning. Expert Syst. Appl. 215 
+(1), 1–13. http://dx.doi.org/10.1016/j.eswa.2022.119327.
+Yu, Q., Xu, Z., Duan, N., Xu, M., Cheng, Y., 2023b. Coverage operation path planning 
+of UAV with endurance constraints based on improved ACO. Acta Aeronaut. et 
+Astronaut. Sin. 44 (12), 1–13. http://dx.doi.org/10.7527/S1000-6893.2022.27856.
+Yu, N., Zhao, H., He, X., 2024. SAPO: A UAV path optimization method through 
+situation assessment. In: 2024 36th Chinese Control and Decision Conference. 
+CCDC, Xi’an, China, pp. 1161–1166. http://dx.doi.org/10.1109/CCDC62350.2024.
+10587411.
+Zhang, J., Guo, Y., Zheng, L., Yang, Q., Shi, G., 2024. Real-time UAV path planning 
+based on LSTM network. J. Syst. Eng. Electron. 35 (2), 374–385. http://dx.doi.org/
+10.23919/JSEE.2023.000157.
+Zhang, Z., Wang, S., Chen, J., Han, Y., 2023. A bionic dynamic path planning algorithm 
+of the micro UAV based on the fusion of deep neural network optimization/filter-
+ing and hawk-eye vision. IEEE TRANSACTIONS SYSTEMS, MAN, CYBERNETICS: 
+SYSTEMS 53 (6), 3728–3740. http://dx.doi.org/10.1109/TSMC.2023.3233965.
+Zhao, H., Yan, L., Hou, Z., et al., 2025. Error analysis strategy for long-term correlated 
+network systems: Generalized nonlinear stochastic processes and dual-layer filtering 
+architecture. IEEE Internet Things J. 1–14. http://dx.doi.org/10.1109/JIOT.2025.
+3578285, online.
+Zhao, X., Yang, R., Zhong, L., Hou, Z., 2024. Multi-UAV path planning and following 
+based on multi-agent reinforcement learning. Drones 8 (1), 18. http://dx.doi.org/
+10.3390/drones8010018.
+Zhong, Huageng, Du, Yu, Liu, Dong, Wang, Minghao, Cong, Ming, Tian, Xiaojing, 
+2025. A fruit fly-inspired path planning algorithm for unmanned aerial vehicle in 
+underground environments based on low-discrepancy sequences. Eng. Appl. Artif. 
+Intell. 156 (Part B), 111250. http://dx.doi.org/10.1016/j.engappai.2025.111250.
+Zhong, L., Zhao, J., Luo, H., Hou, Z., 2024. Hybrid path planning and following of 
+a quadrotor UAV based on deep reinforcement learning. In: 2024 36th Chinese 
+Control and Decision Conference. CCDC, Xi’an, China, pp. 1858–1863. http://dx.
+doi.org/10.1109/CCDC62350.2024.10587648.
+Zhou, W., Zhang, C., Tang, W., et al., 2024. A novel modified search and rescue 
+optimization algorithm based on reinforcement learning for UAV path planning. 
+Control Decis. 39 (4), 1203–1211. http://dx.doi.org/10.13195/j.kzyjc.2022.1209.
+Zhu, Y., Ye, Z., 2025. A game-theoretic cooperative path planning strategy using 
+hybrid heuristic optimization algorithm. IET Control Theory Appl. 19 (1), 1–13. 
+http://dx.doi.org/10.1049/cth2.12766.
+Engineering Applications of Artiϧcial Intelligence 165 (2026) 113518 
+20 

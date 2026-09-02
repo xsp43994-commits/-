@@ -1,0 +1,129 @@
+{
+  "fig01_study_design": {
+    "archetype": "schematic-led composite",
+    "claim": "固定巡检点路径规划的任务、地图域、评价条件和指标证据链完整闭合。",
+    "panels": {
+      "a": "两路交界机场与固定巡检点任务示意",
+      "b": "24张未见合成地图与8张真实DSM概览",
+      "c": "21,648条评价矩阵",
+      "d": "五条指标证据链"
+    },
+    "reviewer_risk": "不得把16/20/24称为未训练规模泛化，也不得把DSM仿真称为实飞。",
+    "tier": "main"
+  },
+  "fig02_integrated_score": {
+    "archetype": "asymmetric mixed-modality figure",
+    "claim": "PPO+Pointer的七维综合表现领先，但结论同时接受原始维度、bootstrap和联合敏感性检验。",
+    "panels": {
+      "a": "D1-D7",
+      "b": "100分综合得分",
+      "c": "层级bootstrap",
+      "d": "下限×权重敏感性",
+      "e": "维度贡献"
+    },
+    "reviewer_risk": "综合得分只适用于三个核心学习模型，且不能替代原始指标。",
+    "tier": "main"
+  },
+  "fig03_operational_tradeoffs": {
+    "archetype": "quantitative grid",
+    "claim": "任务覆盖、安全返航、资源消耗和在线计算代价必须联合评价。",
+    "panels": {
+      "a": "安全加权覆盖分布",
+      "b": "地图级多指标效应",
+      "c": "资源与任务时间",
+      "d": "在线规划ECDF",
+      "e": "覆盖-时间Pareto"
+    },
+    "reviewer_risk": "能耗、航程和任务时间仅对安全路线统计，必须同步显示安全率。",
+    "tier": "main"
+  },
+  "fig04_training": {
+    "archetype": "quantitative grid",
+    "claim": "PPO相对A2C的差异由收敛过程、尾段稳定性和样本效率共同刻画。",
+    "panels": {
+      "a": "五种子收敛",
+      "b": "AUC",
+      "c": "阈值效率",
+      "d": "训练稳定性",
+      "e": "PPO更新诊断"
+    },
+    "reviewer_risk": "不能用不同奖励定义的原始reward横向评价消融。",
+    "tier": "main"
+  },
+  "fig05_ablation": {
+    "archetype": "quantitative grid",
+    "claim": "四个消融在合成、真实DSM和机制特异指标上形成证据闭环。",
+    "panels": {
+      "a": "总体效应",
+      "b": "优先级",
+      "c": "资源塑形",
+      "d": "域随机化",
+      "e": "返航储备"
+    },
+    "reviewer_risk": "现有消融只能解释复合返航掩码，不能拆称单项子掩码贡献。",
+    "tier": "main"
+  },
+  "fig06_generalization_robustness_routes": {
+    "archetype": "asymmetric mixed-modality figure",
+    "claim": "未见地图、跨地区DSM和扰动条件共同检验模型的可迁移与鲁棒表现。",
+    "panels": {
+      "a": "未见合成地图",
+      "b": "真实DSM迁移",
+      "c": "扰动热力图",
+      "d": "最差表现",
+      "e": "固定代表路线"
+    },
+    "reviewer_risk": "代表路线按输入规则固定，失败或缺失不得换图。",
+    "tier": "main"
+  },
+  "figS01_audit": {
+    "archetype": "quantitative grid",
+    "claim": "数据与审计链",
+    "tier": "supplementary"
+  },
+  "figS02_scenarios": {
+    "archetype": "quantitative grid",
+    "claim": "场景分层热力图",
+    "tier": "supplementary"
+  },
+  "figS03_baselines": {
+    "archetype": "quantitative grid",
+    "claim": "完整传统基线",
+    "tier": "supplementary"
+  },
+  "figS04_training_all": {
+    "archetype": "quantitative grid",
+    "claim": "完整训练曲线",
+    "tier": "supplementary"
+  },
+  "figS05_score_sensitivity": {
+    "archetype": "quantitative grid",
+    "claim": "综合得分敏感性全集",
+    "tier": "supplementary"
+  },
+  "figS06_ablation_maps": {
+    "archetype": "quantitative grid",
+    "claim": "消融地图级全集",
+    "tier": "supplementary"
+  },
+  "figS07_robustness_failures": {
+    "archetype": "quantitative grid",
+    "claim": "鲁棒性与失败图谱",
+    "tier": "supplementary"
+  },
+  "figS08_route_atlas": {
+    "archetype": "image plate + quant",
+    "claim": "路线图集",
+    "tier": "supplementary"
+  },
+  "figV01_3d_route": {
+    "archetype": "image plate + quant",
+    "claim": "以三维DSM展示代表路线的空间含义，不承担统计证明。",
+    "tier": "showcase"
+  },
+  "figV02_outcome_flow": {
+    "archetype": "asymmetric mixed-modality figure",
+    "claim": "描述算法、覆盖水平和终止状态之间的结果流向。",
+    "tier": "showcase"
+  }
+}

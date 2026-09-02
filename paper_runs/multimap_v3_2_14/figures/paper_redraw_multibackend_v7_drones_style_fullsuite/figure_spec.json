@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-09-01T10:28:34.563933+00:00",
+  "figure": {
+    "id": "V7-FULLSUITE",
+    "export_stem": "V7-FULLSUITE",
+    "title": "v7 Drones-style full scientific figure suite",
+    "claim": "Frozen-results visualization only; no training or evaluation changes",
+    "evidence_role": "confirmatory",
+    "language": "bilingual",
+    "backend": "mixed-python-origin-matlab",
+    "backend_reason": "Evidence-appropriate backends; standardized bilingual export uses a shared style system",
+    "final_width_mm": 190.0,
+    "final_height_mm": 120.0
+  },
+  "profile": {
+    "tick_legend_pt": 7.5,
+    "axis_title_pt": 8.5,
+    "normal_min_pt": 7.0,
+    "subscript_min_pt": 6.0,
+    "name": "elsevier",
+    "chinese_font": "Microsoft YaHei or Noto Sans CJK",
+    "latin_font": "Arial or Helvetica"
+  },
+  "render": {
+    "raster_dpi_min": 600,
+    "expected_formats": [
+      "pdf",
+      "svg_or_eps",
+      "png",
+      "tiff"
+    ],
+    "allowed_color_modes": [
+      "RGB",
+      "RGBA"
+    ],
+    "physical_size_tolerance_fraction": 0.03
+  },
+  "qa_thresholds": {
+    "white_threshold": 250,
+    "margin_min_mm": 0.5,
+    "margin_target_min_mm": 1.0,
+    "margin_target_max_mm": 2.5,
+    "margin_max_mm": 4.0,
+    "content_bbox_area_min_fraction": 0.9,
+    "sparse_layout_exempt": false,
+    "sparse_layout_justification": ""
+  },
+  "provenance": {
+    "source_data": [
+      "source_data/V7-FULLSUITE_source_data.csv"
+    ],
+    "filters": {},
+    "aggregation_order": [],
+    "independent_unit": "",
+    "uncertainty": "",
+    "algorithm_order": [],
+    "representative_case": null
+  },
+  "delivery": {
+    "editable_sources": [
+      "editable/python/v3_2_14_drones_style_v7.py",
+      "editable/matlab/render_V02_v7.m"
+    ],
+    "caption": "captions/M01_caption_bilingual.md",
+    "manual_review": "qa/manual_review.json",
+    "qa_report": "qa/qa_report.json",
+    "manifest": "manifests/figure_manifest.json"
+  },
+  "legacy_snapshots": [
+    {
+      "path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_14\\figures\\paper_redraw_multibackend_v3",
+      "sha256": "5e634fe91caf5791a4aa256bc67e3ce74a472fc34334420b62550570581c8377",
+      "file_count": 240
+    },
+    {
+      "path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_14\\figures\\paper_redraw_multibackend_v4_training_corrected",
+      "sha256": "6a1fa700a7045a37da2a73af48395152d1faa44c544f54637f772b6b152b42b5",
+      "file_count": 66
+    },
+    {
+      "path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_14\\figures\\paper_redraw_multibackend_v5_m06_reference_style",
+      "sha256": "02bc87e9798eee3c05c859503dd1248b396593fdb1ff95562a889dfab73452af",
+      "file_count": 18
+    },
+    {
+      "path": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_runs\\multimap_v3_2_14\\figures\\paper_redraw_multibackend_v6_learning_curves_dual_evidence",
+      "sha256": "0d3c808d5cbf2b5fef47704712fb4fffee4509b6e433cfa03626da3ec620021f",
+      "file_count": 37
+    }
+  ]
+}

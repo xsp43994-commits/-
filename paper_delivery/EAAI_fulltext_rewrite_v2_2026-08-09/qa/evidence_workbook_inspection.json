@@ -1,0 +1,40 @@
+{
+  "reports": [
+    {
+      "sheetName": "Fact Map",
+      "previewPath": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_delivery\\EAAI_fulltext_rewrite_v2_2026-08-09\\qa\\evidence_workbook_previews\\Fact_Map.png",
+      "inspection": "{\"kind\":\"region\",\"sheet\":\"Fact Map\",\"address\":\"A4:I37\",\"rows\":34,\"cols\":9,\"nonEmpty\":306,\"text\":306,\"maxTextLength\":95,\"preview\":[[\"Fact ID\",\"Category\",\"Statement\",\"Value\",\"Unit\",\"Source\"],[\"F01\",\"frozen identity\",\"Formal result count\",\"21648\",\"routes/results rows\",\"formal_evaluation/results/final_results.jsonl\"],[\"F02\",\"protocol\",\"Confirmatory endpoint\",\"safe_weighted_coverage\",\"ratio\",\"protocol.json\"],[\"F03\",\"training\",\"Paper-eligible learning models\",\"35\",\"models\",\"protocol.json\"],[\"F04\",\"training\",\"Paper-eligible training episodes\",\"105000\",\"episodes\",\"protocol.json\"]],\"previewAddress\":\"A4:F8\",\"previewRows\":5,\"previewCols\":6}"
+    },
+    {
+      "sheetName": "Claim Map",
+      "previewPath": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_delivery\\EAAI_fulltext_rewrite_v2_2026-08-09\\qa\\evidence_workbook_previews\\Claim_Map.png",
+      "inspection": "{\"kind\":\"region\",\"sheet\":\"Claim Map\",\"address\":\"A4:F20\",\"rows\":17,\"cols\":6,\"nonEmpty\":102,\"text\":102,\"maxTextLength\":170,\"preview\":[[\"Claim ID\",\"Section\",\"Permitted claim\",\"Support\",\"Maximum strength\",\"Forbidden inference\"],[\"K01\",\"Methods\",\"The task selects a sequence of fixed, priority-labelled mountain-road inspect...\",\"F02; protocol objective and task generation\",\"definition\",\"continuous road-coverage claim\"],[\"K02\",\"Methods\",\"The principal model combines PPO with a Pointer policy and a return-aware mul...\",\"protocol claim_boundaries; implementation\",\"implemented method\",\"independent contribution of each mask component\"],[\"K03\",\"Methods\",\"Flat-MLP PPO removes Pointer, attention and node encoding while sharing the r...\",\"HANDOFF 3.2; implementation class FlatMLPActorCritic\",\"controlled architecture comparison\",\"use of excluded ppo_mlp\"],[\"K04\",\"Results\",\"PPO-Pointer and A2C-Pointer achieved nearly identical final safe weighted cov...\",\"F05; F06; F11; F12; F17; F19\",\"no detected difference\",\"equivalence or PPO coverage superiority\"]],\"previewAddress\":\"A4:F8\",\"previewRows\":5,\"previewCols\":6}"
+    },
+    {
+      "sheetName": "Evidence Matrix",
+      "previewPath": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_delivery\\EAAI_fulltext_rewrite_v2_2026-08-09\\qa\\evidence_workbook_previews\\Evidence_Matrix.png",
+      "inspection": "{\"kind\":\"region\",\"sheet\":\"Evidence Matrix\",\"address\":\"A4:I20\",\"rows\":17,\"cols\":9,\"nonEmpty\":153,\"text\":153,\"maxTextLength\":839,\"preview\":[[\"Claim ID\",\"Section\",\"Claim\",\"Support IDs\",\"Evidence class\",\"Exact source locations\"],[\"K01\",\"Methods\",\"The task selects a sequence of fixed, priority-labelled mountain-road inspect...\",\"F02; protocol objective and task generation\",\"A: frozen internal evidence\",\"F02: protocol.json (objective.confirmatory_metric)\"],[\"K02\",\"Methods\",\"The principal model combines PPO with a Pointer policy and a return-aware mul...\",\"protocol claim_boundaries; implementation\",\"A: protocol/implementation\",\"See protocol/implementation or verified D-class claim map\"],[\"K03\",\"Methods\",\"Flat-MLP PPO removes Pointer, attention and node encoding while sharing the r...\",\"HANDOFF 3.2; implementation class FlatMLPActorCritic\",\"A: protocol/implementation\",\"See protocol/implementation or verified D-class claim map\"],[\"K04\",\"Results\",\"PPO-Pointer and A2C-Pointer achieved nearly identical final safe weighted cov...\",\"F05; F06; F11; F12; F17; F19\",\"A: frozen internal evidence\",\"F05: analysis/pre_plot_statistics/algorithm_primary_summary.csv (statistical_...\"]],\"previewAddress\":\"A4:F8\",\"previewRows\":5,\"previewCols\":6}"
+    },
+    {
+      "sheetName": "Figure Storyline",
+      "previewPath": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_delivery\\EAAI_fulltext_rewrite_v2_2026-08-09\\qa\\evidence_workbook_previews\\Figure_Storyline.png",
+      "inspection": "{\"kind\":\"region\",\"sheet\":\"Figure Storyline\",\"address\":\"A4:F12\",\"rows\":9,\"cols\":6,\"nonEmpty\":54,\"text\":54,\"maxTextLength\":58,\"preview\":[[\"Unit\",\"Assets\",\"Purpose\",\"Claim IDs\",\"Placement\",\"Boundary\"],[\"U1\",\"non-generative method/evaluation schematic; M01/M02 inputs\",\"Task, method and frozen evaluation design\",\"K01-K03; K15\",\"Methods\",\"Diagram only verifiable implementation and protocol facts\"],[\"U2\",\"M01 + M03\",\"Coverage distribution and priority strata\",\"K04-K06\",\"Results 6.1\",\"Show traditional-planner advantages\"],[\"U3\",\"M02 + M04\",\"Safety/return and safe-route resource costs\",\"K05; K09\",\"Results 6.2\",\"Resource metrics conditional on safe routes\"],[\"U4\",\"M05 + S02\",\"Planning-time ECDF and quality-time trade-off\",\"K06-K07; K12\",\"Results 6.3\",\"Protocol/hardware-specific timing\"]],\"previewAddress\":\"A4:F8\",\"previewRows\":5,\"previewCols\":6}"
+    },
+    {
+      "sheetName": "Paragraph Plan",
+      "previewPath": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_delivery\\EAAI_fulltext_rewrite_v2_2026-08-09\\qa\\evidence_workbook_previews\\Paragraph_Plan.png",
+      "inspection": "{\"kind\":\"region\",\"sheet\":\"Paragraph Plan\",\"address\":\"A4:E23\",\"rows\":20,\"cols\":5,\"nonEmpty\":100,\"text\":100,\"maxTextLength\":89,\"preview\":[[\"Section\",\"Paragraphs\",\"Scientific function\",\"Claims\",\"Evidence\"],[\"3.1\",\"P01-P03\",\"Define road corridors, fixed points, priorities, depot and resource-constrain...\",\"K01\",\"protocol; method schematic\"],[\"3.2\",\"P04-P06\",\"State, action, transition and confirmatory SWC objective\",\"K01; K15\",\"F02; protocol\"],[\"4.1\",\"P07-P10\",\"Pointer encoder/decoder and PPO optimisation\",\"K02\",\"implementation; R09-R13\"],[\"4.2\",\"P11-P13\",\"Return-aware feasibility evaluation and mask\",\"K02; K09\",\"protocol; implementation\"]],\"previewAddress\":\"A4:E8\",\"previewRows\":5,\"previewCols\":5}"
+    },
+    {
+      "sheetName": "Author Queue",
+      "previewPath": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_delivery\\EAAI_fulltext_rewrite_v2_2026-08-09\\qa\\evidence_workbook_previews\\Author_Queue.png",
+      "inspection": "{\"kind\":\"region\",\"sheet\":\"Author Queue\",\"address\":\"A4:E13\",\"rows\":10,\"cols\":5,\"nonEmpty\":50,\"text\":50,\"maxTextLength\":70,\"preview\":[[\"ID\",\"Item\",\"Location\",\"Required placeholder\",\"Status\"],[\"AQ01\",\"Author names and order\",\"Title page; CRediT\",\"[AUTHOR INPUT REQUIRED: names and order]\",\"open\"],[\"AQ02\",\"Affiliations and corresponding author\",\"Title page\",\"[AUTHOR INPUT REQUIRED: affiliations, email, postal address]\",\"open\"],[\"AQ03\",\"Funding information\",\"Funding statement\",\"[AUTHOR INPUT REQUIRED: funder and grant number, or none]\",\"open\"],[\"AQ04\",\"CRediT contributions\",\"Author contributions\",\"[AUTHOR INPUT REQUIRED: role assignment]\",\"open\"]],\"previewAddress\":\"A4:E8\",\"previewRows\":5,\"previewCols\":5}"
+    },
+    {
+      "sheetName": "Gates",
+      "previewPath": "C:\\Users\\xsp\\Desktop\\DRL代码\\paper_delivery\\EAAI_fulltext_rewrite_v2_2026-08-09\\qa\\evidence_workbook_previews\\Gates.png",
+      "inspection": "{\"kind\":\"region\",\"sheet\":\"Gates\",\"address\":\"A4:D11\",\"rows\":8,\"cols\":4,\"nonEmpty\":32,\"text\":32,\"maxTextLength\":58,\"preview\":[[\"Gate\",\"Criterion\",\"Status\",\"Evidence\"],[\"Frozen identity\",\"21,648 results; ppo_mlp excluded\",\"PASS\",\"F01-F04\"],[\"Primary endpoint\",\"safe_weighted_coverage retained\",\"PASS\",\"F02\"],[\"Claim coverage\",\"16 claims mapped\",\"PASS\",\"Claim Map\"],[\"Figure story\",\"8 evidence units\",\"PASS\",\"Figure Storyline\"]],\"previewAddress\":\"A4:D8\",\"previewRows\":5,\"previewCols\":4}"
+    }
+  ],
+  "errors": "{\"kind\":\"notice\",\"message\":\"Cell search matched 0 entries.\"}"
+}

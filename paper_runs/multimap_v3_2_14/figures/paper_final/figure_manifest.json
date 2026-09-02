@@ -1,0 +1,3371 @@
+{
+  "schema": "v3.2.14-publication-split-figures-v3",
+  "backend": "Python/Matplotlib",
+  "script": {
+    "path": "v3_2_14_split_publication_figures.py",
+    "sha256": "b513cd2fa0d2f1cb7a02e2dae052634f8a39ab75e8de633b4288da8113f9a744"
+  },
+  "base_script": {
+    "path": "v3_2_14_publication_figures.py",
+    "sha256": "832997c7a42a83c5fbd01bbab12be5a4a2d4bcb4e1b9c371ed8b84760d44020e"
+  },
+  "frozen_input_audit": {
+    "passed": true,
+    "errors": [],
+    "row_count": 21648,
+    "route_count": 21648,
+    "matrix_sha256": "48a31ee9b58d41a617fff61acb6eba6a2d9a930767d7af15856f70a964686224",
+    "results_sha256": "4b620c21566c2e33c875f6bea2017b741b02a7d30d70aa50add60a6d06214a2c",
+    "synthetic_task_count": 216,
+    "real_task_count": 144,
+    "active_models": [
+      "a2c_pointer",
+      "a_star",
+      "aco",
+      "exact_pareto_dp",
+      "full",
+      "ga",
+      "milp",
+      "nearest_feasible",
+      "no_domain_randomization",
+      "no_priority_bias",
+      "no_resource_shaping",
+      "no_return_reserve",
+      "priority_resource_greedy",
+      "pso",
+      "sa",
+      "traditional_ppo"
+    ]
+  },
+  "parent_figures": [
+    "fig01_study_design",
+    "fig02_integrated_score",
+    "fig03_operational_tradeoffs",
+    "fig04_training",
+    "fig05_ablation",
+    "fig06_generalization_robustness_routes",
+    "figS01_audit",
+    "figS02_scenarios",
+    "figS03_baselines",
+    "figS04_training_all",
+    "figS05_score_sensitivity",
+    "figS06_ablation_maps",
+    "figS07_robustness_failures",
+    "figS08_route_atlas",
+    "figV01_3d_route",
+    "figV02_outcome_flow"
+  ],
+  "panel_count": 72,
+  "panels": {
+    "fig01_study_design_a": {
+      "parent": "fig01_study_design",
+      "panel": "a",
+      "title": "任务场景与安全返航约束",
+      "files": {
+        "svg": {
+          "path": "figures\\fig01_study_design_a.svg",
+          "sha256": "efb8d9f25549066090fea07d4a4c72cae69996fc923688d13b0a0c6697c3a903",
+          "bytes": 10228
+        },
+        "pdf": {
+          "path": "figures\\fig01_study_design_a.pdf",
+          "sha256": "50cf24bd3475a4efec82deada0b0627530616de0dc2cb05f26585bd19527ad51",
+          "bytes": 34179
+        },
+        "png": {
+          "path": "figures\\fig01_study_design_a.png",
+          "sha256": "58ab3b61587e3f57fc8e39eb74a0d025cf7ced66ef3791d9e6a6066b2418bcd4",
+          "bytes": 157457
+        },
+        "tiff": {
+          "path": "figures\\fig01_study_design_a.tiff",
+          "sha256": "6a8226590a37079bbb85f3b84984f3bff841f80c782dc880d5e9d3ea11907bf8",
+          "bytes": 234906
+        }
+      },
+      "caption": {
+        "path": "captions\\fig01_study_design_a.md",
+        "sha256": "5a92a75cc4ff958e37b240095e878b346e586801f350528f711364df3bac165f"
+      },
+      "source_data": {
+        "path": "source_data\\fig01_study_design_a\\source.csv",
+        "rows": 4,
+        "sha256": "872bcc8946fc3ab4e2d77c2b81150a4293555e89a71b6433edbb88cc6ae05095"
+      },
+      "pixel_size": [
+        1446,
+        1638
+      ],
+      "dpi": 600
+    },
+    "fig01_study_design_b": {
+      "parent": "fig01_study_design",
+      "panel": "b",
+      "title": "冻结地图资产概览",
+      "files": {
+        "svg": {
+          "path": "figures\\fig01_study_design_b.svg",
+          "sha256": "f39d33bbe4180b402fb9cef3666d02e4fb7030296a3350eedcba68e1277cf753",
+          "bytes": 151224
+        },
+        "pdf": {
+          "path": "figures\\fig01_study_design_b.pdf",
+          "sha256": "af5e482992ddf65e2a5fae0bff4d10a29b62d9a88a95596ed46086bb4e1c11fe",
+          "bytes": 72334
+        },
+        "png": {
+          "path": "figures\\fig01_study_design_b.png",
+          "sha256": "1b39b692516e31fcceabded566f2668b6ddeb8cb7e9398d92df159cf5e9ce9bc",
+          "bytes": 247151
+        },
+        "tiff": {
+          "path": "figures\\fig01_study_design_b.tiff",
+          "sha256": "6595b3aaf8486d5704d21f37576a3cde9172cc57da814a36103cc7455ce01e05",
+          "bytes": 2819788
+        }
+      },
+      "caption": {
+        "path": "captions\\fig01_study_design_b.md",
+        "sha256": "e42b8b679fd58378771d07e96f3e6d1519e3dd33f97cdeb4d9492c5a361441b3"
+      },
+      "source_data": {
+        "path": "source_data\\fig01_study_design_b\\source.csv",
+        "rows": 32,
+        "sha256": "a68cea423c2ff4b0655e7443417fc0ec72b5bd19e42c252f78ae41fccbfaa2c0"
+      },
+      "pixel_size": [
+        1313,
+        1674
+      ],
+      "dpi": 600
+    },
+    "fig01_study_design_c": {
+      "parent": "fig01_study_design",
+      "panel": "c",
+      "title": "正式评价矩阵",
+      "files": {
+        "svg": {
+          "path": "figures\\fig01_study_design_c.svg",
+          "sha256": "166fef2eaaa6b4af47fa5c80ec84d44c4e2dec6323d76a0219580100ab9194ee",
+          "bytes": 7759
+        },
+        "pdf": {
+          "path": "figures\\fig01_study_design_c.pdf",
+          "sha256": "24f8ed8c7d3706816aad219e095aad6210c305080c4f81ff3bf59464bffa5615",
+          "bytes": 39638
+        },
+        "png": {
+          "path": "figures\\fig01_study_design_c.png",
+          "sha256": "efc9a0eab5587df49dd30b8b6e5124916d78be5d5d185cba5a5d939a6060f869",
+          "bytes": 71087
+        },
+        "tiff": {
+          "path": "figures\\fig01_study_design_c.tiff",
+          "sha256": "4cc94e4982e6ca18eccadcfdefd677c5cd3b6db6236898c435223843f8a1539e",
+          "bytes": 241670
+        }
+      },
+      "caption": {
+        "path": "captions\\fig01_study_design_c.md",
+        "sha256": "b1888bfc3489927e709fdf486595e3601f2e769b41ea38c8efa6f2051ddfd547"
+      },
+      "source_data": {
+        "path": "source_data\\fig01_study_design_c\\source.csv",
+        "rows": 6,
+        "sha256": "51eacacc5811783c7958085a8facf16e828612a2609ed0b25854d7a6afbe619f"
+      },
+      "pixel_size": [
+        1650,
+        1248
+      ],
+      "dpi": 600
+    },
+    "fig01_study_design_d": {
+      "parent": "fig01_study_design",
+      "panel": "d",
+      "title": "五条互补证据链",
+      "files": {
+        "svg": {
+          "path": "figures\\fig01_study_design_d.svg",
+          "sha256": "4af104045e8a4e22b12a28f2b2f03ec2cb13af2b5a68b1a877bf390d5224b2af",
+          "bytes": 6667
+        },
+        "pdf": {
+          "path": "figures\\fig01_study_design_d.pdf",
+          "sha256": "66572e962da01a6fe80f41afde018852536be73fb700a45ef79875ac7c4ac1ab",
+          "bytes": 53655
+        },
+        "png": {
+          "path": "figures\\fig01_study_design_d.png",
+          "sha256": "3034aa068d171c3e2cb1ebe39caf808e8cacf48aae149ff894d0f1d068d65ae9",
+          "bytes": 135864
+        },
+        "tiff": {
+          "path": "figures\\fig01_study_design_d.tiff",
+          "sha256": "63f6328e7e4ec2065e5a86dcf4f7aba75415c003c2b9836689c998179104bf29",
+          "bytes": 210918
+        }
+      },
+      "caption": {
+        "path": "captions\\fig01_study_design_d.md",
+        "sha256": "42b2a6b1f4e0dbbe21d88ff2d87872b833effe004ecbc8b4624cccaa7f291e65"
+      },
+      "source_data": {
+        "path": "source_data\\fig01_study_design_d\\source.csv",
+        "rows": 5,
+        "sha256": "7908a1d20176bd789fd605f3b3dedb2200fb9872a420a1ce28911595e022a8b7"
+      },
+      "pixel_size": [
+        1104,
+        1338
+      ],
+      "dpi": 600
+    },
+    "fig02_integrated_score_a": {
+      "parent": "fig02_integrated_score",
+      "panel": "a",
+      "title": "七个效应维度",
+      "files": {
+        "svg": {
+          "path": "figures\\fig02_integrated_score_a.svg",
+          "sha256": "e46ad56ced2a62625d646e898d112eb8983f8a8f588c950469e5ca12902e3920",
+          "bytes": 14241
+        },
+        "pdf": {
+          "path": "figures\\fig02_integrated_score_a.pdf",
+          "sha256": "2c809f069b25b1a742e60df12c65048e51d50688dec53080ef1c49f9b47b7998",
+          "bytes": 24029
+        },
+        "png": {
+          "path": "figures\\fig02_integrated_score_a.png",
+          "sha256": "16156d2e00337ee885e7b36a39b42c62abc3405edafb8b3297db095b9a1662c9",
+          "bytes": 132388
+        },
+        "tiff": {
+          "path": "figures\\fig02_integrated_score_a.tiff",
+          "sha256": "9ec0455850a31fe30eff0f078615c87ef3eb2c94863790532b24a9685484e3e5",
+          "bytes": 509428
+        }
+      },
+      "caption": {
+        "path": "captions\\fig02_integrated_score_a.md",
+        "sha256": "02c59217118dc712f89350b63871e5465754be2a86e3fa5ebccb3336106b082b"
+      },
+      "source_data": {
+        "path": "source_data\\fig02_integrated_score_a\\source.csv",
+        "rows": 3,
+        "sha256": "434a2fbedd3786e0faab468580dbc9278948b4605707d04e0c04405dffdf4388"
+      },
+      "pixel_size": [
+        1680,
+        1602
+      ],
+      "dpi": 600
+    },
+    "fig02_integrated_score_b": {
+      "parent": "fig02_integrated_score",
+      "panel": "b",
+      "title": "100分制算术综合得分",
+      "files": {
+        "svg": {
+          "path": "figures\\fig02_integrated_score_b.svg",
+          "sha256": "af8ee1a2ea9b9415693c6faf945417ea0ac7a076f679d3242570ef45c6afe369",
+          "bytes": 8696
+        },
+        "pdf": {
+          "path": "figures\\fig02_integrated_score_b.pdf",
+          "sha256": "75062ef0af2c89af6818447002dd503f8555937954210d741e2bfdfb113e6320",
+          "bytes": 25458
+        },
+        "png": {
+          "path": "figures\\fig02_integrated_score_b.png",
+          "sha256": "a0cb84fc55be6bed02a73b3bf5fb74d2e6ab4d36f66c940e0a65fb3aaf06b09c",
+          "bytes": 66947
+        },
+        "tiff": {
+          "path": "figures\\fig02_integrated_score_b.tiff",
+          "sha256": "b0baed388aaa94a14f6cd5ac9cf710ccd3fa6a938b1e76935de4b70d4cbbb528",
+          "bytes": 117684
+        }
+      },
+      "caption": {
+        "path": "captions\\fig02_integrated_score_b.md",
+        "sha256": "0080f3e1981b795fb6fdfb042b7d11055852d3af51540f106db28a346155a6c5"
+      },
+      "source_data": {
+        "path": "source_data\\fig02_integrated_score_b\\source.csv",
+        "rows": 3,
+        "sha256": "179795b8d2201f445b3f8dab2c7bc236aefedfcdaf2d626d9e6f008617eb9f77"
+      },
+      "pixel_size": [
+        1188,
+        1698
+      ],
+      "dpi": 600
+    },
+    "fig02_integrated_score_c": {
+      "parent": "fig02_integrated_score",
+      "panel": "c",
+      "title": "PPO+Pointer相对A2C+Pointer的层级bootstrap",
+      "files": {
+        "svg": {
+          "path": "figures\\fig02_integrated_score_c.svg",
+          "sha256": "a9dd0f50e08215f8382881a9764f80f3eb3d703642ba8c15c2eaee5c068207a1",
+          "bytes": 21766
+        },
+        "pdf": {
+          "path": "figures\\fig02_integrated_score_c.pdf",
+          "sha256": "a683efdc4260bd3f514ecb84dd7116d9be2e0a24eecfc89ce206e7213518b1d6",
+          "bytes": 25258
+        },
+        "png": {
+          "path": "figures\\fig02_integrated_score_c.png",
+          "sha256": "68238b1e5774e77c54e31349456e2f3d1c574327edb8f85f17323a44e3b7ccd7",
+          "bytes": 90178
+        },
+        "tiff": {
+          "path": "figures\\fig02_integrated_score_c.tiff",
+          "sha256": "ceeffd67c463db345c17c3d63f518021adf73f59951524ca3b39c70322f1be1c",
+          "bytes": 337622
+        }
+      },
+      "caption": {
+        "path": "captions\\fig02_integrated_score_c.md",
+        "sha256": "283beaedcee0f322dac447c907baaf434a66fa744c57f50ee017c07ebe84019d"
+      },
+      "source_data": {
+        "path": "source_data\\fig02_integrated_score_c\\source.csv",
+        "rows": 10000,
+        "sha256": "19ae4d813582b33639d96de12e06ed3bdb2cf4b0ef3c035cb574904e4dfa12f0"
+      },
+      "pixel_size": [
+        1332,
+        1698
+      ],
+      "dpi": 600
+    },
+    "fig02_integrated_score_d": {
+      "parent": "fig02_integrated_score",
+      "panel": "d",
+      "title": "归一化下限×权重联合敏感性",
+      "files": {
+        "svg": {
+          "path": "figures\\fig02_integrated_score_d.svg",
+          "sha256": "866e2108eb785b898013111970ef5c6dbd881ce44c84fbb183aebde1e460759c",
+          "bytes": 15010
+        },
+        "pdf": {
+          "path": "figures\\fig02_integrated_score_d.pdf",
+          "sha256": "86df7faed14e55723f3716c1d7b073701439e6c27ee237551a69d434a7d42748",
+          "bytes": 34802
+        },
+        "png": {
+          "path": "figures\\fig02_integrated_score_d.png",
+          "sha256": "8eaae8e1c1ff33cf1b5c4e947c8f217ce2a9030a3813c147b427b103ab93cedb",
+          "bytes": 164377
+        },
+        "tiff": {
+          "path": "figures\\fig02_integrated_score_d.tiff",
+          "sha256": "a7036c4f891279558812d0436a6c1b4836b714c5ba3440f60f4004580a6a326a",
+          "bytes": 494548
+        }
+      },
+      "caption": {
+        "path": "captions\\fig02_integrated_score_d.md",
+        "sha256": "95918242e6042c644339e6fe0c1f88d9a456de252d8ab23b97e884ff006c500b"
+      },
+      "source_data": {
+        "path": "source_data\\fig02_integrated_score_d\\source.csv",
+        "rows": 25,
+        "sha256": "f52f424891b4dffc485c83aba30bc4e4efb3879c0c8739ecdb61cf9b09ddf909"
+      },
+      "pixel_size": [
+        2778,
+        1662
+      ],
+      "dpi": 600
+    },
+    "fig02_integrated_score_e": {
+      "parent": "fig02_integrated_score",
+      "panel": "e",
+      "title": "PPO相对A2C的维度贡献",
+      "files": {
+        "svg": {
+          "path": "figures\\fig02_integrated_score_e.svg",
+          "sha256": "965a7d35ec2f638f2bc4f6981febb615d236bf7dd0c844e2b69fb24d3f5478ee",
+          "bytes": 9672
+        },
+        "pdf": {
+          "path": "figures\\fig02_integrated_score_e.pdf",
+          "sha256": "6c54c01e010f0f878a65aa689a175e6d5aa92f8ca2fc19f2bf0a76bbdaa2be9a",
+          "bytes": 24346
+        },
+        "png": {
+          "path": "figures\\fig02_integrated_score_e.png",
+          "sha256": "20ab8a6a801f4d479425dc73de64b6d228a10315fe31cd59921fc8c09b5a3ddf",
+          "bytes": 64062
+        },
+        "tiff": {
+          "path": "figures\\fig02_integrated_score_e.tiff",
+          "sha256": "a60a8325aebd631eea763c0c8879a2f74064343974fa6e45100496410c6de14c",
+          "bytes": 153370
+        }
+      },
+      "caption": {
+        "path": "captions\\fig02_integrated_score_e.md",
+        "sha256": "be7dc4d6253bb714d28ca0a25c80e7275b40bf458fb4680b23091535713b23fd"
+      },
+      "source_data": {
+        "path": "source_data\\fig02_integrated_score_e\\source.csv",
+        "rows": 7,
+        "sha256": "950ba6ba2baba4b344fd69abb77f9017237b852c5b7e9c6d5a24865e5372e7c7"
+      },
+      "pixel_size": [
+        1332,
+        1488
+      ],
+      "dpi": 600
+    },
+    "fig03_operational_tradeoffs_a": {
+      "parent": "fig03_operational_tradeoffs",
+      "panel": "a",
+      "title": "合成与真实DSM的安全加权覆盖率",
+      "files": {
+        "svg": {
+          "path": "figures\\fig03_operational_tradeoffs_a.svg",
+          "sha256": "714beefce0ec5ad980daf3a5e510e34d03cd26bbabbe3e34942fd269109d6189",
+          "bytes": 130726
+        },
+        "pdf": {
+          "path": "figures\\fig03_operational_tradeoffs_a.pdf",
+          "sha256": "3cf7b5139c2cbc82d214750c339b3209dff209465253ef2ccb97e213b308253a",
+          "bytes": 63686
+        },
+        "png": {
+          "path": "figures\\fig03_operational_tradeoffs_a.png",
+          "sha256": "211fa28f1a74f549a0665730407ea7f3bcfcf51b3da128db988726b575e5a9f2",
+          "bytes": 229824
+        },
+        "tiff": {
+          "path": "figures\\fig03_operational_tradeoffs_a.tiff",
+          "sha256": "d62a70a146a1849f5014d06e20626b9869ae9caee03f7b4c2f846eb135d76759",
+          "bytes": 389282
+        }
+      },
+      "caption": {
+        "path": "captions\\fig03_operational_tradeoffs_a.md",
+        "sha256": "fa62b47a57394bbd677b98ce0acf26e641a98c3f1f69841da5545fb5ac9a1574"
+      },
+      "source_data": {
+        "path": "source_data\\fig03_operational_tradeoffs_a\\source.csv",
+        "rows": 400,
+        "sha256": "f467b073bf40a8033a49b1ef6aa48ba14c54d8b0219bbee69409bfd18978d94a"
+      },
+      "pixel_size": [
+        2778,
+        1650
+      ],
+      "dpi": 600
+    },
+    "fig03_operational_tradeoffs_b": {
+      "parent": "fig03_operational_tradeoffs",
+      "panel": "b",
+      "title": "覆盖、安全和返航的地图级效应",
+      "files": {
+        "svg": {
+          "path": "figures\\fig03_operational_tradeoffs_b.svg",
+          "sha256": "e7b61215c651291a1db4c47094b22ffc4603791fc81cd41677b13980fb513067",
+          "bytes": 16843
+        },
+        "pdf": {
+          "path": "figures\\fig03_operational_tradeoffs_b.pdf",
+          "sha256": "ec7a124d9816f466f10751769a457500fb84c0f99d1ea879ba6fe1a1d1be33e0",
+          "bytes": 32682
+        },
+        "png": {
+          "path": "figures\\fig03_operational_tradeoffs_b.png",
+          "sha256": "d9fe0a840cb44c04b03c756b57fa2dab5fa89af6d325e6c125c60b233794b88b",
+          "bytes": 185860
+        },
+        "tiff": {
+          "path": "figures\\fig03_operational_tradeoffs_b.tiff",
+          "sha256": "3d2aeb8f2f5360b04007f57785822533112ae893daa1860723537bceb74461d8",
+          "bytes": 256630
+        }
+      },
+      "caption": {
+        "path": "captions\\fig03_operational_tradeoffs_b.md",
+        "sha256": "80c21e9e46f88152207ed6c92d486c0cd80e583ffb90e3ac147a19bdf7a71efb"
+      },
+      "source_data": {
+        "path": "source_data\\fig03_operational_tradeoffs_b\\source.csv",
+        "rows": 12,
+        "sha256": "acce4a2bd0662dea39dc9606b835a097ff30d58a9744eaf18a112b056f978e7b"
+      },
+      "pixel_size": [
+        1524,
+        1619
+      ],
+      "dpi": 600
+    },
+    "fig03_operational_tradeoffs_c": {
+      "parent": "fig03_operational_tradeoffs",
+      "panel": "c",
+      "title": "安全路线的资源与总任务时间",
+      "files": {
+        "svg": {
+          "path": "figures\\fig03_operational_tradeoffs_c.svg",
+          "sha256": "8cc43086696d0fef464c6cc7ae24681e51ae414272b0b2ef0851008d52ec53ac",
+          "bytes": 13330
+        },
+        "pdf": {
+          "path": "figures\\fig03_operational_tradeoffs_c.pdf",
+          "sha256": "563634aa4e1118ca12066e79c0ffddf159fd15bcff4c147118e2da2579adb44c",
+          "bytes": 30941
+        },
+        "png": {
+          "path": "figures\\fig03_operational_tradeoffs_c.png",
+          "sha256": "c7499f9e320474bf3882b74db260cbfbf61ee96e35c5f08f920f2218cff04ce7",
+          "bytes": 85973
+        },
+        "tiff": {
+          "path": "figures\\fig03_operational_tradeoffs_c.tiff",
+          "sha256": "14be3418c67d848bac98f425975248e904ff7b7712cecb8212984036cfc8cee9",
+          "bytes": 146072
+        }
+      },
+      "caption": {
+        "path": "captions\\fig03_operational_tradeoffs_c.md",
+        "sha256": "eb373ebad320c30f2f1896ddde64d04a6afc38df241d7f74586fc67b696a101a"
+      },
+      "source_data": {
+        "path": "source_data\\fig03_operational_tradeoffs_c\\source.csv",
+        "rows": 6,
+        "sha256": "2aa3b5a84fdd2d5ef5b0ce601b7ac650d5e96b88a1369c5aa034393df3f345f4"
+      },
+      "pixel_size": [
+        1308,
+        1578
+      ],
+      "dpi": 600
+    },
+    "fig03_operational_tradeoffs_d": {
+      "parent": "fig03_operational_tradeoffs",
+      "panel": "d",
+      "title": "在线规划时间ECDF",
+      "files": {
+        "svg": {
+          "path": "figures\\fig03_operational_tradeoffs_d.svg",
+          "sha256": "f42e839ac3bbff50cc974d15636be53f84db6be8ce7d772f14154978b6dd5fe0",
+          "bytes": 39207
+        },
+        "pdf": {
+          "path": "figures\\fig03_operational_tradeoffs_d.pdf",
+          "sha256": "a96e72291c72d7b3d96082551bdac2d37a29bccf00a0289898525a9ef824505d",
+          "bytes": 41943
+        },
+        "png": {
+          "path": "figures\\fig03_operational_tradeoffs_d.png",
+          "sha256": "26df5a5f4f8c9cc41f96dbe1c8bb2e4e554e9e3701c2e836064a4a4e46e91220",
+          "bytes": 168650
+        },
+        "tiff": {
+          "path": "figures\\fig03_operational_tradeoffs_d.tiff",
+          "sha256": "5942b5ed8558ebc47a8e49cd55f14fef3187d22339209193b9caf6d85dbbdd78",
+          "bytes": 242794
+        }
+      },
+      "caption": {
+        "path": "captions\\fig03_operational_tradeoffs_d.md",
+        "sha256": "7dd1249a1a8a6810f6de561dfd9cf549ba4bbe59648bb6aeb3acf574ffff1c02"
+      },
+      "source_data": {
+        "path": "source_data\\fig03_operational_tradeoffs_d\\source.csv",
+        "rows": 8280,
+        "sha256": "ad1365e1180c0d57d84af719dcc46c6097a4528b153b8bf4a5d37b8809677b1f"
+      },
+      "pixel_size": [
+        1260,
+        1590
+      ],
+      "dpi": 600
+    },
+    "fig03_operational_tradeoffs_e": {
+      "parent": "fig03_operational_tradeoffs",
+      "panel": "e",
+      "title": "安全加权覆盖率—在线规划时间Pareto视图",
+      "files": {
+        "svg": {
+          "path": "figures\\fig03_operational_tradeoffs_e.svg",
+          "sha256": "265c8978cd63ba59d7954d49130b09c542c69bacb09d321653048f3848c02815",
+          "bytes": 20519
+        },
+        "pdf": {
+          "path": "figures\\fig03_operational_tradeoffs_e.pdf",
+          "sha256": "cd779131f83ca61e4a510d9b3fcdd15ba658c674619bec1be1d6e8dd50877c3f",
+          "bytes": 35701
+        },
+        "png": {
+          "path": "figures\\fig03_operational_tradeoffs_e.png",
+          "sha256": "c4fd6f0a5c23841a7872219c83eb1b09b2021d68f6050f54137f89199d68992c",
+          "bytes": 105009
+        },
+        "tiff": {
+          "path": "figures\\fig03_operational_tradeoffs_e.tiff",
+          "sha256": "4f263e79f3df9bcb526279653059c2d48a782cb3306610a2ac8a295c98223be8",
+          "bytes": 166454
+        }
+      },
+      "caption": {
+        "path": "captions\\fig03_operational_tradeoffs_e.md",
+        "sha256": "947d30707648e5d067cc27a55c9ab808d62232618c4b3a0651e4b2e197f87e07"
+      },
+      "source_data": {
+        "path": "source_data\\fig03_operational_tradeoffs_e\\source.csv",
+        "rows": 14,
+        "sha256": "fd78d8c12f0935777475e2bf9be8f5fb71d5bcf94d4f5c636e56e671e0e04c1d"
+      },
+      "pixel_size": [
+        1218,
+        1590
+      ],
+      "dpi": 600
+    },
+    "fig04_training_a": {
+      "parent": "fig04_training",
+      "panel": "a",
+      "title": "五种子收敛过程",
+      "files": {
+        "svg": {
+          "path": "figures\\fig04_training_a.svg",
+          "sha256": "21ee54f83c6d47a77a67d45cb6632481bfa5ffdc8e54ec41fbd81305cd8fcea2",
+          "bytes": 125677
+        },
+        "pdf": {
+          "path": "figures\\fig04_training_a.pdf",
+          "sha256": "eb3b5dd977ed7674a2a86693806c410516c7019199848dc94afd1fe4acb34e52",
+          "bytes": 73168
+        },
+        "png": {
+          "path": "figures\\fig04_training_a.png",
+          "sha256": "a40d0a8227ec9dc0905fc4cd1e75814e01880f6c5dd0dc5faf8526132b730142",
+          "bytes": 1180852
+        },
+        "tiff": {
+          "path": "figures\\fig04_training_a.tiff",
+          "sha256": "bd43358f39a4b1634fd086e5f116133b17cecf54dec927f73599cfbb14d61ba5",
+          "bytes": 1998442
+        }
+      },
+      "caption": {
+        "path": "captions\\fig04_training_a.md",
+        "sha256": "0a9b044b4e8b05854a11cb101ceb504f060534ea71053120f15396861d2bd1c1"
+      },
+      "source_data": {
+        "path": "source_data\\fig04_training_a\\source.csv",
+        "rows": 3240,
+        "sha256": "434ada2bff6acaf5c053cab21b17d77a9a88caf79b3a42e4127c44a68e4528bc"
+      },
+      "pixel_size": [
+        2880,
+        1650
+      ],
+      "dpi": 600
+    },
+    "fig04_training_b": {
+      "parent": "fig04_training",
+      "panel": "b",
+      "title": "学习曲线AUC",
+      "files": {
+        "svg": {
+          "path": "figures\\fig04_training_b.svg",
+          "sha256": "017f5917ca4b346a4657b3802053b1c2fa225422cdd87ee960db828a28beff35",
+          "bytes": 12272
+        },
+        "pdf": {
+          "path": "figures\\fig04_training_b.pdf",
+          "sha256": "d04a34ba62e200f1e9e679f0a758c32a4a7b0704da7ba1f946b21f8c7c38ba2c",
+          "bytes": 22811
+        },
+        "png": {
+          "path": "figures\\fig04_training_b.png",
+          "sha256": "67631136ce4035a8a2065968def9ad6faa3680e030cef197d7010ff85ccdb812",
+          "bytes": 92502
+        },
+        "tiff": {
+          "path": "figures\\fig04_training_b.tiff",
+          "sha256": "c7b151f0f918d2e02084db1816a0f7ac06d3d0e3453949dc09828cc95fd7e07f",
+          "bytes": 131214
+        }
+      },
+      "caption": {
+        "path": "captions\\fig04_training_b.md",
+        "sha256": "99830319a89f2d9c145e271730a8272a91e529d5078d3ef2b3c84bb36f1af2ab"
+      },
+      "source_data": {
+        "path": "source_data\\fig04_training_b\\source.csv",
+        "rows": 15,
+        "sha256": "efef519ba8c9704335c923b21ad3ff87d842c0f9a09233214f0aefa11c0148ee"
+      },
+      "pixel_size": [
+        1086,
+        1656
+      ],
+      "dpi": 600
+    },
+    "fig04_training_c": {
+      "parent": "fig04_training",
+      "panel": "c",
+      "title": "阈值样本效率",
+      "files": {
+        "svg": {
+          "path": "figures\\fig04_training_c.svg",
+          "sha256": "ffb7ce269bf799e19e7b0825c7abe0b39cd851308ddeeffaa68b1f9f6159faca",
+          "bytes": 13610
+        },
+        "pdf": {
+          "path": "figures\\fig04_training_c.pdf",
+          "sha256": "08e4e28b3a7f36421565fea330f9f8e087d9fb3717c5655286b1720fcb9a6663",
+          "bytes": 25128
+        },
+        "png": {
+          "path": "figures\\fig04_training_c.png",
+          "sha256": "39fbc72ccc7fd245a5b7debb23f72d8dbdae8ef7da0b3f42c3ef8622892902db",
+          "bytes": 88943
+        },
+        "tiff": {
+          "path": "figures\\fig04_training_c.tiff",
+          "sha256": "bbc08c874d4230593d014b549d3485586e2de979490bce8ed3c46a407cc84308",
+          "bytes": 154898
+        }
+      },
+      "caption": {
+        "path": "captions\\fig04_training_c.md",
+        "sha256": "b635b49732487925751afa760ac880976aa2d08ed485878ea7b88c9cf7ae5a84"
+      },
+      "source_data": {
+        "path": "source_data\\fig04_training_c\\source.csv",
+        "rows": 15,
+        "sha256": "a0f3840f131ab6e6d6ff798baf21716d11d52178d2c09a6ced83ac38b7d56ae2"
+      },
+      "pixel_size": [
+        1662,
+        1482
+      ],
+      "dpi": 600
+    },
+    "fig04_training_d": {
+      "parent": "fig04_training",
+      "panel": "d",
+      "title": "尾段与跨种子稳定性",
+      "files": {
+        "svg": {
+          "path": "figures\\fig04_training_d.svg",
+          "sha256": "07dd585be9cb12b0943c143c36830a807d23b60856d55fa138a447caeceaf4c9",
+          "bytes": 10296
+        },
+        "pdf": {
+          "path": "figures\\fig04_training_d.pdf",
+          "sha256": "21ad26840eb1d117b01fa508e961982eca9511ef24d5e5da31a3e788673d1786",
+          "bytes": 26940
+        },
+        "png": {
+          "path": "figures\\fig04_training_d.png",
+          "sha256": "9106e385850fedfe7e58db7b53232e9b8fd972306695a052108a2ca7be58ee65",
+          "bytes": 88757
+        },
+        "tiff": {
+          "path": "figures\\fig04_training_d.tiff",
+          "sha256": "f5d0aeb72658a6254c571a9d9f8eb1b82ab50eac956fe9792bae775526e52a23",
+          "bytes": 131188
+        }
+      },
+      "caption": {
+        "path": "captions\\fig04_training_d.md",
+        "sha256": "b787a29cf11d10984b3c0446961905899d959f952434ec9ddc36ee11c3e55c4e"
+      },
+      "source_data": {
+        "path": "source_data\\fig04_training_d\\source.csv",
+        "rows": 9,
+        "sha256": "a9eae40a8cae2b410681e08a79a05ebbcf2afa9add74aa96a34b47b215f25f60"
+      },
+      "pixel_size": [
+        1026,
+        1566
+      ],
+      "dpi": 600
+    },
+    "fig04_training_e": {
+      "parent": "fig04_training",
+      "panel": "e",
+      "title": "PPO更新诊断",
+      "files": {
+        "svg": {
+          "path": "figures\\fig04_training_e.svg",
+          "sha256": "ffbf494d30c04cc052311758c7fa92efb51fd603b258c557c03cbe4c4e6b7fad",
+          "bytes": 13386
+        },
+        "pdf": {
+          "path": "figures\\fig04_training_e.pdf",
+          "sha256": "2ba978e1e56d6915c757d806fb93ff66b5265a18949cd5a741302175d85e34dd",
+          "bytes": 27540
+        },
+        "png": {
+          "path": "figures\\fig04_training_e.png",
+          "sha256": "dddbda080b48536921ee11294da280a58db41d6c06c05d87ded4694de8f82fa2",
+          "bytes": 90570
+        },
+        "tiff": {
+          "path": "figures\\fig04_training_e.tiff",
+          "sha256": "561ff24c66fbd10f4e62ef8b429603f08fa73d33dc034c14c3c073d9949a0484",
+          "bytes": 132808
+        }
+      },
+      "caption": {
+        "path": "captions\\fig04_training_e.md",
+        "sha256": "5dc5683522ea61e9a423ee692decb1d33106f1952d1d9a9b542ebe6e618fc903"
+      },
+      "source_data": {
+        "path": "source_data\\fig04_training_e\\source.csv",
+        "rows": 30,
+        "sha256": "bef175c4ad7966dff8d343990d61fb9b6e13a0ece70c86708762422b17efd853"
+      },
+      "pixel_size": [
+        1128,
+        1560
+      ],
+      "dpi": 600
+    },
+    "fig05_ablation_a": {
+      "parent": "fig05_ablation",
+      "panel": "a",
+      "title": "四个消融的地图级总体效应",
+      "files": {
+        "svg": {
+          "path": "figures\\fig05_ablation_a.svg",
+          "sha256": "5c4693409a18cf7eb734503630222bc8eab455254ed5c6e1d0a0bc20689f49e5",
+          "bytes": 14573
+        },
+        "pdf": {
+          "path": "figures\\fig05_ablation_a.pdf",
+          "sha256": "5408064b506bde4645e0d038045c36b862ff24d413e0343e6c8ab0099c7426a4",
+          "bytes": 41384
+        },
+        "png": {
+          "path": "figures\\fig05_ablation_a.png",
+          "sha256": "a1b6daed3a15cee3a82b40f90c2860d71c877debad24d9ca7a1a4e960b9d8f0c",
+          "bytes": 159647
+        },
+        "tiff": {
+          "path": "figures\\fig05_ablation_a.tiff",
+          "sha256": "a406581f74c6c635410b04208aa69a448903adac246023cfc821e67251281b0a",
+          "bytes": 293584
+        }
+      },
+      "caption": {
+        "path": "captions\\fig05_ablation_a.md",
+        "sha256": "d970f3e1ff947f99f1f13fb7775d2933408f80c823a97e921a94612300fa01cb"
+      },
+      "source_data": {
+        "path": "source_data\\fig05_ablation_a\\source.csv",
+        "rows": 8,
+        "sha256": "5c76c42da4255c02ac9270635da045edad148c2960c9ea50144bacfa2aaa49a2"
+      },
+      "pixel_size": [
+        2952,
+        1619
+      ],
+      "dpi": 600
+    },
+    "fig05_ablation_b": {
+      "parent": "fig05_ablation",
+      "panel": "b",
+      "title": "显式优先级偏置",
+      "files": {
+        "svg": {
+          "path": "figures\\fig05_ablation_b.svg",
+          "sha256": "34a4f8a6d72225fab641f0d5163c6eedf1a780fe7c9a122f8e49814c234c9a84",
+          "bytes": 10056
+        },
+        "pdf": {
+          "path": "figures\\fig05_ablation_b.pdf",
+          "sha256": "5578efb6427bd1c8aa46fd01fa137d7a23bed5bc69d5af1363330028b17b9458",
+          "bytes": 28433
+        },
+        "png": {
+          "path": "figures\\fig05_ablation_b.png",
+          "sha256": "18470c57d90550d3a01ccba23f1bdc019b4e225dfb8a69d68a825c9fb9066af4",
+          "bytes": 51706
+        },
+        "tiff": {
+          "path": "figures\\fig05_ablation_b.tiff",
+          "sha256": "933b0fb9ac438597996d0728a5754a5411b2b4149a3c5d319c4d36bad596e23c",
+          "bytes": 103550
+        }
+      },
+      "caption": {
+        "path": "captions\\fig05_ablation_b.md",
+        "sha256": "69a79fc857dfdf3e955fa213e46b18df876e7419524fbc2d34be278ef2f152b7"
+      },
+      "source_data": {
+        "path": "source_data\\fig05_ablation_b\\source.csv",
+        "rows": 2,
+        "sha256": "b81b8406b334d03397462b463e2b0d3847b64d82af02289d23be1f1e41114fa2"
+      },
+      "pixel_size": [
+        1050,
+        1614
+      ],
+      "dpi": 600
+    },
+    "fig05_ablation_c": {
+      "parent": "fig05_ablation",
+      "panel": "c",
+      "title": "资源塑形与瓶颈类型",
+      "files": {
+        "svg": {
+          "path": "figures\\fig05_ablation_c.svg",
+          "sha256": "767318a3e3ecff19d1a83326d3cdbf2d24c87bbb0fd625c7b6be637a4046034e",
+          "bytes": 10109
+        },
+        "pdf": {
+          "path": "figures\\fig05_ablation_c.pdf",
+          "sha256": "c8792c5112c2300b5c76595f09e92735a0bb23ba3fad48d0ed208e9035193138",
+          "bytes": 31861
+        },
+        "png": {
+          "path": "figures\\fig05_ablation_c.png",
+          "sha256": "8b440b87d0236befa66ca45ad3cb1294eb2e23d095c3a32cc587cf301b313b00",
+          "bytes": 140434
+        },
+        "tiff": {
+          "path": "figures\\fig05_ablation_c.tiff",
+          "sha256": "948740ae7fafcb7447bc0b255f2a3d1bfb6e11755af21f1c3cb5a2c8f5ab5799",
+          "bytes": 193544
+        }
+      },
+      "caption": {
+        "path": "captions\\fig05_ablation_c.md",
+        "sha256": "a2d27e3865423ba6c8f128bc2585e85b533eb427e8e52ca35d7b4434e61fa757"
+      },
+      "source_data": {
+        "path": "source_data\\fig05_ablation_c\\source.csv",
+        "rows": 8,
+        "sha256": "4333939862209c79931978e8c9e243edd2ffe7d83d323443d4feb4db30ffa15d"
+      },
+      "pixel_size": [
+        1302,
+        1481
+      ],
+      "dpi": 600
+    },
+    "fig05_ablation_d": {
+      "parent": "fig05_ablation",
+      "panel": "d",
+      "title": "域随机化与扰动退化",
+      "files": {
+        "svg": {
+          "path": "figures\\fig05_ablation_d.svg",
+          "sha256": "c3bf5103dd7d2b263b0ba8170094218e7c060f12faf7db111805274966cfbf6d",
+          "bytes": 11350
+        },
+        "pdf": {
+          "path": "figures\\fig05_ablation_d.pdf",
+          "sha256": "c0966776f096996e603c73e8af5b349453457b4dfa4b50d71c19bf5fd81733b1",
+          "bytes": 29715
+        },
+        "png": {
+          "path": "figures\\fig05_ablation_d.png",
+          "sha256": "30e1785a73c73125d47e834d4a7f356e964ed143c69fac982d67eef620a8f82e",
+          "bytes": 93453
+        },
+        "tiff": {
+          "path": "figures\\fig05_ablation_d.tiff",
+          "sha256": "08757881a221911b39ff6fb58d237f9978bb868b6b056b42355fadda3e1d916a",
+          "bytes": 165132
+        }
+      },
+      "caption": {
+        "path": "captions\\fig05_ablation_d.md",
+        "sha256": "dbd6ca826b57598cd32f2edae6c519922a0cdc985bffb15f9009ccd3cabfae3e"
+      },
+      "source_data": {
+        "path": "source_data\\fig05_ablation_d\\source.csv",
+        "rows": 12,
+        "sha256": "cfa5588d9f3a7daa411ae0c2d9af01b63fd6f58f78bc5baccf7ec3fc70808e58"
+      },
+      "pixel_size": [
+        1320,
+        1464
+      ],
+      "dpi": 600
+    },
+    "fig05_ablation_e": {
+      "parent": "fig05_ablation",
+      "panel": "e",
+      "title": "返航储备的仿真安全效应",
+      "files": {
+        "svg": {
+          "path": "figures\\fig05_ablation_e.svg",
+          "sha256": "a8094475bffdf1f5da8443b175f8546ec35339c455e5f1642cf5fafa36718d75",
+          "bytes": 9774
+        },
+        "pdf": {
+          "path": "figures\\fig05_ablation_e.pdf",
+          "sha256": "c4461eea866fcadf43bd0b0ab6839de582f9ba21ad95132a20bd5c40e15b5bf5",
+          "bytes": 30994
+        },
+        "png": {
+          "path": "figures\\fig05_ablation_e.png",
+          "sha256": "a1f32ad2fa425bdb33e7990482791bfcee58c6ad7ec532840ecfaef4c56828f6",
+          "bytes": 92867
+        },
+        "tiff": {
+          "path": "figures\\fig05_ablation_e.tiff",
+          "sha256": "02256e250785009ba65ca6b78708cccef502d2f8b7e9a7406d6d94d7aa63414f",
+          "bytes": 137054
+        }
+      },
+      "caption": {
+        "path": "captions\\fig05_ablation_e.md",
+        "sha256": "a440285d21f9776f2c2ceb4d04ad0ae975361f358fb33a655bd41e06a1127619"
+      },
+      "source_data": {
+        "path": "source_data\\fig05_ablation_e\\source.csv",
+        "rows": 2,
+        "sha256": "1b990d456d27fb6d17f741df1a9b865d84db3d0c0aa9015e33a809cc19c6fa53"
+      },
+      "pixel_size": [
+        1170,
+        1536
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_a": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "a",
+      "title": "24张未见合成地图的程序化泛化",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_a.svg",
+          "sha256": "afbc3a616286cc8cef43a034ed3d5b118dfef012ac43e14ec26729ec4d314741",
+          "bytes": 36097
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_a.pdf",
+          "sha256": "bc7e5603653cf4e80763a7d7e879e65faa9f5b5c0f70b13c1966a1a36eb4bc58",
+          "bytes": 31725
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_a.png",
+          "sha256": "903488cee66bb8d78c192869c63f848cc3f25c3f36bb0db9621c5b8c441ea7fe",
+          "bytes": 106754
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_a.tiff",
+          "sha256": "d046335584fb27ca9da93706dd9b76337f63ae139e162a3303653bb3ed40568b",
+          "bytes": 152762
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_a.md",
+        "sha256": "9c7358e488f962c06c335f4e0c602bea93a8e6574a5556763a0371c2fb10f479"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_a\\source.csv",
+        "rows": 72,
+        "sha256": "3838119bb4e8eabd165925f21f7b1e49d39b28d13d88721a0a33ca3f247fa845"
+      },
+      "pixel_size": [
+        1056,
+        1554
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_b": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "b",
+      "title": "8张真实DSM的零样本仿真迁移",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_b.svg",
+          "sha256": "4ee2194f464fdb0340419a9b991029c7de41924acb5429c5bee42900430e7b29",
+          "bytes": 28573
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_b.pdf",
+          "sha256": "a3993e067bde9124acef5f66914312780519b3f3714e36a579ae80db2bff18da",
+          "bytes": 32364
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_b.png",
+          "sha256": "acbec8cf68944124372ebef57ea0b26628365cceea6d58f68c06eb55614c3673",
+          "bytes": 92916
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_b.tiff",
+          "sha256": "40ff5982d1fb89aadd73dace4aa16f9016991d5ee4d8015e5e60b23c352a680e",
+          "bytes": 132638
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_b.md",
+        "sha256": "b8f878b2318ed355f10183fb536d45257e983a0380b36ade9bfdf20640fe5031"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_b\\source.csv",
+        "rows": 24,
+        "sha256": "3458472af438abcfdb8f2c0145ce37d201ac08f727651f2fc9856a6a71aaa802"
+      },
+      "pixel_size": [
+        1056,
+        1547
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_c": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "c",
+      "title": "风、功率、DEM与定位误差的退化热力图",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_c.svg",
+          "sha256": "4f6821ecbef27db33f79707797b6811b1cb736bcea279030b901a681ee58bd25",
+          "bytes": 9709
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_c.pdf",
+          "sha256": "b333a23d030e8e3f4f4e8758739f1c6c9cdeca6efec8dcce3d9daa62a65f8695",
+          "bytes": 29500
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_c.png",
+          "sha256": "b94e4dc8e59e0bfc98b5b7adb9df05e6d0414b343d45d32e6acceb434388cdc6",
+          "bytes": 132377
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_c.tiff",
+          "sha256": "fba9621d7cb047fb8702f70af39b2122903155b3cdf633fc4c22c22478cfee27",
+          "bytes": 284300
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_c.md",
+        "sha256": "bef90ba67672005df56db90d988b129ff1dc2558e8f2bde4b4bfa34794276bf1"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_c\\source.csv",
+        "rows": 28,
+        "sha256": "0a543ebe37bf8c4147ad860aceaa11a1d5e4f83a590a224c8efed7b43c5a25fa"
+      },
+      "pixel_size": [
+        1151,
+        1482
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_d": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "d",
+      "title": "跨扰动保持率与地图一致性",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_d.svg",
+          "sha256": "f6b02fe6726f3c28ce38a08b6435e53ac6443b795e037d071df08c0f80ddc72a",
+          "bytes": 10068
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_d.pdf",
+          "sha256": "18b14f0246a1b0d6357c1457f20d074b41563c514b190c3ca94e3df303923415",
+          "bytes": 28700
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_d.png",
+          "sha256": "edf0394b1ab37727be5c0d05bb153832f939f6e9cfa4607af060f9e7d55a08ad",
+          "bytes": 84697
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_d.tiff",
+          "sha256": "9a57a37882f884360889afb25bdd0f9e945cf9cdf3e9c0fdac1519788bbabfd7",
+          "bytes": 124546
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_d.md",
+        "sha256": "53ba048572704415f4e244056b5434efad08cd5e18cf04a21a7f7c63b0aba533"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_d\\source.csv",
+        "rows": 3,
+        "sha256": "89d3dac7bb241cd4cd2cf923127dd2baab05d5225a3c64dcc286c5a7dacb37b5"
+      },
+      "pixel_size": [
+        1020,
+        1554
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_e1": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "e1",
+      "title": "未见合成任务：PPO+Pointer",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_e1.svg",
+          "sha256": "0ba61284cbd65d66a8dc45b979bfe2207f6a5e4378496f0ad031ba96c08de0ad",
+          "bytes": 39844
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_e1.pdf",
+          "sha256": "4ad37e2986f2c89191a1f672d0e8261438f94c7b6c6deb355b2f942eb18705b9",
+          "bytes": 35401
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_e1.png",
+          "sha256": "0b0a3ca787574b7dae3e3cb131c4f05f98821442bb64ffc541e2daeb612e6ba3",
+          "bytes": 323060
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_e1.tiff",
+          "sha256": "32182eb996a2902ab9b9a9f410d02cd348559be5af204b627971898901015bfd",
+          "bytes": 779212
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_e1.md",
+        "sha256": "9cc89282ad0ec36394cc27ea8a1acf72640961f2886e38fb8aefdb6e97a5e707"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_e1\\source.csv",
+        "rows": 1,
+        "sha256": "05780e9cf8f44495726645452dcbd06dc9bd1524703655a36c6b3d90bc4972db"
+      },
+      "pixel_size": [
+        936,
+        671
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_e2": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "e2",
+      "title": "未见合成任务：A2C+Pointer",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_e2.svg",
+          "sha256": "3898c40d15d550afb322c141b29495142c8226815b9b8154f6742be143ff457d",
+          "bytes": 39587
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_e2.pdf",
+          "sha256": "c0eeef483cfe9f882e82470bfaaf0343053a20703ca20805d02b2682723293ec",
+          "bytes": 34159
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_e2.png",
+          "sha256": "2eb04ecec7782dfd564b9dc8824327e0cf567ad99a7f719e9ca04009801b6ccb",
+          "bytes": 314036
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_e2.tiff",
+          "sha256": "71dbc8b36968b0fc406489815b1ed3b2411a1a3adb976a9ee07989949c100899",
+          "bytes": 757048
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_e2.md",
+        "sha256": "fbc6f2692d2353b1e59b9b6ee7bdd6ac5aa2380f9d836d5d08777ecfd510ae04"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_e2\\source.csv",
+        "rows": 1,
+        "sha256": "70a61473d26d85561742e26a77e95e8d6a31537f447bd37b1a39f05d99d500ef"
+      },
+      "pixel_size": [
+        845,
+        671
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_e3": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "e3",
+      "title": "未见合成任务：传统PPO",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_e3.svg",
+          "sha256": "df40e7922b987b5c4c6857c483df5dd1c2dc4ec3351b055bc256e11eab5d7c31",
+          "bytes": 39462
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_e3.pdf",
+          "sha256": "0f36635baac5b7b1e4d09365c7dfeca5d128d410016db6f893aa680c9c89a742",
+          "bytes": 33943
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_e3.png",
+          "sha256": "cd62b399a00b20d87b370bb051c3479c6f2a13cdb0f563bbd8693de4a240bb8a",
+          "bytes": 316176
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_e3.tiff",
+          "sha256": "ecca444297f7c4c805cd0f7796986dcd2edc2246b7b74fd2391515c15b31e8eb",
+          "bytes": 758490
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_e3.md",
+        "sha256": "b2679c8bb92358f95df515b15fc2cd174bdb8bdfa865f90126a14ee6d5f379b8"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_e3\\source.csv",
+        "rows": 1,
+        "sha256": "e4c7f2f48f261c7dee055a1b1a0cf1b50cb3f439064326dc652bd7c72590f118"
+      },
+      "pixel_size": [
+        845,
+        665
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_e4": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "e4",
+      "title": "未见合成任务：MILP",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_e4.svg",
+          "sha256": "eaa2a104473e382545e2effdf91f730eb79b001322440739fe934f7464966553",
+          "bytes": 38772
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_e4.pdf",
+          "sha256": "c22ae8a54d6ac8ae2c469e4aa797cb1eecf3e7b8b516bd88f8ee1ed773bb4094",
+          "bytes": 32775
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_e4.png",
+          "sha256": "afd3ae99da8d4ba7ca4eb3ac48d1990f1b499580ff64631f5aab9cc7ff9d8729",
+          "bytes": 311018
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_e4.tiff",
+          "sha256": "427585ba2786c751caedcddb414c7127594d5573f7ab92a4d85ff4cd0627a291",
+          "bytes": 755600
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_e4.md",
+        "sha256": "f845807dedecde3acd42f78790336a6f76d8b563d6589430c3befcdc7f8c9ae9"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_e4\\source.csv",
+        "rows": 1,
+        "sha256": "37d357be78b78239ef8558fdaa67c473a8e616fb1713cb447b7f8af54163517d"
+      },
+      "pixel_size": [
+        846,
+        665
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_f1": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "f1",
+      "title": "真实DSM任务：PPO+Pointer",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_f1.svg",
+          "sha256": "33d738f9d203f002b3105508f6a7d2b94f62ef62627b7da130842cae25ff5a16",
+          "bytes": 17402
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_f1.pdf",
+          "sha256": "0da8f4897873c53e1b118a245d87fee18941398bc0ee2f3c20efea3abcb18ef6",
+          "bytes": 27058
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_f1.png",
+          "sha256": "566bd67c663f0470aaaf763e77904d34e5d5cbbb91d56ffd87416e33c6941bf9",
+          "bytes": 115171
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_f1.tiff",
+          "sha256": "227d4aed2e360dff7d808b1da2c90fa3b58ed783a73d52852def9fb8764a7b1d",
+          "bytes": 225058
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_f1.md",
+        "sha256": "ea57808c53499f26723f14fa7d4d1762fc401803fdbffc8ba733b9377a7044b1"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_f1\\source.csv",
+        "rows": 1,
+        "sha256": "ab6e633797b9ac61168f32a4785cb6e35a8268d1f7742ba7f9dc10c4b16b737a"
+      },
+      "pixel_size": [
+        936,
+        402
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_f2": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "f2",
+      "title": "真实DSM任务：A2C+Pointer",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_f2.svg",
+          "sha256": "b139c730d3d1b1433e486f37459eb61d626de490bd216c69aabe976d0d0fb7b3",
+          "bytes": 17201
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_f2.pdf",
+          "sha256": "a11f74d4df7c858a7d34a5f87a42640e3f07adcdd9414de10ce3a9ada8df5bf4",
+          "bytes": 25875
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_f2.png",
+          "sha256": "e7d6e47da0e6f33203d31f4dddca8683680cc16a89c53423694ac882a9dfcb2f",
+          "bytes": 109419
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_f2.tiff",
+          "sha256": "1e91ee2680b597bb887d12d42083947120b67000807fed90b2617fdada62aa28",
+          "bytes": 210278
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_f2.md",
+        "sha256": "720efe6bdf73d8498447db240bd395147b59733f2e4fe39fbe108434f03c8892"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_f2\\source.csv",
+        "rows": 1,
+        "sha256": "58610070eabd8402947f5db6a494f5ecaac150cc7a1164c444bc26b09fe3aa07"
+      },
+      "pixel_size": [
+        845,
+        402
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_f3": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "f3",
+      "title": "真实DSM任务：传统PPO",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_f3.svg",
+          "sha256": "4b601597cd57568d9e621447857ba510a16959fb9bf1f413a396f71550fd6119",
+          "bytes": 17057
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_f3.pdf",
+          "sha256": "d99b9c1f06694684a4b7c3ab8ee42635d86b7437b2f5db937e2ba7f48bd73011",
+          "bytes": 25662
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_f3.png",
+          "sha256": "0740305dd674f70bc6f777981049f4e3d258f6e8a9ba68db3573c2d05d737432",
+          "bytes": 112326
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_f3.tiff",
+          "sha256": "65fb288d7532cbffb94d26a620bb372256ada86c914ba89bc67c5573610a6de3",
+          "bytes": 214768
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_f3.md",
+        "sha256": "4ff334d03c679ac8ecebdea687e135fd07e69a0195cb79f9e892c5b307677a31"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_f3\\source.csv",
+        "rows": 1,
+        "sha256": "9d078a5d27a5e7a1aa2374f5b650d377df6670fe24863af54e79978c50094765"
+      },
+      "pixel_size": [
+        845,
+        402
+      ],
+      "dpi": 600
+    },
+    "fig06_generalization_robustness_routes_f4": {
+      "parent": "fig06_generalization_robustness_routes",
+      "panel": "f4",
+      "title": "真实DSM任务：MILP",
+      "files": {
+        "svg": {
+          "path": "figures\\fig06_generalization_robustness_routes_f4.svg",
+          "sha256": "2a1d2a984b40e6f08fcaa0dda431fa1ccbcc2ff5dd0d776fa403523985e0adc3",
+          "bytes": 16424
+        },
+        "pdf": {
+          "path": "figures\\fig06_generalization_robustness_routes_f4.pdf",
+          "sha256": "a51287a7ca57cd8ad8a7a6eedbd3790a8a39aab621f3d192562c5cd0f642e416",
+          "bytes": 24511
+        },
+        "png": {
+          "path": "figures\\fig06_generalization_robustness_routes_f4.png",
+          "sha256": "d80b5b4183d9261e6aa2aaa655957d3232c904771fb4b3669a4a8bf583d62f5b",
+          "bytes": 97270
+        },
+        "tiff": {
+          "path": "figures\\fig06_generalization_robustness_routes_f4.tiff",
+          "sha256": "152d3522e54a0211f33728cb4d24bb1dce50fe09299bd853733fc6f722f7465d",
+          "bytes": 189374
+        }
+      },
+      "caption": {
+        "path": "captions\\fig06_generalization_robustness_routes_f4.md",
+        "sha256": "87bb539d970bb03d48dbc7db6814fa7b8cbe48d1edadd66cbf7d2ddf4ac19b2f"
+      },
+      "source_data": {
+        "path": "source_data\\fig06_generalization_robustness_routes_f4\\source.csv",
+        "rows": 1,
+        "sha256": "b3b0a1e51b083152b5dbfd3ee7e4228c5ea1a6b026d3ea29d0fd8a94ada78477"
+      },
+      "pixel_size": [
+        846,
+        396
+      ],
+      "dpi": 600
+    },
+    "figS01_audit_a": {
+      "parent": "figS01_audit",
+      "panel": "a",
+      "title": "评价家族完整性",
+      "files": {
+        "svg": {
+          "path": "figures\\figS01_audit_a.svg",
+          "sha256": "514aba83ac9e7500aac03d48461b4a7676a0fa2abff03ded192574a5f515d6ce",
+          "bytes": 11816
+        },
+        "pdf": {
+          "path": "figures\\figS01_audit_a.pdf",
+          "sha256": "668fcbcb60f0100d10ae0d0141699f18e74c737ca36c6fe26aac3d62d1043760",
+          "bytes": 23043
+        },
+        "png": {
+          "path": "figures\\figS01_audit_a.png",
+          "sha256": "f364b912e5c00f82b343a04e96c6704811028bcd95bed4c8ad7234c4dabaf21c",
+          "bytes": 107330
+        },
+        "tiff": {
+          "path": "figures\\figS01_audit_a.tiff",
+          "sha256": "04288d5f18ba5f7782afd4e3c4dd37810c9397cbcf8d3e8a35eca79fa3d045c4",
+          "bytes": 251782
+        }
+      },
+      "caption": {
+        "path": "captions\\figS01_audit_a.md",
+        "sha256": "78292d4f49cc0d319146acd52c7d0131659eb102b79df8a2b7c13b71a005f6a4"
+      },
+      "source_data": {
+        "path": "source_data\\figS01_audit_a\\source.csv",
+        "rows": 7,
+        "sha256": "b389f486858c126565bc9d43fe1e3ac177c4be092cd7182b34c73b304c445eec"
+      },
+      "pixel_size": [
+        1980,
+        1638
+      ],
+      "dpi": 600
+    },
+    "figS01_audit_b": {
+      "parent": "figS01_audit",
+      "panel": "b",
+      "title": "算法×评价家族行数",
+      "files": {
+        "svg": {
+          "path": "figures\\figS01_audit_b.svg",
+          "sha256": "3131e9a17b76c54e1ee194fb1cd33b38b1445c849b80a2b0b56153bbb6aaea3c",
+          "bytes": 36112
+        },
+        "pdf": {
+          "path": "figures\\figS01_audit_b.pdf",
+          "sha256": "cd5ff63c736b67994f8820a51ad53aab17ef1e16cbc94cadd7f3c29b38db3840",
+          "bytes": 38760
+        },
+        "png": {
+          "path": "figures\\figS01_audit_b.png",
+          "sha256": "578d77dc62650a26ddba7faf7b0010af55ba93536e47bccb4cebc9668f15989d",
+          "bytes": 315292
+        },
+        "tiff": {
+          "path": "figures\\figS01_audit_b.tiff",
+          "sha256": "75d649d79e2661d9817ebaaf65f47b644aee6f94b6fb96d354ae1efae9e0f99f",
+          "bytes": 620436
+        }
+      },
+      "caption": {
+        "path": "captions\\figS01_audit_b.md",
+        "sha256": "a032d2d5431242b2d71857cb9447c1a1bba2cd335669d369b746d47c556f6649"
+      },
+      "source_data": {
+        "path": "source_data\\figS01_audit_b\\source.csv",
+        "rows": 38,
+        "sha256": "7e687eecb177851b80238b92997c2f62b50c8f0584927160d6b61dd3a5da5fad"
+      },
+      "pixel_size": [
+        1974,
+        1776
+      ],
+      "dpi": 600
+    },
+    "figS01_audit_c": {
+      "parent": "figS01_audit",
+      "panel": "c",
+      "title": "嵌套结构与独立单位",
+      "files": {
+        "svg": {
+          "path": "figures\\figS01_audit_c.svg",
+          "sha256": "1df25a8a3daa5d16573a5ea3c8b428567c6aa96cb2b05c0fd9d5772419b66c2e",
+          "bytes": 8637
+        },
+        "pdf": {
+          "path": "figures\\figS01_audit_c.pdf",
+          "sha256": "3924ec0a31bf760a121b33d474a6e325f21da9d16bdf34b4a61353f96f9e4f00",
+          "bytes": 31478
+        },
+        "png": {
+          "path": "figures\\figS01_audit_c.png",
+          "sha256": "2964e394b3e3462cf0183d94f27babd7aadd3d8e27cedd7ecc5daa9aa26a3cab",
+          "bytes": 88540
+        },
+        "tiff": {
+          "path": "figures\\figS01_audit_c.tiff",
+          "sha256": "bc5ad45d83aa038a0a9f93dfd4cb59b4b8f988397203bc37fad769f5093ed991",
+          "bytes": 216300
+        }
+      },
+      "caption": {
+        "path": "captions\\figS01_audit_c.md",
+        "sha256": "c154d0a0590e5fb2cfd148e2b879cc74bf09525e40bb1e980aa169d86297b0b2"
+      },
+      "source_data": {
+        "path": "source_data\\figS01_audit_c\\source.csv",
+        "rows": 6,
+        "sha256": "b6f33404eb02d2931bba8e66be612f679e812723d15e155d54f320ae0523590a"
+      },
+      "pixel_size": [
+        1950,
+        1650
+      ],
+      "dpi": 600
+    },
+    "figS01_audit_d": {
+      "parent": "figS01_audit",
+      "panel": "d",
+      "title": "冻结哈希与审计状态",
+      "files": {
+        "svg": {
+          "path": "figures\\figS01_audit_d.svg",
+          "sha256": "7ba1351fe9c93c00653ad71593e74b892c0945fc20f445d328ef1938213fe8e3",
+          "bytes": 5572
+        },
+        "pdf": {
+          "path": "figures\\figS01_audit_d.pdf",
+          "sha256": "a81651ab88f2c49d43434c3d11c89bbfae45224bfab46c2fa76e4d36f0d200f9",
+          "bytes": 34458
+        },
+        "png": {
+          "path": "figures\\figS01_audit_d.png",
+          "sha256": "27f9d804fd68139f4c538e57954ceda3f273f3983bd4c07af6685b459d5dd039",
+          "bytes": 110524
+        },
+        "tiff": {
+          "path": "figures\\figS01_audit_d.tiff",
+          "sha256": "a84f4b71852960843b356bba264ad11318352ce7cf019cbc4ac0b3406cbf4539",
+          "bytes": 153060
+        }
+      },
+      "caption": {
+        "path": "captions\\figS01_audit_d.md",
+        "sha256": "069e67fdbd4af80de2a92b7967b3ea51f0e2cc5c270f3036a860b80640a6e2a3"
+      },
+      "source_data": {
+        "path": "source_data\\figS01_audit_d\\source.csv",
+        "rows": 6,
+        "sha256": "aa8fb65fde8b9b282869fef304f8e337f3634135cbd2e96de1237eb6f5ae159c"
+      },
+      "pixel_size": [
+        1181,
+        1260
+      ],
+      "dpi": 600
+    },
+    "figS02_scenarios_a": {
+      "parent": "figS02_scenarios",
+      "panel": "a",
+      "title": "节点规模（训练范围内）",
+      "files": {
+        "svg": {
+          "path": "figures\\figS02_scenarios_a.svg",
+          "sha256": "bc9409072058c7cb438e2151530a66c3064179dacf5c326a911588080c852984",
+          "bytes": 10670
+        },
+        "pdf": {
+          "path": "figures\\figS02_scenarios_a.pdf",
+          "sha256": "aa961d59ac0ba3d5a667610053b88ed68da560df4180cee0868c37db986b1d29",
+          "bytes": 32700
+        },
+        "png": {
+          "path": "figures\\figS02_scenarios_a.png",
+          "sha256": "4d59f48250f65722a525280f419c5a11b89468807bb038c8e5cf170b0a69a361",
+          "bytes": 129646
+        },
+        "tiff": {
+          "path": "figures\\figS02_scenarios_a.tiff",
+          "sha256": "b897a396110da1d22d1c0dd4ff158aa9dbf05da38a712ee575eaa5864fcc7015",
+          "bytes": 371186
+        }
+      },
+      "caption": {
+        "path": "captions\\figS02_scenarios_a.md",
+        "sha256": "7bdea4f24c0566c397501ea0c2d8de62bda8c3edd84506fbd5154afc0e72787b"
+      },
+      "source_data": {
+        "path": "source_data\\figS02_scenarios_a\\source.csv",
+        "rows": 75,
+        "sha256": "5eeea6318e0e570520a2cee3e6cfcd3b0ca84c9ca6296f5a115b78b9f27c47a1"
+      },
+      "pixel_size": [
+        1836,
+        1482
+      ],
+      "dpi": 600
+    },
+    "figS02_scenarios_b": {
+      "parent": "figS02_scenarios",
+      "panel": "b",
+      "title": "认证难度",
+      "files": {
+        "svg": {
+          "path": "figures\\figS02_scenarios_b.svg",
+          "sha256": "c0439fe81d2d07c8a10dc17216d3aaad004ff5df3fc31242b7929db343e74a07",
+          "bytes": 15469
+        },
+        "pdf": {
+          "path": "figures\\figS02_scenarios_b.pdf",
+          "sha256": "ccf8e7e5c89a5b08cfbecff40492ddf3615e71be31601c5be9d932545b607237",
+          "bytes": 36183
+        },
+        "png": {
+          "path": "figures\\figS02_scenarios_b.png",
+          "sha256": "0ea217c61a46220414ef0695e586c24d92e9e05a614aa3a0b54ce39b65e0117a",
+          "bytes": 181475
+        },
+        "tiff": {
+          "path": "figures\\figS02_scenarios_b.tiff",
+          "sha256": "ed2e3ee09bf58a159507a6fc4eed672f476ab73c9951ce49a91ee29890601c92",
+          "bytes": 467312
+        }
+      },
+      "caption": {
+        "path": "captions\\figS02_scenarios_b.md",
+        "sha256": "80ac77a4b57fbc52992854830db12dea6e925473ec3a2dcc39b1aa1ab96e382b"
+      },
+      "source_data": {
+        "path": "source_data\\figS02_scenarios_b\\source.csv",
+        "rows": 75,
+        "sha256": "e50e6b215da17f1c5e29e1fdfca73c12b516293300c45d9f339bf8a521adec77"
+      },
+      "pixel_size": [
+        2022,
+        1560
+      ],
+      "dpi": 600
+    },
+    "figS02_scenarios_c": {
+      "parent": "figS02_scenarios",
+      "panel": "c",
+      "title": "约束类型",
+      "files": {
+        "svg": {
+          "path": "figures\\figS02_scenarios_c.svg",
+          "sha256": "b2035eb0ef7ce5bff7dc6652505ba0c0ca2e3072eeb341682e8be8ba91019abc",
+          "bytes": 12512
+        },
+        "pdf": {
+          "path": "figures\\figS02_scenarios_c.pdf",
+          "sha256": "bad3be1677d328bdbfdb79ad57f72e10baa5270318cb8bdfa7d530f347856741",
+          "bytes": 31640
+        },
+        "png": {
+          "path": "figures\\figS02_scenarios_c.png",
+          "sha256": "5a66ed11b8c6d5b7b7447300503a280debe666eb9d4b2ad41298259b639706c8",
+          "bytes": 159302
+        },
+        "tiff": {
+          "path": "figures\\figS02_scenarios_c.tiff",
+          "sha256": "82df9ad25e124d970acdc28b9cc8d8459775d64109309e04282ceb4d7612a673",
+          "bytes": 433836
+        }
+      },
+      "caption": {
+        "path": "captions\\figS02_scenarios_c.md",
+        "sha256": "8849c5a70662c16945b5ce8f694aee311c72283967d57207991739c5b708b122"
+      },
+      "source_data": {
+        "path": "source_data\\figS02_scenarios_c\\source.csv",
+        "rows": 100,
+        "sha256": "72f3da05c6e017c90b15ddf86233397911341fad22950f24091eeaa7afe7f7ab"
+      },
+      "pixel_size": [
+        1836,
+        1554
+      ],
+      "dpi": 600
+    },
+    "figS02_scenarios_d": {
+      "parent": "figS02_scenarios",
+      "panel": "d",
+      "title": "优先级布局",
+      "files": {
+        "svg": {
+          "path": "figures\\figS02_scenarios_d.svg",
+          "sha256": "74c6a648480e02e2444c12693d68b18fe13d611169a97d4c6da89a8e984eb5f9",
+          "bytes": 15526
+        },
+        "pdf": {
+          "path": "figures\\figS02_scenarios_d.pdf",
+          "sha256": "7818fd93c5ddb0b6ebbce332c689321fe978f6746253f852b6c18f7c945a8f6a",
+          "bytes": 37377
+        },
+        "png": {
+          "path": "figures\\figS02_scenarios_d.png",
+          "sha256": "3f2bcdd389fbcb417b71dc2a03d7879600e1079312cfd00507899be52cd67e47",
+          "bytes": 183884
+        },
+        "tiff": {
+          "path": "figures\\figS02_scenarios_d.tiff",
+          "sha256": "09a808bcf8f50ca262189944496569690fec2a1f6dc170aef0733c215773fcdb",
+          "bytes": 476308
+        }
+      },
+      "caption": {
+        "path": "captions\\figS02_scenarios_d.md",
+        "sha256": "210e061ab88697b9632e26053afc4a0e4cb94d2da414a86b0a2ab85f8543e6b8"
+      },
+      "source_data": {
+        "path": "source_data\\figS02_scenarios_d\\source.csv",
+        "rows": 75,
+        "sha256": "1030eee8839edf45c3ebfc23e36af55380eebad690fd0a380aec8e884b51a5af"
+      },
+      "pixel_size": [
+        2022,
+        1632
+      ],
+      "dpi": 600
+    },
+    "figS03_baselines_a": {
+      "parent": "figS03_baselines",
+      "panel": "a",
+      "title": "传统基线任务效果",
+      "files": {
+        "svg": {
+          "path": "figures\\figS03_baselines_a.svg",
+          "sha256": "6aaea1ff8db80242517bc263729afd4dc8a1dee3c4dbff9c08503deb0f8ceee2",
+          "bytes": 24609
+        },
+        "pdf": {
+          "path": "figures\\figS03_baselines_a.pdf",
+          "sha256": "35d40c422fa31785b8eaffd70e63185f374b1101c7c8f17c42e99453dc655b84",
+          "bytes": 36043
+        },
+        "png": {
+          "path": "figures\\figS03_baselines_a.png",
+          "sha256": "4d9b32c905aad23eefe9941e88a18e58d2d1b6137025ed55cf2abb80865c1a4a",
+          "bytes": 96634
+        },
+        "tiff": {
+          "path": "figures\\figS03_baselines_a.tiff",
+          "sha256": "b4174d0c9399ba7d02fa925d71c06c4c92e46c27e82aa5c517696c9247b4ce01",
+          "bytes": 187624
+        }
+      },
+      "caption": {
+        "path": "captions\\figS03_baselines_a.md",
+        "sha256": "0ba8a830517558fedf3bacca9eff3c7ed575106de1e9d11fa4413b168cd79028"
+      },
+      "source_data": {
+        "path": "source_data\\figS03_baselines_a\\source.csv",
+        "rows": 13,
+        "sha256": "2258bf6bce908fcf401d2f4c60eb37aed5ad7fc088a58e96dbf2a5d77a923dcb"
+      },
+      "pixel_size": [
+        1902,
+        1620
+      ],
+      "dpi": 600
+    },
+    "figS03_baselines_b": {
+      "parent": "figS03_baselines",
+      "panel": "b",
+      "title": "参考解差距与区间",
+      "files": {
+        "svg": {
+          "path": "figures\\figS03_baselines_b.svg",
+          "sha256": "4133f33b432cce78ed27c5f29d88bfb6641b0747e8617d663a635ec0037685d0",
+          "bytes": 18693
+        },
+        "pdf": {
+          "path": "figures\\figS03_baselines_b.pdf",
+          "sha256": "18f07c4ba3c276a8c4e29ff4fd3b1caa91de0a90ba0e38d31c67ca3e0729fe13",
+          "bytes": 30130
+        },
+        "png": {
+          "path": "figures\\figS03_baselines_b.png",
+          "sha256": "77c3798d9bf99aec1217ff22e30dd3d832f620717c201774b4eaa6d452b3a8eb",
+          "bytes": 88063
+        },
+        "tiff": {
+          "path": "figures\\figS03_baselines_b.tiff",
+          "sha256": "974114ea4ba4361457266079fd1ded3c82168f9e49d8387467a0b54e079c7e62",
+          "bytes": 175332
+        }
+      },
+      "caption": {
+        "path": "captions\\figS03_baselines_b.md",
+        "sha256": "5231aec4803cc1d3aeae855996c2f8376629755de6b687588aff186ddb096934"
+      },
+      "source_data": {
+        "path": "source_data\\figS03_baselines_b\\source.csv",
+        "rows": 18,
+        "sha256": "a3677d4e47d42d1cba848ba15730d7bf368124d5450755846b683bf69c0c1db2"
+      },
+      "pixel_size": [
+        1902,
+        1626
+      ],
+      "dpi": 600
+    },
+    "figS03_baselines_c": {
+      "parent": "figS03_baselines",
+      "panel": "c",
+      "title": "传统规划器计算代价",
+      "files": {
+        "svg": {
+          "path": "figures\\figS03_baselines_c.svg",
+          "sha256": "aa77d69d30744e40f85dff00df48e17f33cbd234f3732a2161bd5abfebf9b063",
+          "bytes": 16857
+        },
+        "pdf": {
+          "path": "figures\\figS03_baselines_c.pdf",
+          "sha256": "580f1d8367ee94d543f9fca17a64b2a527c20b9fe457dc66569b8f3b0be5b3fa",
+          "bytes": 33144
+        },
+        "png": {
+          "path": "figures\\figS03_baselines_c.png",
+          "sha256": "281b8d2bbe9e61f0324a8197195a84efebd33c17baae9ab27f45939281e59eb5",
+          "bytes": 89880
+        },
+        "tiff": {
+          "path": "figures\\figS03_baselines_c.tiff",
+          "sha256": "7bc71880a61c8a6d9772a72368efeb034da5f2a5f6f478974fe6144424fd9326",
+          "bytes": 173934
+        }
+      },
+      "caption": {
+        "path": "captions\\figS03_baselines_c.md",
+        "sha256": "18c861e71e0d2af793229e4dc2af3dec509ec4349717288cb10d49acc7add114"
+      },
+      "source_data": {
+        "path": "source_data\\figS03_baselines_c\\source.csv",
+        "rows": 13,
+        "sha256": "26fb4882c46f1045aefd2ed91cbab766ebd47c95ca9d8947a1f8173cac6666ab"
+      },
+      "pixel_size": [
+        1902,
+        1638
+      ],
+      "dpi": 600
+    },
+    "figS03_baselines_d": {
+      "parent": "figS03_baselines",
+      "panel": "d",
+      "title": "MILP求解状态与gap",
+      "files": {
+        "svg": {
+          "path": "figures\\figS03_baselines_d.svg",
+          "sha256": "4d02f60a12bb08ae7a09bd5c1ec953b922cf78cf2a79426cca81b7c3fa16d014",
+          "bytes": 9092
+        },
+        "pdf": {
+          "path": "figures\\figS03_baselines_d.pdf",
+          "sha256": "9d3e5ef5064323ac331927b367efc0ccdb29f11c303ce785f9598bc532cb34a6",
+          "bytes": 24921
+        },
+        "png": {
+          "path": "figures\\figS03_baselines_d.png",
+          "sha256": "dd21bca1407053fc063a58c74cf0ea324258d6762609e0ac032a8bfac3906657",
+          "bytes": 68121
+        },
+        "tiff": {
+          "path": "figures\\figS03_baselines_d.tiff",
+          "sha256": "1a08c66f569b1619c3524b28c21dc9ced8b2a7ce57d23121636aeebb7c365bd3",
+          "bytes": 140040
+        }
+      },
+      "caption": {
+        "path": "captions\\figS03_baselines_d.md",
+        "sha256": "c38a355f06e39ebd77ab246b02db70d3935546b81e9cfc3ac01d24206a84ab60"
+      },
+      "source_data": {
+        "path": "source_data\\figS03_baselines_d\\source.csv",
+        "rows": 360,
+        "sha256": "35a7c4f19de293e33ce321c100c47585d5a79868b38c138f8192f29afcd18af5"
+      },
+      "pixel_size": [
+        1763,
+        1530
+      ],
+      "dpi": 600
+    },
+    "figS04_training_all_a": {
+      "parent": "figS04_training_all",
+      "panel": "a",
+      "title": "七个学习模型的共同定义训练指标",
+      "files": {
+        "svg": {
+          "path": "figures\\figS04_training_all_a.svg",
+          "sha256": "70ed618afcb21890378a85bc11b8673fa4142c2873d37dd4b7483ed6e24147fe",
+          "bytes": 42110
+        },
+        "pdf": {
+          "path": "figures\\figS04_training_all_a.pdf",
+          "sha256": "7bdd32a3bf29981f78e5e5021ad05a6323edca42bd9c050b7e54a8c6a22843c4",
+          "bytes": 55677
+        },
+        "png": {
+          "path": "figures\\figS04_training_all_a.png",
+          "sha256": "7557e4ade6f7ad28d2cf5efec9842d0dd4ca12c1bd88be26698ddce5627e31bb",
+          "bytes": 684217
+        },
+        "tiff": {
+          "path": "figures\\figS04_training_all_a.tiff",
+          "sha256": "e921cb3ecab5771e98dc47c31ec7492ee4a00f1f71b5b47f792bda5340011776",
+          "bytes": 963178
+        }
+      },
+      "caption": {
+        "path": "captions\\figS04_training_all_a.md",
+        "sha256": "6a735d6017303ee94e7cec37e02bde7385b0290a643827247e190726af78855f"
+      },
+      "source_data": {
+        "path": "source_data\\figS04_training_all_a\\source.csv",
+        "rows": 6720,
+        "sha256": "e599f3eeaf809e2c7fee2dd6280cfe9b73d76dc56cf7f26806250a5e041aa455"
+      },
+      "pixel_size": [
+        4128,
+        1626
+      ],
+      "dpi": 600
+    },
+    "figS04_training_all_b": {
+      "parent": "figS04_training_all",
+      "panel": "b",
+      "title": "七个学习模型的返航与安全过程",
+      "files": {
+        "svg": {
+          "path": "figures\\figS04_training_all_b.svg",
+          "sha256": "3faab82cdab79cfbc43620d6435850feea7a233a57a212a52b59bfd9af6e81c7",
+          "bytes": 15461
+        },
+        "pdf": {
+          "path": "figures\\figS04_training_all_b.pdf",
+          "sha256": "62dd100605602e7bcd5c5490b37cdcd4b05699b05862cdeb9905a0bbcd961a1c",
+          "bytes": 19103
+        },
+        "png": {
+          "path": "figures\\figS04_training_all_b.png",
+          "sha256": "0079bb53220921033a89f381f81ca6f9306fa4b9ce5c2ef6b7e8b5eeaacf2a7d",
+          "bytes": 217089
+        },
+        "tiff": {
+          "path": "figures\\figS04_training_all_b.tiff",
+          "sha256": "e58ab9c5a098d92c45e93f01ea06026108e02bd5446749472538cff94ad61187",
+          "bytes": 447324
+        }
+      },
+      "caption": {
+        "path": "captions\\figS04_training_all_b.md",
+        "sha256": "36dd0303267e6199c820d79082b5ca3058b494d7148576f37b935f0e999d5308"
+      },
+      "source_data": {
+        "path": "source_data\\figS04_training_all_b\\source.csv",
+        "rows": 6720,
+        "sha256": "60ff590857db9f32565e3cf1807fe8df869c9d2aae2760084c26fcfbde51a144"
+      },
+      "pixel_size": [
+        4176,
+        1685
+      ],
+      "dpi": 600
+    },
+    "figS05_score_sensitivity_a": {
+      "parent": "figS05_score_sensitivity",
+      "panel": "a",
+      "title": "算术聚合敏感性",
+      "files": {
+        "svg": {
+          "path": "figures\\figS05_score_sensitivity_a.svg",
+          "sha256": "9c1fd88359e6cb6dad7bbe640f58d6f448c05d2be66d88001268293d931ca9a8",
+          "bytes": 15052
+        },
+        "pdf": {
+          "path": "figures\\figS05_score_sensitivity_a.pdf",
+          "sha256": "45d7119e10c6ec74290086f3f47b4d26dc20c515a6b4c48bd3260618d118f10c",
+          "bytes": 25099
+        },
+        "png": {
+          "path": "figures\\figS05_score_sensitivity_a.png",
+          "sha256": "f3874cf9e51996161919a9552fa454dc405a9886ce1020f8f0419a076f8cc662",
+          "bytes": 79167
+        },
+        "tiff": {
+          "path": "figures\\figS05_score_sensitivity_a.tiff",
+          "sha256": "4358345f1b71109cddf5dfcffc83c5595af45d0401295e2dbd8179850b490abb",
+          "bytes": 172464
+        }
+      },
+      "caption": {
+        "path": "captions\\figS05_score_sensitivity_a.md",
+        "sha256": "a5d8776470b2d22cd31532be46255eed669144ddcbf179adb60afb1c28d36574"
+      },
+      "source_data": {
+        "path": "source_data\\figS05_score_sensitivity_a\\source.csv",
+        "rows": 15,
+        "sha256": "54e7fd81d701f555bb4d0cb344643d6be612af80e254efac124b76db6a0994f5"
+      },
+      "pixel_size": [
+        1824,
+        1614
+      ],
+      "dpi": 600
+    },
+    "figS05_score_sensitivity_b": {
+      "parent": "figS05_score_sensitivity",
+      "panel": "b",
+      "title": "几何聚合诊断",
+      "files": {
+        "svg": {
+          "path": "figures\\figS05_score_sensitivity_b.svg",
+          "sha256": "febbeb031406d59d84b98609ff4f7d6c14c64fddcb47426de1500eb222a2b069",
+          "bytes": 13378
+        },
+        "pdf": {
+          "path": "figures\\figS05_score_sensitivity_b.pdf",
+          "sha256": "a3be10fcfa1d23673ad94df99ca30210e0b9f87370e2e8297e94ae7956a09954",
+          "bytes": 22835
+        },
+        "png": {
+          "path": "figures\\figS05_score_sensitivity_b.png",
+          "sha256": "9e0508ed862e27b5bfe8fa43b11abebb5d5c53cb522d9ac13ee7b8bb96cdb7eb",
+          "bytes": 99628
+        },
+        "tiff": {
+          "path": "figures\\figS05_score_sensitivity_b.tiff",
+          "sha256": "a4d854199e37d2deb542bc6ac47e24abed5d9821e7bc4315dd13dc389193689a",
+          "bytes": 185654
+        }
+      },
+      "caption": {
+        "path": "captions\\figS05_score_sensitivity_b.md",
+        "sha256": "2bed12bf04e75fdb7fda5bf4ba33b48b50c47a726200efaf53f75eea2e17545b"
+      },
+      "source_data": {
+        "path": "source_data\\figS05_score_sensitivity_b\\source.csv",
+        "rows": 15,
+        "sha256": "9b2b4e2f3190598670a926ec24f5c92bf9b10f684feb601a9c411435c01101bf"
+      },
+      "pixel_size": [
+        1824,
+        1626
+      ],
+      "dpi": 600
+    },
+    "figS05_score_sensitivity_c": {
+      "parent": "figS05_score_sensitivity",
+      "panel": "c",
+      "title": "全权重网格分差分布",
+      "files": {
+        "svg": {
+          "path": "figures\\figS05_score_sensitivity_c.svg",
+          "sha256": "dc8426790a783deff223b8137f02511e1518448a2bdc45786559cea371ff2aae",
+          "bytes": 33579
+        },
+        "pdf": {
+          "path": "figures\\figS05_score_sensitivity_c.pdf",
+          "sha256": "d648b909cb9f5d7ee9a4c59ebc2b3986c7665296aac173f42086f37d19d91cd2",
+          "bytes": 32756
+        },
+        "png": {
+          "path": "figures\\figS05_score_sensitivity_c.png",
+          "sha256": "e5022e741e5cdad4520c65980ef283967d302fa4062d977220fe8ffbd7d96bc8",
+          "bytes": 106340
+        },
+        "tiff": {
+          "path": "figures\\figS05_score_sensitivity_c.tiff",
+          "sha256": "cf9ceb6b7c68762185227d69b566a44c94f95254c52a1e459cc0bb3c8370e816",
+          "bytes": 205024
+        }
+      },
+      "caption": {
+        "path": "captions\\figS05_score_sensitivity_c.md",
+        "sha256": "9010c16145770c70b23c69461d2750bf619fd6ea145a3c2dbd37edc7b891c999"
+      },
+      "source_data": {
+        "path": "source_data\\figS05_score_sensitivity_c\\source.csv",
+        "rows": 6235,
+        "sha256": "b8a71380827f4dcef1eb48c9577c559739bb0b49c6932d25c1077df79356aaab"
+      },
+      "pixel_size": [
+        1793,
+        1626
+      ],
+      "dpi": 600
+    },
+    "figS05_score_sensitivity_d": {
+      "parent": "figS05_score_sensitivity",
+      "panel": "d",
+      "title": "D4/D6/D7配对证据",
+      "files": {
+        "svg": {
+          "path": "figures\\figS05_score_sensitivity_d.svg",
+          "sha256": "83c20c395f3f6f36493edd55b64a54544405c4fc90e0888a802a917ba1db42c6",
+          "bytes": 8950
+        },
+        "pdf": {
+          "path": "figures\\figS05_score_sensitivity_d.pdf",
+          "sha256": "079662d521818208cb76f9b72146763b279737c5fba5b7815d37e64bf31577b5",
+          "bytes": 21472
+        },
+        "png": {
+          "path": "figures\\figS05_score_sensitivity_d.png",
+          "sha256": "9e02f879ba23d9b42aac3fdb094d08097a4ca2cba653120523dd7b4c34ad637a",
+          "bytes": 84516
+        },
+        "tiff": {
+          "path": "figures\\figS05_score_sensitivity_d.tiff",
+          "sha256": "369ebad8e6d482ae6e909e11fbac83d730688e075fd4198f9dac48c3f210f29d",
+          "bytes": 179042
+        }
+      },
+      "caption": {
+        "path": "captions\\figS05_score_sensitivity_d.md",
+        "sha256": "22278cae9efa4baa28d714a8e9da8e4669dce6449f3051eaa559f3e145395e83"
+      },
+      "source_data": {
+        "path": "source_data\\figS05_score_sensitivity_d\\source.csv",
+        "rows": 3,
+        "sha256": "69033c604e52663c9bf810be78a36d0c0fd09503cfda698500b0fb4fa910f401"
+      },
+      "pixel_size": [
+        1872,
+        1614
+      ],
+      "dpi": 600
+    },
+    "figS06_ablation_maps_a": {
+      "parent": "figS06_ablation_maps",
+      "panel": "a",
+      "title": "合成地图的消融方向一致性",
+      "files": {
+        "svg": {
+          "path": "figures\\figS06_ablation_maps_a.svg",
+          "sha256": "cc1ab6045f3fc055bd140128461b7a0d3d2cb617ee4bb105ba1508125ba68d43",
+          "bytes": 15616
+        },
+        "pdf": {
+          "path": "figures\\figS06_ablation_maps_a.pdf",
+          "sha256": "27a4c2f999e8aca61646b72ff0e9fb982f6639dccd160f7a923418809dc74ef5",
+          "bytes": 33465
+        },
+        "png": {
+          "path": "figures\\figS06_ablation_maps_a.png",
+          "sha256": "2c6407c976a2dd153ee14da66c946c5e319393ab3d728c03f323d0ce1610b4a3",
+          "bytes": 193507
+        },
+        "tiff": {
+          "path": "figures\\figS06_ablation_maps_a.tiff",
+          "sha256": "6e3f87ef313e3cf5966a6c61b85d9fabad0643f781ab09ef96fdc8dc08734544",
+          "bytes": 471576
+        }
+      },
+      "caption": {
+        "path": "captions\\figS06_ablation_maps_a.md",
+        "sha256": "ad5afe0003135f6188504c3fee50bd845b9affdb1b553f834aea2c195ddd043b"
+      },
+      "source_data": {
+        "path": "source_data\\figS06_ablation_maps_a\\source.csv",
+        "rows": 24,
+        "sha256": "a9acc00154806f056aa131e30c4ec7c68de4b1d47c8c4f8d18ed570a34553a4e"
+      },
+      "pixel_size": [
+        1781,
+        1596
+      ],
+      "dpi": 600
+    },
+    "figS06_ablation_maps_b": {
+      "parent": "figS06_ablation_maps",
+      "panel": "b",
+      "title": "真实DSM的消融方向一致性",
+      "files": {
+        "svg": {
+          "path": "figures\\figS06_ablation_maps_b.svg",
+          "sha256": "351ff019a4157d9e984bff8320f836857b75b015f871c8309e1384f73dc817e0",
+          "bytes": 13837
+        },
+        "pdf": {
+          "path": "figures\\figS06_ablation_maps_b.pdf",
+          "sha256": "4128511dd370e1fbb45ea58a5968bd3bd44d430496dbd1218976ee058363f3a9",
+          "bytes": 39210
+        },
+        "png": {
+          "path": "figures\\figS06_ablation_maps_b.png",
+          "sha256": "b6a0905e0307db67b1104beb265acd4db3f52f30163eff12bf9678569521b077",
+          "bytes": 185304
+        },
+        "tiff": {
+          "path": "figures\\figS06_ablation_maps_b.tiff",
+          "sha256": "e8200f1a65a2686809b96133c94a092676d48391e7c11ed9f0287c4c3ec203e9",
+          "bytes": 527874
+        }
+      },
+      "caption": {
+        "path": "captions\\figS06_ablation_maps_b.md",
+        "sha256": "a6cd09dd15f051b509b26f3516051ccd72b83ae95ceec5c55d7d788cd6912c35"
+      },
+      "source_data": {
+        "path": "source_data\\figS06_ablation_maps_b\\source.csv",
+        "rows": 8,
+        "sha256": "b8588afeafce871bc1742dddddb2b075b897220bb26664f6c893d2e29ec17ce7"
+      },
+      "pixel_size": [
+        2316,
+        1596
+      ],
+      "dpi": 600
+    },
+    "figS06_ablation_maps_c": {
+      "parent": "figS06_ablation_maps",
+      "panel": "c",
+      "title": "终止原因全集",
+      "files": {
+        "svg": {
+          "path": "figures\\figS06_ablation_maps_c.svg",
+          "sha256": "cd5492400708e66f3cbb0bdb163cea388c8902b514a8746aa860d5265450c1fb",
+          "bytes": 11008
+        },
+        "pdf": {
+          "path": "figures\\figS06_ablation_maps_c.pdf",
+          "sha256": "0c5544254c520fa96c619eca764bf392ea999b78eca4c2007ce186a9ffabae9f",
+          "bytes": 34011
+        },
+        "png": {
+          "path": "figures\\figS06_ablation_maps_c.png",
+          "sha256": "58090ffd737f631a607cb7d09a2558136950de0de596d8c85b2434d9a35d949a",
+          "bytes": 139715
+        },
+        "tiff": {
+          "path": "figures\\figS06_ablation_maps_c.tiff",
+          "sha256": "2355fd118957322367139bb40213afc85bf13716f02e8cca4b55aed025b39379",
+          "bytes": 387818
+        }
+      },
+      "caption": {
+        "path": "captions\\figS06_ablation_maps_c.md",
+        "sha256": "cf508e99b6ccff6f31106f9aba58939119d6385f161254c59c22b19c2a3a25bd"
+      },
+      "source_data": {
+        "path": "source_data\\figS06_ablation_maps_c\\source.csv",
+        "rows": 6,
+        "sha256": "bb0adbb3f41e0d801ab8eca065c80fe114428b056cfdbe4787de14e84069d5ee"
+      },
+      "pixel_size": [
+        2028,
+        1608
+      ],
+      "dpi": 600
+    },
+    "figS06_ablation_maps_d": {
+      "parent": "figS06_ablation_maps",
+      "panel": "d",
+      "title": "首次失败约束",
+      "files": {
+        "svg": {
+          "path": "figures\\figS06_ablation_maps_d.svg",
+          "sha256": "0dcd1fe9701ebee5d5fb9775229aa21bfe3e8f9ad580d90dbd39b303971d9092",
+          "bytes": 15062
+        },
+        "pdf": {
+          "path": "figures\\figS06_ablation_maps_d.pdf",
+          "sha256": "0d44acd9639e7fac5eba0e700e5fdc41d99ffc3abd2dcaf98c467d6c0a0a9826",
+          "bytes": 37703
+        },
+        "png": {
+          "path": "figures\\figS06_ablation_maps_d.png",
+          "sha256": "558b8a4172dd2f01dcc1c391a9eb3cf720876bbd23483c36afdefb03d576e470",
+          "bytes": 154104
+        },
+        "tiff": {
+          "path": "figures\\figS06_ablation_maps_d.tiff",
+          "sha256": "f06c5bb8ce51da6b18ff5fb950cbabd2d545bff304ddf2876195c45591ffa674",
+          "bytes": 404570
+        }
+      },
+      "caption": {
+        "path": "captions\\figS06_ablation_maps_d.md",
+        "sha256": "a9360a1c1d96575156a2f6ec06d7bcbdb6eab14c001c026ff331e7c34ed1f622"
+      },
+      "source_data": {
+        "path": "source_data\\figS06_ablation_maps_d\\source.csv",
+        "rows": 5,
+        "sha256": "0f03d15ee61f20c8547143ab65e460c2b0b7dab8b89697d68e140ac76afc404c"
+      },
+      "pixel_size": [
+        2028,
+        1536
+      ],
+      "dpi": 600
+    },
+    "figS07_robustness_failures_a": {
+      "parent": "figS07_robustness_failures",
+      "panel": "a",
+      "title": "扰动下的安全率",
+      "files": {
+        "svg": {
+          "path": "figures\\figS07_robustness_failures_a.svg",
+          "sha256": "2e6d270637729c3e6134ea55a8e54743511b30276fa1e43986831e638ffe8db4",
+          "bytes": 18251
+        },
+        "pdf": {
+          "path": "figures\\figS07_robustness_failures_a.pdf",
+          "sha256": "8cbd41a3c0c3d3ea0c56a500e97dba0d224aa060b7129e988afd08522de52ac8",
+          "bytes": 36521
+        },
+        "png": {
+          "path": "figures\\figS07_robustness_failures_a.png",
+          "sha256": "48e7f629e18b0f964421da142fb6422bac6f1d1d68f78f25f3a49d019d8b32c4",
+          "bytes": 199744
+        },
+        "tiff": {
+          "path": "figures\\figS07_robustness_failures_a.tiff",
+          "sha256": "3a50e359f59c72f3b1f79f3c222d8cef0efd90ecf61e306ca13473b5e6be7b58",
+          "bytes": 519462
+        }
+      },
+      "caption": {
+        "path": "captions\\figS07_robustness_failures_a.md",
+        "sha256": "400ff82349de128c4bd4c32368e68a82e172611d8cd77bfd983f0746b1e6f4c4"
+      },
+      "source_data": {
+        "path": "source_data\\figS07_robustness_failures_a\\source.csv",
+        "rows": 34,
+        "sha256": "66c77bdd749085956a6f089762a7f8c1b6fd2fa8a012b639d7d914fcbe1de4c8"
+      },
+      "pixel_size": [
+        1944,
+        1548
+      ],
+      "dpi": 600
+    },
+    "figS07_robustness_failures_b": {
+      "parent": "figS07_robustness_failures",
+      "panel": "b",
+      "title": "扰动下的返航率",
+      "files": {
+        "svg": {
+          "path": "figures\\figS07_robustness_failures_b.svg",
+          "sha256": "3d40e52898300267b26cdc5d2a1a876a916b96979ed37a9ca8b67b9a827c7361",
+          "bytes": 18251
+        },
+        "pdf": {
+          "path": "figures\\figS07_robustness_failures_b.pdf",
+          "sha256": "40d3b907401bce8c851f7718950901e755f525b98966e86131320d24e205758c",
+          "bytes": 36375
+        },
+        "png": {
+          "path": "figures\\figS07_robustness_failures_b.png",
+          "sha256": "a61585973aa5cbd910166930cd4c8c9ae743793d9161b80ca8cb2e11eaf11d9d",
+          "bytes": 203142
+        },
+        "tiff": {
+          "path": "figures\\figS07_robustness_failures_b.tiff",
+          "sha256": "0a96589158215138c81dc42ff002e340a0ae2c27f254c684b977ac89c360d0a9",
+          "bytes": 524484
+        }
+      },
+      "caption": {
+        "path": "captions\\figS07_robustness_failures_b.md",
+        "sha256": "46270d3affd068e2c74c35c1b223676071860284d0c14cb0ce01777362fb9df7"
+      },
+      "source_data": {
+        "path": "source_data\\figS07_robustness_failures_b\\source.csv",
+        "rows": 34,
+        "sha256": "346786f2d87038b4491d664280e1beea34b2d0e74b319afba0d534d8c1c60012"
+      },
+      "pixel_size": [
+        1950,
+        1548
+      ],
+      "dpi": 600
+    },
+    "figS07_robustness_failures_c": {
+      "parent": "figS07_robustness_failures",
+      "panel": "c",
+      "title": "扰动下的违规率",
+      "files": {
+        "svg": {
+          "path": "figures\\figS07_robustness_failures_c.svg",
+          "sha256": "9f72f1cbc342b4ed604dc9885bca32a27c0b4ac22d053f0b812e593251e0493f",
+          "bytes": 17587
+        },
+        "pdf": {
+          "path": "figures\\figS07_robustness_failures_c.pdf",
+          "sha256": "ff9cb403a834319ec13bbfe6b811edbf8497948d387014e4ea6917afbdbb5daa",
+          "bytes": 37020
+        },
+        "png": {
+          "path": "figures\\figS07_robustness_failures_c.png",
+          "sha256": "21525adf37f2f4b5ecb268b85083dc94ae89ad8fdcffbf7395a587a09af2f5b1",
+          "bytes": 198226
+        },
+        "tiff": {
+          "path": "figures\\figS07_robustness_failures_c.tiff",
+          "sha256": "9e0c4ea7051178e9c636f83e023c0a697a4af2d6f8d47badef24faf0719391b6",
+          "bytes": 522826
+        }
+      },
+      "caption": {
+        "path": "captions\\figS07_robustness_failures_c.md",
+        "sha256": "a9ff905e97e6538187153519473dd0b2e784ba9e066beb73acbc4e34dea94dc8"
+      },
+      "source_data": {
+        "path": "source_data\\figS07_robustness_failures_c\\source.csv",
+        "rows": 34,
+        "sha256": "6cf04d122ae87b92dd66edf5fbee4d56802ef4871c9001216e1a82e571e383fe"
+      },
+      "pixel_size": [
+        1950,
+        1542
+      ],
+      "dpi": 600
+    },
+    "figS07_robustness_failures_d": {
+      "parent": "figS07_robustness_failures",
+      "panel": "d",
+      "title": "扰动下的Stranded率",
+      "files": {
+        "svg": {
+          "path": "figures\\figS07_robustness_failures_d.svg",
+          "sha256": "f72f12c6112d49975c2677bfeec6ae3c7ddefc5c369f73e230e0d9b3b42ab673",
+          "bytes": 17463
+        },
+        "pdf": {
+          "path": "figures\\figS07_robustness_failures_d.pdf",
+          "sha256": "046627b99f2df5023a8d8a26ab1675a57682de092ae0e19abb70a502d62b6804",
+          "bytes": 35868
+        },
+        "png": {
+          "path": "figures\\figS07_robustness_failures_d.png",
+          "sha256": "f083106e45b915178f4d080fd0ef2312743ad75c0fa0d823c8a5b011402aafd7",
+          "bytes": 161079
+        },
+        "tiff": {
+          "path": "figures\\figS07_robustness_failures_d.tiff",
+          "sha256": "9eba6ab996657079494d4ea1e2fac494e02b68845725dbc6afc8209688f3b61c",
+          "bytes": 387480
+        }
+      },
+      "caption": {
+        "path": "captions\\figS07_robustness_failures_d.md",
+        "sha256": "7a0b0314a20868f17657a7e6904f49a7d1db3022fcfbf2bdae8d57df7efe77c0"
+      },
+      "source_data": {
+        "path": "source_data\\figS07_robustness_failures_d\\source.csv",
+        "rows": 34,
+        "sha256": "914572e153924dd15546e3fcf1fe48c331b0a68ee65643d6a6e009211a8312d6"
+      },
+      "pixel_size": [
+        1943,
+        1554
+      ],
+      "dpi": 600
+    },
+    "figS08_route_atlas_a": {
+      "parent": "figS08_route_atlas",
+      "panel": "a",
+      "title": "真实DSM路线图集 1",
+      "files": {
+        "svg": {
+          "path": "figures\\figS08_route_atlas_a.svg",
+          "sha256": "a9f41be0c76de72cacde5415b4ed32d0a162a272dbddb2ac91cd6678be70489b",
+          "bytes": 82558
+        },
+        "pdf": {
+          "path": "figures\\figS08_route_atlas_a.pdf",
+          "sha256": "e453d667ba5c76aafb12f3cca2c6bc50c3052e9a4774d162b1819b954bf1644c",
+          "bytes": 50993
+        },
+        "png": {
+          "path": "figures\\figS08_route_atlas_a.png",
+          "sha256": "6172fcd5398a0c5d118008ebcce9b7084fe7b2e59a9980e5043b8ba29b592fb6",
+          "bytes": 705597
+        },
+        "tiff": {
+          "path": "figures\\figS08_route_atlas_a.tiff",
+          "sha256": "a9f6803fc797cf47325a40f2a0db0551dc5c00fde5bd1f8f9c6853a71d765fb5",
+          "bytes": 1800552
+        }
+      },
+      "caption": {
+        "path": "captions\\figS08_route_atlas_a.md",
+        "sha256": "ad27a3ff92585f9657e5abcf75f824a01ccaf8b0f461759a95af9e1b1040473f"
+      },
+      "source_data": {
+        "path": "source_data\\figS08_route_atlas_a\\source.csv",
+        "rows": 1,
+        "sha256": "5503501b0384d2152281c9a6d05475c8943a42e7dcd371f664e6264d45dbf093"
+      },
+      "pixel_size": [
+        948,
+        1266
+      ],
+      "dpi": 600
+    },
+    "figS08_route_atlas_b": {
+      "parent": "figS08_route_atlas",
+      "panel": "b",
+      "title": "真实DSM路线图集 2",
+      "files": {
+        "svg": {
+          "path": "figures\\figS08_route_atlas_b.svg",
+          "sha256": "669fed43d7aa431df894de90c82fc7c31503dcd93d73d87017e5d859e924b930",
+          "bytes": 39103
+        },
+        "pdf": {
+          "path": "figures\\figS08_route_atlas_b.pdf",
+          "sha256": "37a8c04a62af0655c5afdb9c757d0e7989e8d19e9831b0e91822e5029aef2bf7",
+          "bytes": 31625
+        },
+        "png": {
+          "path": "figures\\figS08_route_atlas_b.png",
+          "sha256": "43feaa497ab378ba6a1a80aa2ffbfc24c65850dc7f9bd8dc323c05c4c67033aa",
+          "bytes": 219963
+        },
+        "tiff": {
+          "path": "figures\\figS08_route_atlas_b.tiff",
+          "sha256": "2bd8fdb8c05c7b883630b627eb6bbd46bad215ea067db5497aed5cb8c5fd74d3",
+          "bytes": 851712
+        }
+      },
+      "caption": {
+        "path": "captions\\figS08_route_atlas_b.md",
+        "sha256": "64a4772da07380d16c2865c659ba7341eb338cfa7d9145a8d03d0bcc587243ec"
+      },
+      "source_data": {
+        "path": "source_data\\figS08_route_atlas_b\\source.csv",
+        "rows": 1,
+        "sha256": "4265dc4e225c76cf90c1c38e46fea487849a1f7d1e232a0175006e9fe95ca321"
+      },
+      "pixel_size": [
+        948,
+        1014
+      ],
+      "dpi": 600
+    },
+    "figS08_route_atlas_c": {
+      "parent": "figS08_route_atlas",
+      "panel": "c",
+      "title": "真实DSM路线图集 3",
+      "files": {
+        "svg": {
+          "path": "figures\\figS08_route_atlas_c.svg",
+          "sha256": "ee16bc4b5e07250d280086e9aca8f6575890ae8b2b297131ee280ded8b8072a1",
+          "bytes": 21975
+        },
+        "pdf": {
+          "path": "figures\\figS08_route_atlas_c.pdf",
+          "sha256": "7d7ddfe5b07452fe4acd4620a9020f4bb2363dc930d153c5a674b042a4ba1bf9",
+          "bytes": 25804
+        },
+        "png": {
+          "path": "figures\\figS08_route_atlas_c.png",
+          "sha256": "f9ef7c04f4bca77e17f93cb2cc4615eaaa78fa1eaa5a4022aa4f9caffc33ba36",
+          "bytes": 155079
+        },
+        "tiff": {
+          "path": "figures\\figS08_route_atlas_c.tiff",
+          "sha256": "26a147a30b6ebd1ba3ede29467e75d7883ea8264a19da01057fe5f8877f62550",
+          "bytes": 406984
+        }
+      },
+      "caption": {
+        "path": "captions\\figS08_route_atlas_c.md",
+        "sha256": "fe07c89b5988a55ca41396d852344b099a5712c97c25a55bfa19f1106b452175"
+      },
+      "source_data": {
+        "path": "source_data\\figS08_route_atlas_c\\source.csv",
+        "rows": 1,
+        "sha256": "49edeb06dcdd76072efdbc410f38abf7b6a4ceec169eeae6741b8b9f52f7a8b2"
+      },
+      "pixel_size": [
+        948,
+        1019
+      ],
+      "dpi": 600
+    },
+    "figS08_route_atlas_d": {
+      "parent": "figS08_route_atlas",
+      "panel": "d",
+      "title": "真实DSM路线图集 4",
+      "files": {
+        "svg": {
+          "path": "figures\\figS08_route_atlas_d.svg",
+          "sha256": "569dbd388f4a8ab45ba581dc21042af61c6f8953def2983f3dc9abec1942f703",
+          "bytes": 18409
+        },
+        "pdf": {
+          "path": "figures\\figS08_route_atlas_d.pdf",
+          "sha256": "f99895d2178e909df705ccaa7734db786b796479da9b73bc22a74c90314daef1",
+          "bytes": 25722
+        },
+        "png": {
+          "path": "figures\\figS08_route_atlas_d.png",
+          "sha256": "45a37434414c256e1855aa564606d92030570a9f192c9db2c18a192ce5f961f1",
+          "bytes": 119664
+        },
+        "tiff": {
+          "path": "figures\\figS08_route_atlas_d.tiff",
+          "sha256": "3b399879242fcfe5a028206532d6f98f29e6728ce6151976407dbd6cfee3ad9c",
+          "bytes": 247696
+        }
+      },
+      "caption": {
+        "path": "captions\\figS08_route_atlas_d.md",
+        "sha256": "5ac5b33687f6eb91efb1ae02e2921555eb3dcb75e5126c31ec0c37ccd45eaa42"
+      },
+      "source_data": {
+        "path": "source_data\\figS08_route_atlas_d\\source.csv",
+        "rows": 1,
+        "sha256": "ab6e633797b9ac61168f32a4785cb6e35a8268d1f7742ba7f9dc10c4b16b737a"
+      },
+      "pixel_size": [
+        948,
+        438
+      ],
+      "dpi": 600
+    },
+    "figS08_route_atlas_e": {
+      "parent": "figS08_route_atlas",
+      "panel": "e",
+      "title": "真实DSM路线图集 5",
+      "files": {
+        "svg": {
+          "path": "figures\\figS08_route_atlas_e.svg",
+          "sha256": "a441feb77ff16406140537ccc93bbc7af06acacb21e9334243511c1dc927b203",
+          "bytes": 31295
+        },
+        "pdf": {
+          "path": "figures\\figS08_route_atlas_e.pdf",
+          "sha256": "28b7b87670180bef70a861274ad2dfda299d0d58662418c8c794a41b7d6452e0",
+          "bytes": 30413
+        },
+        "png": {
+          "path": "figures\\figS08_route_atlas_e.png",
+          "sha256": "da39ef50e8ff1a8de56d880a8e27bed9568e4a048841162c45a4e29c660e2c5e",
+          "bytes": 167267
+        },
+        "tiff": {
+          "path": "figures\\figS08_route_atlas_e.tiff",
+          "sha256": "23cca340392a6d9588f24da6ebe7633f1e2c048d33a04e5fccc17ade3b0e458a",
+          "bytes": 502192
+        }
+      },
+      "caption": {
+        "path": "captions\\figS08_route_atlas_e.md",
+        "sha256": "6d7710d493ae29717e869d2dd502779c9ff20c517093dbae6e876b9dd4c3777d"
+      },
+      "source_data": {
+        "path": "source_data\\figS08_route_atlas_e\\source.csv",
+        "rows": 1,
+        "sha256": "66fcc1235d5c727c78e6f3fb700204a3c52b3f244f2e7d8d3d7c837bf0d69250"
+      },
+      "pixel_size": [
+        948,
+        588
+      ],
+      "dpi": 600
+    },
+    "figS08_route_atlas_f": {
+      "parent": "figS08_route_atlas",
+      "panel": "f",
+      "title": "真实DSM路线图集 6",
+      "files": {
+        "svg": {
+          "path": "figures\\figS08_route_atlas_f.svg",
+          "sha256": "208019c9d1edc6f16cf6f1c295402eceb08abb86b203c14f3f0ffab36ef9bb28",
+          "bytes": 13580
+        },
+        "pdf": {
+          "path": "figures\\figS08_route_atlas_f.pdf",
+          "sha256": "5a30067ca0f66676630b9ee71eeb03fefb44d652bfa96aae45c9aa3ff86f4226",
+          "bytes": 22538
+        },
+        "png": {
+          "path": "figures\\figS08_route_atlas_f.png",
+          "sha256": "8ade5a743e23629d22ccbfc465d6a76c79a6dab3e17fd54f83cc02f639ccaba5",
+          "bytes": 80196
+        },
+        "tiff": {
+          "path": "figures\\figS08_route_atlas_f.tiff",
+          "sha256": "cd5e4ac8e3144d2ae86efa799ac06f7cb204d718c3e1fd27678172ba1ea901c0",
+          "bytes": 138412
+        }
+      },
+      "caption": {
+        "path": "captions\\figS08_route_atlas_f.md",
+        "sha256": "fb0c3722c8ba0034d06f471f7754ca2a06522fce551cddf758d8f74a521745fa"
+      },
+      "source_data": {
+        "path": "source_data\\figS08_route_atlas_f\\source.csv",
+        "rows": 1,
+        "sha256": "7c96b58941e9785b6b36b83e32b294007a93b6e2890d01b49ac5429f8ed1467f"
+      },
+      "pixel_size": [
+        948,
+        378
+      ],
+      "dpi": 600
+    },
+    "figS08_route_atlas_g": {
+      "parent": "figS08_route_atlas",
+      "panel": "g",
+      "title": "真实DSM路线图集 7",
+      "files": {
+        "svg": {
+          "path": "figures\\figS08_route_atlas_g.svg",
+          "sha256": "1e97f081cf9a51a98c6ab02b2b33839921f2e89af2b2ff645893f6a0bc0c1cf9",
+          "bytes": 29701
+        },
+        "pdf": {
+          "path": "figures\\figS08_route_atlas_g.pdf",
+          "sha256": "719cc758bd36ada0c076839413d2f9aa4382022693be2a0641bc8ee3d72a80f6",
+          "bytes": 31609
+        },
+        "png": {
+          "path": "figures\\figS08_route_atlas_g.png",
+          "sha256": "826ce566d56c7e08d57fae0498b48d40caf62dd8bb84c4d50d6be0943b31a6ea",
+          "bytes": 176579
+        },
+        "tiff": {
+          "path": "figures\\figS08_route_atlas_g.tiff",
+          "sha256": "1227f3b0e3261ef459ffbecffde5ae0f9502735bfabb90f3049d8e8c1e36609e",
+          "bytes": 547550
+        }
+      },
+      "caption": {
+        "path": "captions\\figS08_route_atlas_g.md",
+        "sha256": "75b4f858844ec2fdefb493c451f864f8c712ce6b7c6986b5d093a0d14e1eeeae"
+      },
+      "source_data": {
+        "path": "source_data\\figS08_route_atlas_g\\source.csv",
+        "rows": 1,
+        "sha256": "64d0fb12df0ae3c5edf698a2b1e056e6fa78ecbea10e597e3016b1ab1ea908d3"
+      },
+      "pixel_size": [
+        948,
+        660
+      ],
+      "dpi": 600
+    },
+    "figS08_route_atlas_h": {
+      "parent": "figS08_route_atlas",
+      "panel": "h",
+      "title": "真实DSM路线图集 8",
+      "files": {
+        "svg": {
+          "path": "figures\\figS08_route_atlas_h.svg",
+          "sha256": "c284ae017305ae16bf275ead1ae66ff1504aa8d77f73d8cf74bad9898a32d2a4",
+          "bytes": 17826
+        },
+        "pdf": {
+          "path": "figures\\figS08_route_atlas_h.pdf",
+          "sha256": "3a3ba92916a1c306cc4952720128fd021c7cd23a77605ab0f79c97857eef6b1d",
+          "bytes": 24880
+        },
+        "png": {
+          "path": "figures\\figS08_route_atlas_h.png",
+          "sha256": "81b02a18d547b60ee6ae4dfe504d59b1d0885db6914edf20b0dd064d2b7becbf",
+          "bytes": 112123
+        },
+        "tiff": {
+          "path": "figures\\figS08_route_atlas_h.tiff",
+          "sha256": "adc4364bc840b7742be40b6364462be7eac88835ede00b5ed73dd1eb84ed3947",
+          "bytes": 234588
+        }
+      },
+      "caption": {
+        "path": "captions\\figS08_route_atlas_h.md",
+        "sha256": "81f54fdf3a3379a0a09b6c58e8c243bb5bb1ea71ac92f5ce51c216d0e5b0b422"
+      },
+      "source_data": {
+        "path": "source_data\\figS08_route_atlas_h\\source.csv",
+        "rows": 1,
+        "sha256": "697ddd93c0057232e9e8d55cf7d2c3f7c78663b1814ec02bd533aaa0a0ae2eb0"
+      },
+      "pixel_size": [
+        948,
+        510
+      ],
+      "dpi": 600
+    },
+    "figV01_3d_taihang_route": {
+      "parent": "figV01_3d_route",
+      "panel": "a",
+      "title": "太行山DSM、公路巡检点与三维安全返航航迹",
+      "files": {
+        "svg": {
+          "path": "figures\\figV01_3d_taihang_route.svg",
+          "sha256": "32a6c7c0f75006f3d47f5e6efb5e969c38c72a4599b09920ad1b56e3ab394cdb",
+          "bytes": 307279
+        },
+        "pdf": {
+          "path": "figures\\figV01_3d_taihang_route.pdf",
+          "sha256": "0a6a39b341d9282b67b20d321669b5b808aa773ee95844d549da1274b416c9d2",
+          "bytes": 225048
+        },
+        "png": {
+          "path": "figures\\figV01_3d_taihang_route.png",
+          "sha256": "94f1c6d5314351b5a526525a46b63c7e841f5c95495e2f9245c5df31a3b8ad68",
+          "bytes": 2588177
+        },
+        "tiff": {
+          "path": "figures\\figV01_3d_taihang_route.tiff",
+          "sha256": "2ba2f3d8ff6771be9d1a8f7d79e858c2debf1bdef83f78b644a3aee8c2d40924",
+          "bytes": 40177518
+        }
+      },
+      "caption": {
+        "path": "captions\\figV01_3d_taihang_route.md",
+        "sha256": "74297183c25acaf475b0bb8cac6e96599777ae727b4486052c8015ebf05349a0"
+      },
+      "source_data": {
+        "path": "source_data\\figV01_3d_taihang_route\\source.csv",
+        "rows": 5534,
+        "sha256": "d61d5fa30f3befe7b25df82d0cf9f337ee1108f7ae00e5dee2d8ee1eebdc5301"
+      },
+      "pixel_size": [
+        4322,
+        2324
+      ],
+      "dpi": 600,
+      "v1_render_metadata": {
+        "task_id": "real_test__cn_taihang__road_00__task_08",
+        "map_id": "cn_taihang",
+        "model": "full",
+        "seed": 42,
+        "task_hash": "882fced2679a3d4795cb31c736f65c2b8d8d894b8564d2b25960329969ea2a71",
+        "map_hash": "727201fbb5cf39471bae328e85c1c5d9eaa3069df13d93048e713bd81b1de903",
+        "route_source_sha256": "60a5e8a311397bdec7e52a7441ffcdbc68618723ec6dc974bdf7e8b7edf8954e",
+        "node_count": 24,
+        "visited_count": 7,
+        "returned": true,
+        "crop_bounds_grid": {
+          "x0": 138,
+          "x1": 266,
+          "y0": 14,
+          "y1": 180
+        },
+        "rigid_display_rotation_deg": 90.0,
+        "planform_long_to_short_ratio": 1.296875,
+        "planform_coordinate_scaling": "none",
+        "vertical_exaggeration": 1.5,
+        "camera": {
+          "elev_deg": 32.0,
+          "azim_deg": -58.0,
+          "projection": "orthographic"
+        },
+        "camera_trials": [
+          {
+            "elev_deg": 32.0,
+            "azim_deg": -58.0,
+            "route_center_delta": [
+              0.06833774042123394,
+              0.1780882976101942
+            ]
+          }
+        ],
+        "route_center_delta": [
+          0.06833774042123394,
+          0.1780882976101942
+        ],
+        "route_center_tolerance": 0.2,
+        "route_draw_order_overlay": true,
+        "coordinate_note": "航迹坐标未改变；白色描边和绘制顺序仅增强可见性。",
+        "excluded_road_01": {
+          "reason": "road_01属于同一DSM中的独立道路上下文，位于冻结任务走廊外；禁止虚构道路交点。",
+          "distance_to_airport_m": 2787.0994690921543,
+          "minimum_road_pair_distance_m": 2401.383046311933
+        },
+        "nominal_width_mm": 183.0,
+        "nominal_height_mm": 145.0,
+        "compact": false
+      },
+      "compact_89mm": {
+        "files": {
+          "svg": {
+            "path": "figures\\figV01_3d_taihang_route_89mm.svg",
+            "sha256": "b7802892a9207bae18147704cb0fa9fcc0d6d82603a3b2c9daa744bb51622940",
+            "bytes": 106369
+          },
+          "pdf": {
+            "path": "figures\\figV01_3d_taihang_route_89mm.pdf",
+            "sha256": "cd431c86dde052a7ce748ab94a74bcd25246f688b5544a84134947dfd49ec7b6",
+            "bytes": 86320
+          },
+          "png": {
+            "path": "figures\\figV01_3d_taihang_route_89mm.png",
+            "sha256": "1def46129ea8d31cf446319085b41fd94f8c6ced9180b937d11a7f2378bc1785",
+            "bytes": 1086647
+          },
+          "tiff": {
+            "path": "figures\\figV01_3d_taihang_route_89mm.tiff",
+            "sha256": "a0f6815c9bfd2b298c691639ac71819a3139576f616f3313c744bf6b97837b14",
+            "bytes": 14495598
+          }
+        },
+        "caption": {
+          "path": "captions\\figV01_3d_taihang_route_89mm.md",
+          "sha256": "69ba16b2da27181d7007aa441b524c550660010de9f9363c28ca8afc8d7bc5a9"
+        },
+        "source_data": {
+          "path": "source_data\\figV01_3d_taihang_route_89mm\\source.csv",
+          "rows": 5534,
+          "sha256": "d61d5fa30f3befe7b25df82d0cf9f337ee1108f7ae00e5dee2d8ee1eebdc5301"
+        },
+        "metadata": {
+          "task_id": "real_test__cn_taihang__road_00__task_08",
+          "map_id": "cn_taihang",
+          "model": "full",
+          "seed": 42,
+          "task_hash": "882fced2679a3d4795cb31c736f65c2b8d8d894b8564d2b25960329969ea2a71",
+          "map_hash": "727201fbb5cf39471bae328e85c1c5d9eaa3069df13d93048e713bd81b1de903",
+          "route_source_sha256": "60a5e8a311397bdec7e52a7441ffcdbc68618723ec6dc974bdf7e8b7edf8954e",
+          "node_count": 24,
+          "visited_count": 7,
+          "returned": true,
+          "crop_bounds_grid": {
+            "x0": 138,
+            "x1": 266,
+            "y0": 14,
+            "y1": 180
+          },
+          "rigid_display_rotation_deg": 90.0,
+          "planform_long_to_short_ratio": 1.296875,
+          "planform_coordinate_scaling": "none",
+          "vertical_exaggeration": 1.5,
+          "camera": {
+            "elev_deg": 32.0,
+            "azim_deg": -58.0,
+            "projection": "orthographic"
+          },
+          "camera_trials": [
+            {
+              "elev_deg": 32.0,
+              "azim_deg": -58.0,
+              "route_center_delta": [
+                0.06833774042123403,
+                0.17808829761019404
+              ]
+            }
+          ],
+          "route_center_delta": [
+            0.06833774042123403,
+            0.17808829761019404
+          ],
+          "route_center_tolerance": 0.2,
+          "route_draw_order_overlay": true,
+          "coordinate_note": "航迹坐标未改变；白色描边和绘制顺序仅增强可见性。",
+          "excluded_road_01": {
+            "reason": "road_01属于同一DSM中的独立道路上下文，位于冻结任务走廊外；禁止虚构道路交点。",
+            "distance_to_airport_m": 2787.0994690921543,
+            "minimum_road_pair_distance_m": 2401.383046311933
+          },
+          "nominal_width_mm": 89.0,
+          "nominal_height_mm": 71.0,
+          "compact": true
+        }
+      }
+    },
+    "figV02_outcome_flow_a": {
+      "parent": "figV02_outcome_flow",
+      "panel": "a",
+      "title": "算法→覆盖→终止结果流",
+      "files": {
+        "svg": {
+          "path": "figures\\figV02_outcome_flow_a.svg",
+          "sha256": "a63c98e485a0b6835d125cf056fd8526ccaa10995ec9ecd7f0fa5bcd5fd4c499",
+          "bytes": 9558
+        },
+        "pdf": {
+          "path": "figures\\figV02_outcome_flow_a.pdf",
+          "sha256": "0b6fb75afc065271097e69a1061b2ad95af4fa4b1286683962e76a0816745a89",
+          "bytes": 37258
+        },
+        "png": {
+          "path": "figures\\figV02_outcome_flow_a.png",
+          "sha256": "c5ae022e1238eb658f3458dd0c47576f4ae4eeffc1af36baa69a7b6393281819",
+          "bytes": 491970
+        },
+        "tiff": {
+          "path": "figures\\figV02_outcome_flow_a.tiff",
+          "sha256": "449d3296bd7c1fe29894e00a1e91489c7854feb1c302cd759f2a112d5b671db5",
+          "bytes": 2183776
+        }
+      },
+      "caption": {
+        "path": "captions\\figV02_outcome_flow_a.md",
+        "sha256": "31943a194eae2aecd126a94cba3500c7a90ae882dc258fb6d760e8e13c462b37"
+      },
+      "source_data": {
+        "path": "source_data\\figV02_outcome_flow_a\\source.csv",
+        "rows": 11,
+        "sha256": "714c474a221dea67e0a7e591e7bd1a8bb158e22120db848979e61b53f6367cdf"
+      },
+      "pixel_size": [
+        4116,
+        3288
+      ],
+      "dpi": 600
+    }
+  },
+  "contact_sheets": [
+    {
+      "path": "review_contact_sheets\\contact_sheet_01.png",
+      "sha256": "a8a4c522bcbe09c9316cfa297a0b7a56874b60009a229d891dc4dbf9afeba37d",
+      "panels": [
+        "fig01_study_design_a",
+        "fig01_study_design_b",
+        "fig01_study_design_c",
+        "fig01_study_design_d",
+        "fig02_integrated_score_a",
+        "fig02_integrated_score_b",
+        "fig02_integrated_score_c",
+        "fig02_integrated_score_d",
+        "fig02_integrated_score_e",
+        "fig03_operational_tradeoffs_a",
+        "fig03_operational_tradeoffs_b",
+        "fig03_operational_tradeoffs_c"
+      ]
+    },
+    {
+      "path": "review_contact_sheets\\contact_sheet_02.png",
+      "sha256": "102e60f6ea6196c1a6e8266f7d4b5c2bdcc9c2d5841ab4055350f7feb929c99a",
+      "panels": [
+        "fig03_operational_tradeoffs_d",
+        "fig03_operational_tradeoffs_e",
+        "fig04_training_a",
+        "fig04_training_b",
+        "fig04_training_c",
+        "fig04_training_d",
+        "fig04_training_e",
+        "fig05_ablation_a",
+        "fig05_ablation_b",
+        "fig05_ablation_c",
+        "fig05_ablation_d",
+        "fig05_ablation_e"
+      ]
+    },
+    {
+      "path": "review_contact_sheets\\contact_sheet_03.png",
+      "sha256": "cce0258bf3e29bc0fb68dd345462ccb769293d7e3f19d9fa45eca09ba0284393",
+      "panels": [
+        "fig06_generalization_robustness_routes_a",
+        "fig06_generalization_robustness_routes_b",
+        "fig06_generalization_robustness_routes_c",
+        "fig06_generalization_robustness_routes_d",
+        "fig06_generalization_robustness_routes_e1",
+        "fig06_generalization_robustness_routes_e2",
+        "fig06_generalization_robustness_routes_e3",
+        "fig06_generalization_robustness_routes_e4",
+        "fig06_generalization_robustness_routes_f1",
+        "fig06_generalization_robustness_routes_f2",
+        "fig06_generalization_robustness_routes_f3",
+        "fig06_generalization_robustness_routes_f4"
+      ]
+    },
+    {
+      "path": "review_contact_sheets\\contact_sheet_04.png",
+      "sha256": "ec07e6c3d04ae0f61d335cfa2178fa4a6b49e454e570e1796d26d7ec8ee622ef",
+      "panels": [
+        "figS01_audit_a",
+        "figS01_audit_b",
+        "figS01_audit_c",
+        "figS01_audit_d",
+        "figS02_scenarios_a",
+        "figS02_scenarios_b",
+        "figS02_scenarios_c",
+        "figS02_scenarios_d",
+        "figS03_baselines_a",
+        "figS03_baselines_b",
+        "figS03_baselines_c",
+        "figS03_baselines_d"
+      ]
+    },
+    {
+      "path": "review_contact_sheets\\contact_sheet_05.png",
+      "sha256": "b75dd523ef67c483d20bd3b4bdb77d88b8da86b7343af1466d9c8645a20db2f6",
+      "panels": [
+        "figS04_training_all_a",
+        "figS04_training_all_b",
+        "figS05_score_sensitivity_a",
+        "figS05_score_sensitivity_b",
+        "figS05_score_sensitivity_c",
+        "figS05_score_sensitivity_d",
+        "figS06_ablation_maps_a",
+        "figS06_ablation_maps_b",
+        "figS06_ablation_maps_c",
+        "figS06_ablation_maps_d",
+        "figS07_robustness_failures_a",
+        "figS07_robustness_failures_b"
+      ]
+    },
+    {
+      "path": "review_contact_sheets\\contact_sheet_06.png",
+      "sha256": "d8be44ef2581a077cacc9a247f209607e43bc3811a1ff45983bb0358edc18d80",
+      "panels": [
+        "figS07_robustness_failures_c",
+        "figS07_robustness_failures_d",
+        "figS08_route_atlas_a",
+        "figS08_route_atlas_b",
+        "figS08_route_atlas_c",
+        "figS08_route_atlas_d",
+        "figS08_route_atlas_e",
+        "figS08_route_atlas_f",
+        "figS08_route_atlas_g",
+        "figS08_route_atlas_h",
+        "figV01_3d_taihang_route",
+        "figV02_outcome_flow_a"
+      ]
+    }
+  ],
+  "qa_passed": true,
+  "v1_qa": {
+    "schema": "v3.2.14-v1-3d-qa-v1",
+    "passed": true,
+    "failures": [],
+    "checks": {
+      "flight_path_exact": true,
+      "inspection_point_count": 24,
+      "airport_exact": true,
+      "inspection_points_draped_on_dsm": true,
+      "vertical_exaggeration_recorded": true,
+      "route_center_delta": [
+        0.06833774042123394,
+        0.1780882976101942
+      ],
+      "route_center_passed": true,
+      "planform_long_to_short_ratio": 1.296875,
+      "planform_ratio_passed": true,
+      "planform_coordinate_scaling": "none",
+      "exports": {
+        "figV01_3d_taihang_route": {
+          "pixel_size": [
+            4322,
+            2324
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ],
+          "target_width_mm": 183.0,
+          "rendered_width_mm": 182.96503259673187,
+          "width_error_mm": -0.03496740326812642,
+          "outer_margins_px": [
+            28,
+            27,
+            24,
+            31
+          ],
+          "blue_route_pixels": 81248,
+          "svg_text_elements": 32,
+          "pdf_font_embedded": true
+        },
+        "figV01_3d_taihang_route_89mm": {
+          "pixel_size": [
+            2102,
+            1724
+          ],
+          "dpi": [
+            599.9988,
+            599.9988
+          ],
+          "target_width_mm": 89.0,
+          "rendered_width_mm": 88.98484463635594,
+          "width_error_mm": -0.015155363644055342,
+          "outer_margins_px": [
+            30,
+            30,
+            29,
+            30
+          ],
+          "blue_route_pixels": 40475,
+          "svg_text_elements": 31,
+          "pdf_font_embedded": true
+        }
+      }
+    },
+    "review_files": [
+      "review\\figV01_3d_taihang_route_grayscale.png",
+      "review\\figV01_3d_taihang_route_deuteranopia.png"
+    ]
+  },
+  "parameters": {
+    "local_view_margin": 0.12,
+    "local_view_min_pad": 5.0,
+    "split_pad_inch": 0.025,
+    "route_cell_meters": 30,
+    "export_dpi": 600,
+    "v1_hillshade_azdeg": 315,
+    "v1_hillshade_altdeg": 42,
+    "v1_scale_bar_meters": 500,
+    "v1_vertical_exaggeration": 1.5,
+    "v1_view_margin": 0.1,
+    "v1_planform_long_to_short_ratio": 1.3,
+    "v1_camera_candidates": [
+      [
+        32.0,
+        -58.0
+      ],
+      [
+        36.0,
+        -72.0
+      ],
+      [
+        30.0,
+        122.0
+      ],
+      [
+        36.0,
+        138.0
+      ]
+    ],
+    "v1_route_center_tolerance": 0.2,
+    "v1_master_size_mm": [
+      183.0,
+      145.0
+    ],
+    "v1_compact_size_mm": [
+      89.0,
+      71.0
+    ]
+  }
+}

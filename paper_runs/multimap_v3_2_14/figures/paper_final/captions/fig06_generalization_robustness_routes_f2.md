@@ -1,0 +1,3 @@
+真实DSM任务：A2C+Pointer。
+
+来自父图 `fig06_generalization_robustness_routes`。图6｜泛化、鲁棒性与固定代表路线。16/20/24属于训练范围内多规模；真实DSM结果仅代表跨地区零样本仿真迁移，不代表实飞验证。

@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "reviewed_files": [
+    "qa/contact_sheet_en_grayscale.png",
+    "qa/contact_sheet_en_deuteranopia.png"
+  ],
+  "checks": {
+    "core_curves_have_line_style_redundancy": true,
+    "core_points_have_marker_redundancy": true,
+    "route_models_have_line_style_redundancy": true,
+    "heatmaps_use_ordered_luminance": true,
+    "legends_remain_decodable": true,
+    "no_critical_overlap_after_simulation": true
+  },
+  "note": "颜色不是核心模型、路线或主要区间图的唯一识别通道；灰度下仍可依靠线型、点形、行标签和位置解码。"
+}

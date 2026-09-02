@@ -1,0 +1,47 @@
+param(
+    [string]$DeliveryRoot = "."
+)
+
+$ErrorActionPreference = "Stop"
+
+# Word COM fallback when LibreOffice is unavailable.
+$deliverables = Join-Path $DeliveryRoot "deliverables"
+$renderRoot = Join-Path $DeliveryRoot "qa\docx_render"
+$names = @(
+    "EAAI_manuscript_anonymized_v2",
+    "EAAI_title_page_v2",
+    "EAAI_supplementary_material_v2",
+    "EAAI_highlights_v2",
+    "EAAI_cover_letter_v2"
+)
+
+$word = $null
+foreach ($name in $names) {
+    try {
+        $word = New-Object -ComObject Word.Application
+        $word.Visible = $false
+        $word.DisplayAlerts = 0
+        $docx = Join-Path $deliverables ($name + ".docx")
+        $outDir = Join-Path $renderRoot $name
+        New-Item -ItemType Directory -Path $outDir -Force | Out-Null
+        $pdf = Join-Path $outDir ($name + ".pdf")
+        $doc = $word.Documents.Open($docx, $false, $true)
+        try {
+            # 17 = wdExportFormatPDF
+            $doc.ExportAsFixedFormat($pdf, 17)
+        }
+        finally {
+            $doc.Close($false)
+        }
+        Write-Output "$name`t$pdf"
+    }
+    finally {
+        if ($null -ne $word) {
+            try { $word.Quit() } catch { }
+            try { [System.Runtime.InteropServices.Marshal]::ReleaseComObject($word) | Out-Null } catch { }
+            $word = $null
+        }
+        [GC]::Collect()
+        [GC]::WaitForPendingFinalizers()
+    }
+}
